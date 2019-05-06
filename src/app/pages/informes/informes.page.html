@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- <ion-title>informes</ion-title> -->
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.informes" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+<!-- ***********CONTENT************** -->
+<ion-content padding>
+    <div *ngIf="innerHtml.length<1" style="margin-top:30px">
+      {{'informes.download' | translate}}
+    </div>
+<ion-button  (click)="download()" twitter style="width: 47%;">{{'informes.descarga' | translate}}</ion-button>
+<ion-button  (click)="goTo()" twitter style="width: 47%;">{{'cancelar' | translate}}</ion-button>
+
+<div *ngIf="innerHtml.length>=1">
+    
+    <!-- <ion-item>
+        <ion-range [(ngModel)]="progreso" color="primary">
+        </ion-range>
+      </ion-item> -->
+      <ion-progress-bar color="primary" [value]="progreso / 100"></ion-progress-bar>
+    <div class="space"></div>
+    {{'procesando' | translate}}
+    <div [innerHTML]=innerHtml></div>
+  </div>
+
+</ion-content>

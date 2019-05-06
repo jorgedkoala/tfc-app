@@ -1,0 +1,199 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.traspasos" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+
+
+<!-- ***********CONTENT************** -->
+<!-- ***********CONTENT************** -->
+<ion-content padding>
+
+    <ion-fab  bottom right>
+<button (click)="verTanques(almacenes)" ion-fab color="primary" mini>
+  <ion-icon name='md-beaker'></ion-icon>
+</button>
+</ion-fab>
+
+
+<!--<button md-raised-button (click)="traspaso = !traspaso">{{'produccion.traspaso' | translate}}</button>-->
+
+<!--<div *ngIf="traspaso">-->
+<div>
+<!--<ion-toolbar color="accent">{{'produccion.traspaso' | translate}}</ion-toolbar>-->
+<div id="traspasoComponent">
+<div id="origen">
+
+ <!--<md-slide-toggle [(ngModel)]="proveedor" (change)="cambioOrigen()">proveedor</md-slide-toggle>-->
+<div id="select_proveedor">
+<ion-item>
+<ion-label>{{'traspasos.Origen' | translate}}</ion-label>
+  <ion-select [(ngModel)]="valorProvId"  name="proveedor" (ionChange)="getProductos(valorProvId)">
+    <ion-select-option *ngFor="let prov of proveedores; let i = index" [value]="prov.id">
+      {{prov.nombre}}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+</div>
+
+<div *ngIf="!proveedor">
+  <ion-item>
+  <ion-label>{{'traspasos.Tanque' | translate}}</ion-label>
+  <ion-select  [(ngModel)]="numTanque" (ionChange)="seleccionarOrigen('interno',numTanque)">
+    <ion-select-option *ngFor="let almacenOrigen of almacenesOrigen; let i = index" [value]="i">
+      {{almacenOrigen.nombre}}
+    </ion-select-option>
+  </ion-select>
+  </ion-item>
+</div>
+<!--********************** ^POR PROVEEDOR  ***************-->
+  <div id="porProveedor"  *ngIf="proveedor">
+
+<ion-item>
+  <ion-label>{{'produccion.productos' | translate}}</ion-label>
+  <ion-select [(ngModel)]="valorProdId"  name="producto" (ionChange)="getEntradasProducto(valorProdId)">
+    <ion-select-option *ngFor="let prod of productos; let i = index" [value]="prod.id">
+      {{prod.nombre}}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+  <BR>    
+
+<ion-item *ngIf="idProductoActual">
+  <ion-label>{{'traspasos.Lotes' | translate}}</ion-label>
+  <ion-select [(ngModel)]="numTanque"  name="idmateriaprima" (ionChange)="seleccionarOrigen('proveedor',numTanque)">
+    <ion-select-option *ngFor="let lote of entrada_productos; let i = index" [value]="i">
+      {{lote.numlote_proveedor}}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+  </div>     
+<!--********************** FIN POR PROVEEDOR  ***************-->
+
+
+
+<ion-card *ngIf="almacenOrigenSelected">
+    <ion-card-header>
+        {{'traspasos.Tanque Origen' | translate}}: {{almacenOrigenSelected.nombre}}
+    </ion-card-header>
+      {{'traspasos.Capacidad' | translate}}: {{almacenOrigenSelected.capacidad}}<br>
+      {{'traspasos.Uso' | translate}}: {{almacenOrigenSelected.estado}}<br>
+      {{'traspasos.Lote actual' | translate}}: {{almacenOrigenSelected.idproduccionordenactual}}<br>
+      <span *ngIf="ordenOrigen">
+        {{'traspasos.Num_Lote' | translate}}: {{ordenOrigen.numlote}}<br>
+      {{'traspasos.Fecha Inicio Lote' | translate}}: {{ordenOrigen.fecha_inicio | date:'dd/MM/yy'}}<br>
+      {{'traspasos.Fecha Fin Lote' | translate}}: {{ordenOrigen.fecha_fin | date:'dd/MM/yy'}}<br>
+      <span *ngIf="ordenOrigen.fecha_caducidad != 'Invalid Date'">
+      {{'traspasos.Fecha caducidad' | translate}}: {{ordenOrigen.fecha_caducidad | date:'dd/MM/yy'}}<br>
+      </span>
+      </span>
+</ion-card>
+<ion-card *ngIf="loteSelected">
+    <ion-card-header>
+       {{'traspasos.Num_Lote' | translate}}: {{loteSelected.numlote_proveedor}}
+    </ion-card-header>
+      {{'traspasos.Cantidad Inicial' | translate}}: {{loteSelected.cantidad_inicial}}<br>
+      {{'traspasos.Cantidad Disponible' | translate}}: {{loteSelected.cantidad_remanente}}<br>
+      {{'traspasos.Fecha Entrada' | translate}}: {{loteSelected.fecha_entrada | date:'dd/MM/yy'}}<br>
+      <span *ngIf="loteSelected.fecha_caducidad != 'Invalid Date'">
+      {{'traspasos.Fecha caducidad' | translate}}: {{loteSelected.fecha_caducidad | date:'dd/MM/yy'}}<br>
+       </span>
+</ion-card>
+</div>
+
+<!--********************** CANTIDAD TRASPASO  ***************-->
+<div id="traspaso">
+
+<ion-item>
+<ion-label color="primary" floating>{{'traspasos.Cantidad traspaso' | translate}}</ion-label>
+<ion-input type="number"  placeholder="{{'traspasos.Cantidad traspaso' | translate}}" [(ngModel)]="cantidadTraspaso">
+  </ion-input>
+</ion-item>
+
+</div>
+
+<!--********************** FIN CANTIDAD TRASPASO  ***************-->
+
+
+<!--********************** INICIO DESTINO  ***************-->
+<div id="destino">
+<div id="select_cliente">
+<ion-item>
+  <ion-label>{{'traspasos.Destino' | translate}}</ion-label>
+  <ion-select [(ngModel)]="valorClienteId"  name="cliente" (ionChange)="setCliente(valorClienteId)">
+    <ion-select-option *ngFor="let cliente of clientes; let i = index" [value]="cliente.id">
+      {{cliente.nombre}}
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+</div>
+
+<div *ngIf="clienteSelected">
+<ion-card>
+    <ion-card-header>
+        {{'traspasos.Cliente Destino' | translate}}: {{clienteSelected.nombre}}
+    </ion-card-header>
+      {{'traspasos.contacto' | translate}}: {{clienteSelected.contacto}}<br>
+      {{'traspasos.telf' | translate}}: {{clienteSelected.telf}}<br>
+      {{'traspasos.email' | translate}}: {{clienteSelected.email}}<br>
+      <span *ngIf="distribucion">
+        {{'traspasos.Num_Lote' | translate}}: {{distribucion.numlote}}<br>
+        {{'traspasos.Cantidad' | translate}}: {{distribucion.cantidad}}<br>
+        <span *ngIf="distribucion.fecha != 'Invalid Date'">{{'traspasos.Fecha' | translate}}: {{distribucion.fecha | date:'dd/MM/yy'}}<br></span>
+      <span *ngIf="distribucion.fecha_caducidad != 'Invalid Date'">{{'traspasos.Fecha caducidad' | translate}}: {{distribucion.fecha_caducidad | date:'dd/MM/yy'}}<br></span>
+
+      </span>
+</ion-card>
+</div>
+
+<div *ngIf="!clienteSelected && almacenesDestino">
+    <ion-item>
+  <ion-label>{{'traspasos.Tanque' | translate}}</ion-label>
+  <ion-select [(ngModel)]="valorAlmacenDestinoId" (ionChange)="seleccionarDestino(valorAlmacenDestinoId)">
+    <ion-select-option *ngFor="let almacenDestino of almacenesDestino; let i = index" [value]="i">
+      {{almacenDestino.nombre}}
+    </ion-select-option>
+  </ion-select>
+    </ion-item>
+
+<ion-card *ngIf="almacenDestinoSelected">
+    <ion-card-header>
+        {{'traspasos.Tanque Destino' | translate}}: {{almacenDestinoSelected.nombre}}
+    </ion-card-header>
+      {{'traspasos.Capacidad' | translate}}: {{almacenDestinoSelected.capacidad}}<br>
+      {{'traspasos.Disponible' | translate}}: {{almacenDestinoSelected.capacidad - almacenDestinoSelected.estado}}<br>
+      {{'traspasos.Lote actual' | translate}}: {{almacenDestinoSelected.idproduccionordenactual}}<br>
+              <span *ngIf="ordenDestino">
+               {{'traspasos.Num_Lote' | translate}}: {{ordenDestino.numlote}}<br>
+      {{'traspasos.Fecha Inicio Lote' | translate}}: {{ordenDestino.fecha_inicio  | date:'dd/MM/yy'}}<br>
+      {{'traspasos.Fecha Fin Lote' | translate}}: {{ordenDestino.fecha_fin  | date:'dd/MM/yy'}}<br>
+       <span *ngIf="ordenDestino.fecha_caducidad != 'Invalid Date'  && ordenDestino.fecha_caducidad != null">
+      {{'traspasos.Fecha caducidad' | translate}}: {{ordenDestino.fecha_caducidad | date:'dd/MM/yy'}}<br>
+       </span>
+      </span>
+</ion-card>
+</div>
+
+</div>
+</div>
+</div>
+<!--********************** FIN DESTINO  ***************-->
+
+<button ion-button [disabled]="!ok" (click)="traspasar()">{{'traspasos.traspasar' | translate}}</button>
+<button ion-button *ngIf="ok2" (click)="setok()">ok</button>
+
+<div *ngIf="alerts.length >0" class="modal" >
+<div class="modal-window">
+<ion-list>
+<ion-item *ngFor="let alert of alerts">{{alert}}</ion-item>
+</ion-list>
+<button ion-button (click)="cierraMessage()">{{'traspasos.entendido' | translate}}</button>
+</div>
+</div>
+
+</ion-content>

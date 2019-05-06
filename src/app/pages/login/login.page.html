@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.login" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+
+
+<!-- ***********CONTENT************** -->
+<!-- ***********CONTENT************** -->
+<ion-content padding>
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+  <ion-refresher-content
+    pullingIcon="arrow-dropdown"
+    pullingText="Pull to refresh"
+    refreshingSpinner="circles"
+    refreshingText="Actualizando...">
+  </ion-refresher-content>
+</ion-refresher>
+<ion-row>
+<ion-col>
+<img [src]="logoempresa" *ngIf="empresa" class="center logo"/>
+</ion-col>
+</ion-row>
+
+<p>
+</p>
+    <ion-list>
+
+    <ion-item>
+      <ion-label floating>{{"nombre" | translate}}</ion-label>
+      <ion-input type="text" [(ngModel)]="nombre"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>{{"password" | translate}}</ion-label>
+      <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+  </ion-list>
+
+
+
+  <ion-button (click)="login()" twitter style="width: 100%;">Login</ion-button> 
+
+
+</ion-content>

@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.mantenimiento" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+
+
+<!-- ***********CONTENT************** -->
+<!-- ***********CONTENT************** -->
+<ion-content padding>
+    <ion-item>
+      <ion-avatar item-left>
+        <img [src]="icono">
+      </ion-avatar>
+        <ion-label [ngClass]="{'onDate':!isbeforedate,'beforeOnDate':isbeforedate}">{{nombre}}
+         <span *ngIf="isbeforedate"> - {{fechaPrevista | date:'dd-MM-yyyy'}} </span> 
+        </ion-label>
+        <ion-toggle [(ngModel)]="checked"></ion-toggle>
+    
+    
+        <!--<ion-label [ngClass]="{'onDate':!elementoLimpieza.isbeforedate,'beforeOnDate':elementoLimpieza.isbeforedate}" (click)="opciones(elementoLimpieza)">{{elementoLimpieza.nombreElementoLimpieza}}
+         <span *ngIf="elementoLimpieza.isbeforedate"> - {{elementoLimpieza.fecha_prevista}} </span>
+        </ion-label>
+        <ion-icon (click)="opciones(elementoLimpieza)" *ngIf="elementoLimpieza.checked=='true'" name="checkmark-circle" item-right></ion-icon>
+      <ion-icon (click)="opciones(elementoLimpieza)" *ngIf="elementoLimpieza.checked=='false'" name="close-circle" item-right></ion-icon>
+      <ion-icon (click)="opciones(elementoLimpieza)" *ngIf="elementoLimpieza.checked=='na'" name="help-circle" item-right></ion-icon>-->
+    
+    </ion-item>
+    <ion-item>
+      <ion-textarea placeholder="comentarios" [(ngModel)]="descripcion"></ion-textarea>
+    </ion-item>
+    
+    <ion-button (click)="takeFoto()" twitter style="width: 30%;">{{"foto" | translate}}</ion-button> 
+    
+    <ion-button (click)="terminar()" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button>
+  <ion-button [disabled]="hayIncidencia>0" ion-button color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%;">{{"incidencia" | translate}}</ion-button> 
+    
+    <img [src]="imagen">
+    <ion-footer *ngIf="hayRetraso>0" style="padding:15px; background-color:#ccc">
+      <span ><b>
+      {{'hay' | translate}} {{hayRetraso}} {{'eventosPendientes' | translate}} {{fechaPrevista | date:'dd-MM-yyyy'}}, {{'autocompletar' | translate}} 
+      </b></span> 
+      <ion-item style="background-color:#eee">
+          <ion-label><b>completar</b></ion-label>
+      <ion-toggle [(ngModel)]="autocompletar"></ion-toggle>
+      </ion-item>
+    </ion-footer>
+    </ion-content>
+    

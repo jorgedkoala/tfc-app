@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+        </ion-buttons>
+    <div class="menuTitle">{{"menu.config" | translate }}</div>
+    <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-list radio-group [(ngModel)]="lang" (ionChange)="selectlang()">
+    
+      <ion-list-header>
+       {{"config.idioma" | translate }}
+      </ion-list-header>
+    
+      <ion-item>
+        <ion-label>Català</ion-label>
+        <ion-radio value="cat"></ion-radio>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label>Español</ion-label>
+        <ion-radio value="es"></ion-radio>
+      </ion-item>
+    </ion-list>
+    <hr>
+    <ion-list radio-group [(ngModel)]="teclado" (ionChange)="selectTeclado()">
+    
+      <ion-list-header>
+       {{"config.teclado" | translate }}
+      </ion-list-header>
+    
+      <ion-item>
+        <ion-label>{{"config.num" | translate }}</ion-label>
+        <ion-radio value="numeric"></ion-radio>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label>{{"config.texto" | translate }}</ion-label>
+        <ion-radio value="text"></ion-radio>
+      </ion-item>
+    </ion-list>
+    <p style="font-size:smaller">{{"config.helpText" | translate }}</p>
+    <hr>
+    <!--{{"config.email" | translate }}-->
+      <!--<ion-item>
+        <ion-label color="primary" floating>e-mail</ion-label>
+        <ion-input [(ngModel)]="email"></ion-input>
+      </ion-item>-->
+    <!--<button ion-button (click)="setmail()" value="email">{{"config.ok" | translate}}</button>-->
+    <ion-footer>
+      <ion-toolbar>
+        <ion-title>TFC - Proacciona    v:2.0.0</ion-title>
+      </ion-toolbar>
+    </ion-footer>
+    </ion-content>
+    

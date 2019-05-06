@@ -1,5 +1,7 @@
 {
   "name": "tfc-app-v4",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

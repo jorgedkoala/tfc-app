@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <!-- <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button> -->
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.empresa" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+
+
+<!-- ***********CONTENT************** -->
+<!-- ***********CONTENT************** -->
+<ion-content padding>
+    <div class="empresa">
+      <ion-card>
+        <ion-card-title>
+          {{"empresa.titulo" | translate}}
+        </ion-card-title>
+        <ion-card-content>
+          {{"empresa.texto" | translate}}
+               <ion-item> <!--pattern="[0-9\-]*"-->
+            <ion-label floating>{{"empresa.codigo" | translate}}</ion-label>
+            <ion-input name="empresa" type="number" [(ngModel)]="empresa"></ion-input>
+          </ion-item>
+          <ion-button name="setEmpresaButton" (click)="setEmpresa()" twitter>{{"empresa.ok" | translate}}</ion-button> 
+        </ion-card-content>
+      </ion-card>
+      </div>
+      <div *ngIf="koala">
+       Produccion<ion-toggle [(ngModel)]="debug" ></ion-toggle>Debug
+      </div>
+    </ion-content>
+    

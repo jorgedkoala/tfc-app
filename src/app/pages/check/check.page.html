@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- <ion-title>check</ion-title> -->
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{nombrechecklist }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+
+
+    <ion-item *ngFor="let control of checklistcontroles">
+      <ion-icon *ngIf="control.foto" name="camera" item-left></ion-icon>
+      <ion-icon *ngIf="control.descripcion" name="clipboard" item-left></ion-icon>
+      <ion-label (click)="opciones(control)">{{control.nombrecontrol}}</ion-label>
+    
+      <ion-label *ngIf="control.valor">valor:{{control.valor}}</ion-label>
+      <ion-icon (click)="opciones(control)" *ngIf="control.checked=='true'" name="checkmark-circle" item-right></ion-icon>
+      <ion-icon (click)="opciones(control)" *ngIf="control.checked=='false'" name="close-circle" item-right></ion-icon>
+      <ion-icon (click)="opciones(control)" *ngIf="control.checked=='na'" name="help-circle" item-right></ion-icon>
+      <ion-icon (click)="opciones(control)" *ngIf="control.valor" name="information-circle" item-right></ion-icon>
+      <ion-icon (click)="opciones(control)" *ngIf="control.checked==''" name="add-circle" item-right></ion-icon>
+      </ion-item>
+    
+    <ion-button (click)="takeFoto()" twitter style="width: 30%;">{{"foto" | translate}}</ion-button> 
+    <ion-button (click)="terminar()" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
+    <ion-button [disabled]="hayIncidencia>0" color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%;">{{"incidencia" | translate}}</ion-button> 
+    
+       <ion-card>
+         <ion-card-title>
+         </ion-card-title>
+        <ion-card-content *ngIf="base64Image" >
+          <img [src]="base64Image" *ngIf="base64Image" />
+    </ion-card-content>
+      </ion-card>
+      <div style="height:100px"></div>
+    </ion-content>
+
+      <!-- <ion-footer *ngIf="hayRetraso>0" style="padding:15px; background-color:#ccc">
+        <span ><b>
+        {{'hay' | translate}} {{hayRetraso}} {{'eventosPendientes' | translate}} {{fecha_prevista | date:'dd-MM-yyyy'}}, {{'autocompletar' | translate}} 
+        </b></span> 
+        <ion-item style="background-color:#eee">
+            <ion-label><b>completar</b></ion-label>
+        <ion-toggle [(ngModel)]="autocompletar"></ion-toggle>
+        </ion-item>
+      </ion-footer> -->
+      <ion-footer *ngIf="entradasMP" style="padding:15px; background-color:#ccc">
+          <ion-slides #slide pager="false" scrollbar="true" [options]="slideOpts" (ionSlideDidChange)="setLoteActivo(slide,$event)">
+              <ion-slide *ngFor="let entrada of entradasMP">
+                  <ion-fab vertical="middle" horizontal="start" slot="fixed">
+                      <!-- <ion-fab-button (click)="verEntradas()"> -->
+                          <ion-icon name="arrow-dropleft-circle" (click)="swipe(slide,'left')"></ion-icon>
+                      <!-- </ion-fab-button> -->
+                    </ion-fab>
+                  <!-- <ion-card >
+                      <ion-card-header> -->
+                         {{albaran}}: {{entrada.numlote_proveedor}}<br>
+                      <!-- </ion-card-header> -->
+                      {{proveedor}} -> {{producto}} {{entrada.cantidad_inicial}} {{entrada.tipo_medida}}<br>
+                       {{entrada.fecha_entrada | date:'dd/MM/yy'}}<br>
+                  <!-- </ion-card> -->
+                  <ion-fab vertical="middle" horizontal="end" slot="fixed">
+                      <!-- <ion-fab-button (click)="verEntradas()"> -->
+                          <ion-icon name="arrow-dropright-circle" (click)="swipe(slide,'right')"></ion-icon>
+                      <!-- </ion-fab-button> -->
+                    </ion-fab>
+              </ion-slide>
+            </ion-slides>
+           <!-- <ion-card >
+           <ion-card-header>
+              {{albaran}}: {{lote.numlote_proveedor}}
+           </ion-card-header>
+            {{lote.cantidad_inicial}} {{lote.tipo_medida}}<br>
+            {{lote.fecha_entrada | date:'dd/MM/yy'}}<br>
+       </ion-card> -->
+
+      </ion-footer>

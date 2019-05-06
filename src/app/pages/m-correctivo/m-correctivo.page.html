@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.m-correctivo" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+
+
+<!-- ***********CONTENT************** -->
+<!-- ***********CONTENT************** -->
+<ion-content padding>
+
+    <ion-item>
+        <ion-label>{{'maquinas.maquinas' | translate}}</ion-label>
+        <ion-select [(ngModel)]="machine" (ionChange)="cambia($event)">
+          <ion-select-option *ngFor="let maquina of maquinas" value="{{maquina.idMaquina}}">{{maquina.nombreMaquina}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>{{'maquinas.pieza' | translate}}</ion-label>
+        <ion-select [(ngModel)]="mantenimientoRealizado.pieza" (ionChange)="cambiaPieza($event)">
+          <ion-select-option *ngFor="let pieza of piezas" value="{{pieza.id}}">{{pieza.nombre}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+          <ion-label>{{'maquinas.cantidadPiezas' | translate}}</ion-label>
+      <ion-input  type="number"   [(ngModel)]="mantenimientoRealizado.cantidadPiezas"></ion-input>
+    </ion-item>
+<ion-item>
+    <ion-textarea placeholder="{{'maquinas.mantenimiento' | translate}}" [(ngModel)]="mantenimientoRealizado.mantenimiento"></ion-textarea>
+  </ion-item>
+  <ion-item>
+      <ion-label>{{'maquinas.fecha' | translate}}</ion-label>
+      <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="mantenimientoRealizado.fecha"></ion-datetime>
+    </ion-item>
+    <ion-item>
+        <ion-label>{{'maquinas.tipo' | translate}}</ion-label>
+        <ion-select [(ngModel)]="mantenimientoRealizado.tipo">
+          <ion-select-option value="interno">{{'interno' | translate}}</ion-select-option>
+          <ion-select-option value="externo">{{'externo' | translate}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+<!-- <ion-item>
+    <ion-textarea placeholder="{{'maquinas.elemento' | translate}}" [(ngModel)]="mantenimientoRealizado.elemento"></ion-textarea>
+  </ion-item>-->
+<ion-item> 
+  <ion-textarea placeholder="{{'maquinas.descripcion' | translate}}" [(ngModel)]="mantenimientoRealizado.descripcion"></ion-textarea>
+</ion-item>
+<!-- <ion-item>
+  <ion-textarea placeholder="{{'maquinas.causas' | translate}}" [(ngModel)]="mantenimientoRealizado.casusas"></ion-textarea>
+</ion-item> -->
+<ion-item>
+    <ion-textarea placeholder="{{'maquinas.responsable' | translate}}" [(ngModel)]="mantenimientoRealizado.responsable"></ion-textarea>
+  </ion-item>
+
+<ion-button (click)="takeFoto()" twitter style="width: 47%;">{{"foto" | translate}}</ion-button> 
+
+<ion-button (click)="terminar()" twitter style="width: 47%;">{{"terminar" | translate}}</ion-button>
+<img [src]="imagen">
+
+</ion-content>
+

@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.incidencia" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+
+
+<!-- ***********CONTENT************** -->
+<!-- ***********CONTENT************** -->
+<ion-content padding>
+
+    <!-- {{incidencia["origen"]}}
+    {{incidencia.incidencia}} -->
+    <ion-list *ngIf="incidencia">
+      <ion-item>
+        <ion-input type="text" placeholder="Incidencia" [(ngModel)]="incidencia.incidencia"></ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <ion-input type="text" placeholder="Descripcion"  [(ngModel)]="incidencia.descripcion"></ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <ion-input type="text" placeholder="Solucion inmediata"  [(ngModel)]="incidencia.solucion"></ion-input>
+      </ion-item>
+    
+    </ion-list>
+      <hr>   
+    <ion-button (click)="takeFoto()" twitter style="width: 47%;">{{"foto" | translate}}</ion-button> 
+    <ion-button (click)="creaIncidencia()" [disabled]="desactivado" twitter style="width: 47%;">{{textoBoton | translate}}</ion-button> 
+     
+    <img [src]="base64Image" *ngIf="base64Image" />
+    </ion-content>
+    

@@ -103,7 +103,7 @@ isTokenExired (token) {
       this.sync_data_supervision();
       this.sync_mantenimientos();
       this.sync_incidencias(-1,0,'Incidencias');
-      this.sync_entradasMP();
+      this.sync_entradasMP().then((ids)=>{console.log(ids)});
           });
     }
     else {
@@ -220,6 +220,9 @@ isTokenExired (token) {
               .subscribe(data => {
                 this.sync_incidencias(idlocal, data.id, 'Checklists');
                 this.sync_checklistcontroles(data.id, idlocal);
+                if (this.servidor.getIdEntrada()){
+                this.sync_serviciosEntrada(data.id, idlocal,this.servidor.getIdEntrada());
+                }
                 arrayfila.forEach((checklist)=>{this.updateFechaElemento(checklist.idchecklist,'checklist','idchecklist');})
                 
               });
@@ -528,6 +531,8 @@ isTokenExired (token) {
   
 
   sync_entradasMP(){
+    return new Promise((resolve)=>{
+      let idEntradas:any[]=[];
     console.log('seleccionar entradas MP a enviar:');
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
       db2.executeSql("select * from entradasMP", []).then((data) => {
@@ -535,9 +540,9 @@ isTokenExired (token) {
           console.log('enviar incidencias:',data.rows.length);
           let arrayfila = [];
           for (let fila = 0; fila < data.rows.length; fila++) {
-            let nuevaEntrada = new ProveedorLoteProducto( data.rows.item(fila).numlote_proveedor,data.rows.item(fila).fecha_entrada, data.rows.item(fila).fecha_caducidad, data.rows.item(fila).cantidad_inicial, 
+            let nuevaEntrada = new ProveedorLoteProducto(null,data.rows.item(fila).numlote_proveedor,data.rows.item(fila).fecha_entrada, data.rows.item(fila).fecha_caducidad, data.rows.item(fila).cantidad_inicial, 
             data.rows.item(fila).tipo_medida,data.rows.item(fila).cantidad_remanente, data.rows.item(fila).doc,
-            data.rows.item(fila).idproducto,data.rows.item(fila).idproveedor,data.rows.item(fila).idempresa);
+            data.rows.item(fila).idproducto,data.rows.item(fila).idproveedor,data.rows.item(fila).idempresa,data.rows.item(fila).idResultadoChecklist,data.rows.item(fila).albaran,data.rows.item(fila).idResultadoChecklistLocal);
           
     let param = "&entidad=proveedores_entradas_producto";
       this.servidor.postObject(URLS.STD_ITEM, nuevaEntrada,param).subscribe(
@@ -545,42 +550,73 @@ isTokenExired (token) {
           if (response.success) {
             nuevaEntrada.id = response.id;
             console.log(nuevaEntrada.id);
-            if (parseInt(localStorage.getItem('triggerEntradasMP')) > 0){
-              this.setServiciosDeEntrada(nuevaEntrada.id,data.rows.item(fila).albaran,data.rows.item(fila).idempresa);
-            }
-            db2.executeSql("UPDATE serviciosEntrada set idEntradasMP = ? WHERE id = ?", [nuevaEntrada.id, data.rows.item(fila).id]).then((data) => {
-              console.log("UPDATED 1 item");
-            },
-          (error)=>{console.log('UPDATE serviciosEntrada ERROR',error)});
+            // if (parseInt(localStorage.getItem('triggerEntradasMP')) > 0){
+            //   this.setServiciosDeEntrada(nuevaEntrada.id,data.rows.item(fila).albaran,data.rows.item(fila).idempresa,data.rows.item(fila).id,null,null);
+            // }
             db2.executeSql("DELETE from entradasMP WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
               console.log("deleted 1 item");
             },
           (error)=>{console.log('Deleting entradasMP ERROR',error)});
+          idEntradas.push({'id':nuevaEntrada.id,'idLocal':data.rows.item(fila).id});
           }
       },
-      error =>console.log("Error en nueva entrada producto",error),
+      error =>{
+        console.log("Error en nueva entrada producto",error);
+        idEntradas.push({'id':error,'idLocal':data.rows.item(fila).id});
+      },
       () =>console.log('entrada producto ok')
       );
   }
+  resolve (idEntradas)
 }
       });
     });
+  });
   }
 
-  setServiciosDeEntrada(idLote,albaran,idempresa){
-    let param = "&entidad=serviciosDeEntrada";
-    let servicioEntrada=new ServicioEntrada(null,idLote,null,new Date(),albaran, parseInt(idempresa));
-      this.servidor.postObject(URLS.STD_ITEM, servicioEntrada,param).subscribe(
-        response => {
-          if (response.success) {
-            console.log('servicio de entrada ok');
+  sync_serviciosEntrada(id, idlocal,idEntrada1) {
+    console.log("entradasMP id: ",idEntrada1);
+    let idEntrada=idEntrada1['id'];
+    let source=idEntrada1['source'];
+    let albaran=idEntrada1['albaran'];
+    this.servidor.setIdEntrada(null);
+    this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
+      // console.log("base de datos abierta");
+       
+      db2.executeSql("select * from entradasMP WHERE id = ?", [idEntrada]).then((data) => {
+        if (data.rows.length > 0) {
+          console.log('*##RESULTADO TODAVÍA ESTÄ LA ENTRADA EN LOCAL',data);
+          db2.executeSql("update entradasMP set idResultadoChecklist = ? WHERE id = ?", [id,idEntrada]).then(
+            (data) => {console.log('updated entrada local',data)},
+            (error)=>{console.log('ERROR updated entrada local',error)});
+        }else{
+          console.log('*##YA NO ESTÄ LA ENTRADA EN LOCAL');
+          let param='';
+          if (source=='local'){
+            param = "?entidad=proveedores_entradas_producto&WHERE=idResultadoChecklistLocal="+idEntrada+" AND albaran='"+albaran+"'";
+            console.log('*##id LOCAL',param);
+          }else{
+           param = "?entidad=proveedores_entradas_producto&id="+idEntrada;
+           console.log('*##id SERVER',param);
           }
-      },
-      error =>console.log("Error en nueva entrada producto",error),
-      () =>console.log('entrada producto ok')
-      );
-    }
-
+          let entrada={'idResultadoChecklist':id};
+          this.servidor.putObject(URLS.STD_ITEM,param,entrada).subscribe(
+            response => {
+              if (response.success) {
+                console.log('**servicio de entrada updated ok',response);
+                }
+          },
+          error => {console.log("Error en nueva entrada producto",error);});
+         
+        }
+      }, (error) => {
+        console.log("ERROR -> ",error);
+        alert("error, no se han podido sincronizar todos los datos [SYNC_serviciosEntrada]" + error);
+      });
+    }, (error) => {
+      console.log("ERROR al abrir la bd: ", error);
+    });
+  }
 
 
 

@@ -149,6 +149,7 @@
     "critico":"critico: ",
     "foto": "foto",
     "terminar": "enviar",
+    "todosOk": "todos ok",
     "correcto": "correcto",
     "incorrecto": "incorrecto",
     "no aplica":"no aplica",
@@ -175,5 +176,6 @@
     "interno":"Interno",
     "externo":"Externo",
     "incidencia":"Incidencia",
-    "incidenciaTooltip":"Activa una incidencia para el elemento"
+    "incidenciaTooltip":"Activa una incidencia para el elemento",
+    "Checklistincompleto":"Checklist incompleto, no se envia este elemento"
 }

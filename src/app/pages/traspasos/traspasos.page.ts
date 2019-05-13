@@ -255,11 +255,11 @@ getEntradasProducto(idProducto){
         this.servidor.getObjects(URLS.STD_SUBITEM, parametros).subscribe(
           response => {
             this.entrada_productos = [];
-            this.entrada_productos.push(new ProveedorLoteProducto('nueva entrada',new Date(),new Date(),0,'l.',0,'',idProducto,this.idProveedorActual,parseInt(localStorage.getItem("idempresa"))));
+            this.entrada_productos.push(new ProveedorLoteProducto(null,'nueva entrada',new Date(),new Date(),0,'l.',0,'',idProducto,this.idProveedorActual,parseInt(localStorage.getItem("idempresa")),null,null));
             //this.entrada_productos.push(new ProveedorLoteProducto('selecciona',new Date(),new Date(),0,'',0,'',0,0,0,0));
             if (response.success && response.data) {
               for (let element of response.data) { 
-                  this.entrada_productos.push(new ProveedorLoteProducto(element.numlote_proveedor,element.fecha_entrada,element.fecha_caducidad,element.cantidad_inicial,element.tipo_medida,element.cantidad_remanente,element.doc,element.idproducto,element.idproveedor,element.idempresa,element.id));
+                  this.entrada_productos.push(new ProveedorLoteProducto(element.id,element.numlote_proveedor,element.fecha_entrada,element.fecha_caducidad,element.cantidad_inicial,element.tipo_medida,element.cantidad_remanente,element.doc,element.idproducto,element.idproveedor,element.idempresa,null,null));
              }
             }
         },

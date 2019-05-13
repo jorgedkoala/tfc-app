@@ -41,9 +41,11 @@ export class Checks {
 export class CheckPage implements OnInit {
   @ViewChild('slides') slides:IonSlides;
   public checklistcontroles: Checks[] = [];
+  public isActualChecklistComplete=false;
+  // public templatechecklistcontroles: Checks[] = [];
   public entradasMP: any[] = [];
   public entradaActual:any=null;
-  public servicios: any[] = [];
+  public source: string = null;
   public resultadoschecklistcontroles: any;
   public checks: any;
   //private storage: Storage;
@@ -66,6 +68,7 @@ export class CheckPage implements OnInit {
     initialSlide: 0,
     speed: 400
   };
+
   constructor(
   private platform: Platform,
   public router: Router,
@@ -144,7 +147,6 @@ let checklist= this.servidor.getParam();
   
   getChecklists(idchecklist){
     if (idchecklist == parseInt(localStorage.getItem('triggerEntradasMP'))){
-
       let checklist= this.servidor.getParam();
       this.lote=checklist.lote;
       console.log(checklist,checklist.lote)
@@ -166,15 +168,66 @@ let checklist= this.servidor.getParam();
                               "descripcion":data.rows.item(index).descripcion,
                               "foto": ""
                         });
+                        
                       }
+                     
                 }, (error) => {
                     console.log("ERROR -> " + JSON.stringify(error.err));
                     alert("error " + JSON.stringify(error.err));
                 }); 
                     });
   }
-  
-  
+
+  setTemplateControles(){
+    let newArrayControles=[];
+    this.checklistcontroles.forEach((control)=>{
+      newArrayControles.push({
+        "id": control.id,
+        "idchecklist": control.idchecklist,
+        "nombrechecklist": control.nombrechecklist,
+        "idcontrol":control.idcontrol,
+        "nombrecontrol":control.nombrecontrol,
+        "checked":'',
+        "valor":'',
+        "descripcion":control.descripcion,
+        "foto": ""
+  });  
+    });
+    return newArrayControles;
+  }
+
+  enviar(){
+    // console.log('ENVIAR',this.entradasMP.length);
+    if(this.entradasMP.length>1){
+      
+      this.entradasMP.forEach((entrada)=>{
+        // console.log('ENVIAR',entrada,entrada.checklistControles)
+        let isfull=true;
+        entrada.checklistControles.forEach((control)=>{
+          if (control.checked == '') isfull=false;
+        });
+        console.log('***ENVIAR ISFULL',isfull);
+        if (isfull){
+          this.checklistcontroles=entrada.checklistControles;
+          this.base64Image=entrada.imagen;
+          this.terminar();
+        }else{
+          console.log('***AVISAR SERVICIO INCOMPLETO')
+          let aviso='';
+          this.translate.get('Checklistincompleto').subscribe((valor)=>{aviso=valor})
+          const prompt = this.alertCtrl.create({
+            message: 'aviso',
+            buttons: [{text: 'Ok'}]
+            }).then(()=>console.log('aviso incompleto mostrado'))
+        }
+      })
+
+    }else{
+      this.terminar();
+    }
+
+  }
+
   terminar(){
     console.debug(this.checklistcontroles);
     let fecha;
@@ -195,7 +248,16 @@ let checklist= this.servidor.getParam();
       }
       if (this.idchecklist == parseInt(localStorage.getItem('triggerEntradasMP'))){
         if (this.entradaActual){
-          this.updateEntrada();
+          console.log('UPDATING servicio entrada Local 2',Resultado.insertId,this.entradaActual.id,this.entradaActual);
+          this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
+            db2.executeSql('UPDATE entradasMP set idResultadoChecklistLocal =? WHERE id=?',
+            [Resultado.insertId,this.entradaActual.id]).then(
+          (Resultado2) => {
+            console.log('UPDATED  ENTRADAS Local',Resultado2);
+          },
+          (error)=>console.log('ERROR UPDATE entrada Local',error));
+            });
+          //this.updateEntrada();
         }
       }
 
@@ -316,12 +378,15 @@ let checklist= this.servidor.getParam();
           //prompt.present();
   }
 async  opciones(control) {
+  this.entradaActual['checklist']=true;
+      let todosOk;
       let correcto;
       let incorrecto;
       let aplica;
       let valor;
       let descrip;
       let cancel;
+      this.translate.get("todosOk").subscribe(resultado => {todosOk = resultado;});
       this.translate.get("correcto").subscribe(resultado => {correcto = resultado;});
       this.translate.get("incorrecto").subscribe(resultado => { incorrecto = resultado;});
       this.translate.get("no aplica").subscribe(resultado => { aplica = resultado;});
@@ -331,6 +396,7 @@ async  opciones(control) {
       const actionSheet = await this.actionSheetCtrl.create({
         header: 'Opciones',
         buttons: [
+          {text: todosOk,icon:'checkmark-circle',handler: () => {this.todosOk()}},
           {text: correcto,icon:'checkmark-circle',handler: () => {control.checked='true';control.valor = '';}},
           {text: incorrecto,icon:'close-circle',handler: () => {control.checked='false';control.valor = '';}},
           {text: aplica,icon:'help-circle',handler: () => {control.checked='na';control.valor = '';}},
@@ -340,9 +406,16 @@ async  opciones(control) {
           {text: cancel,role: 'cancel',handler: () => {console.debug('Cancel clicked');}}
           ]
            })
-      actionSheet.present();
+      actionSheet.present().then(()=>{  this.checkControles();})
     }
   
+  todosOk(){
+    this.checklistcontroles.forEach((control)=>{
+      control.checked='true';
+    });
+    this.checkControles();
+  }
+
   changeSelected(){
     this.selectedValue = this.checkvalue;
   }
@@ -386,26 +459,47 @@ async  opciones(control) {
       });
   }
 setLote(index){
-
+  
   this.entradaActual = this.entradasMP[index];
         this.getProveedores(this.entradasMP[index].idproveedor)
         this.getProductos(this.entradasMP[index].idproducto,this.entradasMP[index].idproveedor)
-  this.albaran = this.servicios[this.servicios.findIndex((servicio)=>servicio.idEntrada == this.entradasMP[index].id)]['albaran'];
+        this.servidor.setIdEntrada({'id':this.entradaActual.id,'source':this.source,'albaran':this.entradaActual.albaran});
+  //this.albaran = this.servicios[this.servicios.findIndex((servicio)=>servicio.idEntrada == this.entradasMP[index].id)]['albaran'];
+    this.checklistcontroles=this.entradaActual['checklistControles'];
+    this.base64Image=this.entradaActual['imagen'];
+  this.checkControles();
 }
+
+checkSlide(slide){
+  if(this.lote){
+    console.log('####LOTE',this.lote);
+    setTimeout(()=>{
+    let indice = this.entradasMP.findIndex((entrada)=>entrada.numlote_proveedor == this.lote.numlote_proveedor && entrada.idproducto == this.lote.idproducto)
+    if (indice > -1){
+      console.log('####LOTE',indice);
+    this.setLote(indice);
+    slide.slideTo(indice);
+    }else{
+      alert('lote no encontrado'+indice );
+      console.log(this.lote,this.entradasMP);
+    }
+  },1100);
+  }
+}
+
   loadEntradas(){
     this.entradasMP=[]
     if (this.network.type != 'none') {
-      this.getServicios().then(
-        (resultados)=>{
-          console.log(resultados);
-      let param = "&entidad=proveedores_entradas_producto&idempresa="+localStorage.getItem('idempresa')+"&WHERE=id="+resultados;
+
+      console.log('ENTRADAS PRODUCTO ONLINE');
+      let param = "&entidad=proveedores_entradas_producto&idempresa="+localStorage.getItem('idempresa')+"&WHERE=albaran is not null AND idResultadoChecklist is null";
         this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
           response => {
             if (response.success) {
               console.log('servicio de entrada ok',response.data);
               let entradas = response.data;
               console.log('resultado entradas: ' + entradas);
-
+              this.source='server';
                 entradas.forEach (entrada => {
                 //  this.saveLimpiezaRealizada(limpiezarealizada)
                 this.entradasMP.push({
@@ -420,23 +514,15 @@ setLote(index){
                   "idproducto":entrada.idproducto,
                   "idproveedor": entrada.idproveedor,
                   "idempresa":entrada.idempresa,
-                  "albaran":entrada.albaran
+                  "idResultadoChecklist":entrada.idResultadoChecklist,
+                  "albaran":entrada.albaran,
+                  // "checklist":true,
+                  "checklistControles":this.setTemplateControles(),
+                  "imagen":null
             });
-
-
                 });
-                if(this.lote){
-                  console.log('####LOTE',this.lote);
-                  let indice = this.entradasMP.findIndex((entrada)=>entrada.numlote_proveedor == this.lote.numlote_proveedor && entrada.idproducto == this.lote.idproducto)
-                  if (indice > -1){
-                  this.setLote(indice);
-                  }else{
-                    alert('lote no encontrado'+indice );
-                    console.log(this.lote,this.entradasMP);
-                  }
-                }else{
                 this.setLote(0);
-                }
+
                 // this.getProveedores()
                 // this.getProductos(this.entradasMP[0].idproducto,this.entradasMP[0].idproveedor)
                 // this.entradaActual=this.entradasMP[0];
@@ -445,12 +531,12 @@ setLote(index){
         error =>console.log("Error en nueva entrada producto",error),
         () =>console.log('entrada producto ok')
         );
-    });
     }else{
-    ;
+          console.log('ENTRADAS PRODUCTO OFFLINE');
     this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
       db2.executeSql("Select * FROM entradasMP",[]).then((data) => {
-      console.log ("resultado2" + data.rows.length);
+      console.log ("resultado entradas" + data.rows.length);
+      this.source='local';
       for (var index=0;index < data.rows.length;index++){
           this.entradasMP.push({
                 "id": data.rows.item(index).id,
@@ -464,52 +550,97 @@ setLote(index){
                 "idproducto":data.rows.item(index).idproducto,
                 "idproveedor": data.rows.item(index).idproveedor,
                 "idempresa":data.rows.item(index).idempresa,
-                "albaran":data.rows.item(index).albaran
+                "idResultadoChecklist":data.rows.item(index).idResultadoChecklist,
+                "albaran":data.rows.item(index).albaran,
+                // "checklist":true,
+                "checklistControles":this.setTemplateControles(),
+                "imagen":null
           });
         }
         console.log("entradas -> ",this.entradasMP);
+        this.setLote(0);
+        
   }, (error) => {
       console.log("ERROR -> " + JSON.stringify(error.err));
       alert("error " + JSON.stringify(error.err));
   }); 
       });
+
     }
   }
 
-  getServicios(){
-    return new Promise((resolve,reject)=>{
-    let param = "&entidad=serviciosDeEntrada&idempresa="+localStorage.getItem('idempresa')+"&WHERE=idResultadoChecklist is null";
-    this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
-      response => {
-        this.servicios=[];
-        if (response.success && response.data) {
-          console.log('servicio de entrada ok',response.data);
-          let resultado = '';
-          let entradas = response.data;
-          console.log('resultado entradas: ' + entradas);
-            entradas.forEach (entrada => {
-              this.servicios.push({
-                'idEntrada':entrada.idEntradasMP,
-                'albaran':entrada.albaran
-              }
-              )
-              resultado += entrada.idEntradasMP + ' OR id=';
-            });
-            resultado = resultado.substr(0,resultado.length-7);
-            resolve (resultado);
-        }
-        else{
-          resolve (false)
-        }
-    },
-    error => {
-      console.log("Error en nueva entrada producto",error);
-      resolve (false);
-    },
-    () =>console.log('entrada producto ok')
-    );
-  });
-  }
+//   getServicios(){
+//     return new Promise((resolve,reject)=>{
+//       if (this.network.type != 'none') {
+//     let param = "&entidad=serviciosDeEntrada&idempresa="+localStorage.getItem('idempresa')+"&WHERE=idResultadoChecklist is null";
+//     setTimeout(()=>{
+//     this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
+//       response => {
+//         this.servicios=[];
+//         if (response.success && response.data) {
+//           console.log('servicio de entrada ok',response.data);
+//           let resultado = '';
+//           let entradas = response.data;
+//           console.log('resultado entradas: ' + entradas);
+//             entradas.forEach (entrada => {
+//               this.servicios.push({
+//                 'idEntrada':entrada.idEntradasMP,
+//                 'albaran':entrada.albaran
+//               }
+//               )
+//               resultado += entrada.idEntradasMP + ' OR id=';
+//             });
+//             resultado = resultado.substr(0,resultado.length-7);
+//             resolve (resultado);
+//         }
+//         else{
+//           resolve (false)
+//         }
+//     },
+//     error => {
+//       console.log("Error en nueva entrada producto",error);
+//       resolve (false);
+//     },
+//     () =>console.log('entrada producto ok')
+//     );
+//   },1000);
+// }else{
+//   this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
+//     db2.executeSql("Select * FROM serviciosEntrada",[]).then((data) => {
+//     console.log ("resultado servicios" + data.rows.length);
+//     this.servicios=[];
+//     // console.log('servicio de entrada ok',response.data);
+//      let resultado = '';
+//     // let entradas = response.data;
+//     // console.log('resultado entradas: ' + entradas);
+//     //   entradas.forEach (entrada => {
+//     //     this.servicios.push({
+//     //       'idEntrada':entrada.idEntradasMP,
+//     //       'albaran':entrada.albaran
+//     //     }
+//     //     )
+//     //     resultado += entrada.idEntradasMP + ' OR id=';
+//     //   });
+//     //   resultado = resultado.substr(0,resultado.length-7);
+//     //   resolve (resultado);
+//     for (var index=0;index < data.rows.length;index++){
+//         this.servicios.push({
+//           'idEntrada':data.rows.item(index).idEntradaLocal,
+//           'albaran':data.rows.item(index).albaran
+//         });
+//         resultado += data.rows.item(index).idEntradaLocal + ' OR id=';
+//       }
+//       resultado = resultado.substr(0,resultado.length-7);
+//       resolve (resultado);
+// }, (error) => {
+//     console.log("ERROR -> " + JSON.stringify(error.err));
+//     alert("error " + JSON.stringify(error.err));
+//     resolve (false)
+// }); 
+//     });
+// }
+//   });
+//   }
 
   async verEntradas(){
     let botones=[];
@@ -568,8 +699,18 @@ slide.slidePrev();
   }
 }
 
+checkControles(){
+  console.log('checkControles',this.isActualChecklistComplete);
+  this.isActualChecklistComplete=true;
+  this.checklistcontroles.forEach((control)=>{
+      if (control.checked == '') this.isActualChecklistComplete=false;
+  });
+  console.log(this.isActualChecklistComplete);
+
+}
 
 updateEntrada(){
+
 
 }
 

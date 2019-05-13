@@ -27,7 +27,7 @@
       </ion-item>
     
     <ion-button (click)="takeFoto()" twitter style="width: 30%;">{{"foto" | translate}}</ion-button> 
-    <ion-button (click)="terminar()" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
+    <ion-button (click)="enviar()" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
     <ion-button [disabled]="hayIncidencia>0" color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%;">{{"incidencia" | translate}}</ion-button> 
     
        <ion-card>
@@ -49,8 +49,8 @@
         <ion-toggle [(ngModel)]="autocompletar"></ion-toggle>
         </ion-item>
       </ion-footer> -->
-      <ion-footer *ngIf="entradasMP" style="padding:15px; background-color:#ccc">
-          <ion-slides #slide pager="false" scrollbar="true" [options]="slideOpts" (ionSlideDidChange)="setLoteActivo(slide,$event)">
+      <ion-footer *ngIf="entradasMP" style="padding:0px;" [ngClass]="{'isComplete':isActualChecklistComplete,'border':true}">
+          <ion-slides #slide pager="false" scrollbar="true" [options]="slideOpts" (ionSlideDidChange)="setLoteActivo(slide,$event)" (ionSlidesDidLoad)="checkSlide(slide)">
               <ion-slide *ngFor="let entrada of entradasMP">
                   <ion-fab vertical="middle" horizontal="start" slot="fixed">
                       <!-- <ion-fab-button (click)="verEntradas()"> -->
@@ -59,9 +59,9 @@
                     </ion-fab>
                   <!-- <ion-card >
                       <ion-card-header> -->
-                         {{albaran}}: {{entrada.numlote_proveedor}}<br>
+                         {{entrada.albaran}}: {{entrada.numlote_proveedor}}<br>
                       <!-- </ion-card-header> -->
-                      {{proveedor}} -> {{producto}} {{entrada.cantidad_inicial}} {{entrada.tipo_medida}}<br>
+                      {{proveedor}}: {{producto}}: {{entrada.cantidad_inicial}} {{entrada.tipo_medida}}<br>
                        {{entrada.fecha_entrada | date:'dd/MM/yy'}}<br>
                   <!-- </ion-card> -->
                   <ion-fab vertical="middle" horizontal="end" slot="fixed">

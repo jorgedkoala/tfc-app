@@ -113,6 +113,7 @@ export class FamiliasProducto {
 
 export class ProveedorLoteProducto {
   constructor(
+    public id: number,
     public numlote_proveedor: string,
     public fecha_entrada: Date,
     public fecha_caducidad: Date,
@@ -123,7 +124,9 @@ export class ProveedorLoteProducto {
     public idproducto: number,
     public idproveedor: number,
     public idempresa: number,
-    public id?: number
+    public idResultadoChecklist: number,
+    public albaran: string,
+    public idResultadoChecklistLocal?: number
   ) {}
 }
 
@@ -349,7 +352,9 @@ export class ServicioEntrada {
   public idResultadoChecklist: number,
   public fecha: Date,
   public albaran: string,
-  public idempresa: number
+  public idempresa: number,
+  public idEntradaLocal:number,
+  public idRCLocal:number
   ){}
 }
 

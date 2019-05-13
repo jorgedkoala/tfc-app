@@ -32,13 +32,14 @@ export class EntradasMPPage implements OnInit {
   public proveedor:boolean=false;
   public idProveedorActual:number;
   public idProductoActual:number;
-  public loteSelected:ProveedorLoteProducto=new ProveedorLoteProducto('',new Date(),new Date(),0,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")));
+  // public loteSelected:ProveedorLoteProducto=new ProveedorLoteProducto(null,'',new Date(),new Date(),0,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")),null,null);
+  public loteSelected:ProveedorLoteProducto=new ProveedorLoteProducto(null,'LOT01',new Date(),new Date(),100,'g',100,'',9,6,2,null,null);
   public idempresa= localStorage.getItem("idempresa");
   public userId= sessionStorage.getItem("login");
   public ok:boolean=true;
   public medidas: object[]=dropDownMedidas;
   public hayTrigger:boolean=false;
-  public albaran:string;
+  // public albaran:string='ALB001';
   public idsProveedores:any[];
   public synProveedores:any;
   public synProductos:any;
@@ -226,14 +227,9 @@ getEntradasProducto(idProducto){
 setNuevaEntradaProveedor(){
   this.db.create({name: 'data.db',location: 'default'})
   .then((db2: SQLiteObject) => { db2.executeSql('INSERT INTO entradasMP (numlote_proveedor, fecha_entrada, fecha_caducidad, cantidad_inicial, tipo_medida,cantidad_remanente,doc,idproducto,idproveedor,idempresa,albaran) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-  [this.loteSelected.numlote_proveedor,moment(this.loteSelected.fecha_entrada).format('YYYY-MM-DD'), this.loteSelected.fecha_caducidad, this.loteSelected.cantidad_inicial,this.loteSelected.tipo_medida,this.loteSelected.cantidad_remanente,'',this.loteSelected.idproducto,this.loteSelected.idproveedor,this.loteSelected.idempresa,this.albaran]).then(
+  [this.loteSelected.numlote_proveedor,moment(this.loteSelected.fecha_entrada).format('YYYY-MM-DD'), this.loteSelected.fecha_caducidad, this.loteSelected.cantidad_inicial,this.loteSelected.tipo_medida,this.loteSelected.cantidad_remanente,'',this.loteSelected.idproducto,this.loteSelected.idproveedor,this.loteSelected.idempresa,this.loteSelected.albaran]).then(
 (Resultado) => {
   console.log(Resultado.insertId);
-  db2.executeSql('INSERT INTO serviciosEntrada (idEntradaLocal, fecha , albaran,idempresa) VALUES (?,?,?,?)',
-  [Resultado.insertId,moment(this.loteSelected.fecha_entrada).format('YYYY-MM-DD'),this.albaran,this.loteSelected.idempresa]).then(
-(Resultado2) => {
-  console.log('Insert servicio entrada Local',Resultado2);
-});
   console.log(moment(this.loteSelected.fecha_entrada).format('YYYY-MM-DD'));
   console.log(this.loteSelected.fecha_caducidad);
 //******NUEVA ENTRADA?? O TERMINAR*/
@@ -307,19 +303,19 @@ hayTriggerServiciosEntrada(){
       ()=>{});
 }
 
-setServiciosDeEntrada(idLote){
-let param = "&entidad=serviciosDeEntrada";
-let servicioEntrada=new ServicioEntrada(null,idLote,null,new Date(),this.albaran, parseInt(this.idempresa));
-  this.servidor.postObject(URLS.STD_ITEM, servicioEntrada,param).subscribe(
-    response => {
-      if (response.success) {
-        console.log('servicio de entrada ok');
-      }
-  },
-  error =>console.log("Error en nueva entrada producto",error),
-  () =>console.log('entrada producto ok')
-  );
-}
+// setServiciosDeEntrada(idLote){
+// let param = "&entidad=serviciosDeEntrada";
+// let servicioEntrada=new ServicioEntrada(null,idLote,null,new Date(),this.albaran, parseInt(this.idempresa),null,null);
+//   this.servidor.postObject(URLS.STD_ITEM, servicioEntrada,param).subscribe(
+//     response => {
+//       if (response.success) {
+//         console.log('servicio de entrada ok');
+//       }
+//   },
+//   error =>console.log("Error en nueva entrada producto",error),
+//   () =>console.log('entrada producto ok')
+//   );
+// }
 
 
 
@@ -429,7 +425,7 @@ errorEn(motivo:string){
           text: 'Nueva',
           handler: () => {
             console.log('Nueva');
-            this.loteSelected=new ProveedorLoteProducto('',new Date(),new Date(),0,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")));
+            this.loteSelected = new ProveedorLoteProducto(null,'',new Date(),new Date(),0,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")),null,null);
           }
         }, 
         {
@@ -455,14 +451,18 @@ errorEn(motivo:string){
   }
 
 
-  terminar(destino){
-    this.sync.sync_entradasMP();
+  async terminar(destino){
+    if (this.network.type != 'none'){
+    let ids = await this.sync.sync_entradasMP();
+    console.log(ids);
+    this.loteSelected.id = ids['id'];
+    }
     switch(destino){
       case "fin":
         this.goTo('/home');
         break;
       case "check":
-      let checklist = {'idchecklist':localStorage.getItem('triggerEntradasMP'),'lote':this.loteSelected,'albaran':this.albaran}
+      let checklist = {'idchecklist':localStorage.getItem('triggerEntradasMP'),'lote':this.loteSelected,'albaran':this.loteSelected.albaran}
         this.servidor.setParam(checklist);
         this.goTo('/check');
         break;

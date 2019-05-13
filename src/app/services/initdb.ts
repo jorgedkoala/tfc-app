@@ -160,7 +160,7 @@ db2.executeSql('CREATE TABLE IF NOT EXISTS piezas (id INTEGER PRIMARY KEY,  idma
        console.log("ERROR -> NO SE CREÓ INCIDENCIAS: ",error);
 });
 db2.executeSql('DROP TABLE IF EXISTS entradasMP',[]);
-db2.executeSql('CREATE TABLE IF NOT EXISTS entradasMP (id INTEGER PRIMARY KEY,  numlote_proveedor TEXT, fecha_entrada DATETIME,fecha_caducidad DATETIME,cantidad_inicial INTEGER,tipo_medida TEXT,cantidad_remanente INTEGER, doc TEXT,idproducto INTEGER,idproveedor INTEGER, idempresa INTEGER,albaran TEXT)',[]).then((data) => {
+db2.executeSql('CREATE TABLE IF NOT EXISTS entradasMP (id INTEGER PRIMARY KEY,  numlote_proveedor TEXT, fecha_entrada DATETIME,fecha_caducidad DATETIME,cantidad_inicial INTEGER,tipo_medida TEXT,cantidad_remanente INTEGER, doc TEXT,idproducto INTEGER,idproveedor INTEGER, idempresa INTEGER, idResultadoChecklist INTEGER, albaran TEXT,idResultadoChecklistLocal INTEGER)',[]).then((data) => {
        console.log("TABLE CREATED entradasMP-> " + JSON.stringify(data));
    }, (error) => {
        console.log("ERROR -> NO SE CREÓ entradasMP: ",error);
@@ -178,11 +178,11 @@ db2.executeSql('CREATE TABLE IF NOT EXISTS productosProveedor (id INTEGER PRIMAR
        console.log("ERROR -> NO SE CREÓ productosProveedor: ",error);
 });
 db2.executeSql('DROP TABLE IF EXISTS serviciosEntrada',[]);
-db2.executeSql('CREATE TABLE IF NOT EXISTS serviciosEntrada (id INTEGER PRIMARY KEY,  idEntradaLocal INTEGER, idEntradasMP INTEGER,idResultadoChecklist INTEGER, fecha DATETIME, albaran TEXT, idempresa INTEGER)',[]).then((data) => {
-       console.log("TABLE CREATED serviciosEntrada-> " + JSON.stringify(data));
-   }, (error) => {
-       console.log("ERROR -> NO SE CREÓ serviciosEntrada: ",error);
-});
+// db2.executeSql('CREATE TABLE IF NOT EXISTS serviciosEntrada (id INTEGER PRIMARY KEY,  idEntradaLocal INTEGER, idEntradasMP INTEGER,idResultadoChecklistLocal INTEGER ,idResultadoChecklist INTEGER, fecha DATETIME, albaran TEXT, idempresa INTEGER)',[]).then((data) => {
+//        console.log("TABLE CREATED serviciosEntrada-> " + JSON.stringify(data));
+//    }, (error) => {
+//        console.log("ERROR -> NO SE CREÓ serviciosEntrada: ",error);
+// });
         });
 localStorage.setItem("inicializado","16")
 if (localStorage.getItem("versionusers") === null) {localStorage.setItem("versionusers","0")}

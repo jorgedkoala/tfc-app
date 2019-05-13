@@ -149,6 +149,7 @@
     "critico":"critic: ",
     "foto": "foto",
    "terminar": "enviar",
+   "todosOk": "tots correcte",
     "correcto": "correcte",
     "incorrecto": "incorrecte",
     "no aplica":"no aplica",
@@ -175,5 +176,6 @@
     "interno":"Intern",
     "externo":"Extern",
     "incidencia":"Incidència",
-    "incidenciaTooltip":"Activa una incidència per l'element"
+    "incidenciaTooltip":"Activa una incidència per l'element",
+    "Checklistincompleto":"Checklist incomplet, no s'envia aquest element"
 }

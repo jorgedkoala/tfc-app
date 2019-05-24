@@ -98,7 +98,7 @@ isTokenExired (token) {
           localStorage.setItem('token', response.token);
         }else{}
       this.sync_data_control();
-      this.sync_data_checklist();
+      this.sync_data_checklist('SYNC');
       this.sync_checklimpieza();
       this.sync_data_supervision();
       this.sync_mantenimientos();
@@ -199,19 +199,19 @@ isTokenExired (token) {
     }
   }
 
-  sync_data_checklist() {
-
+  sync_data_checklist(from?) {
+    console.log('SYNC CHECKLIST FROM',from);
     //this.db = new SQLite();
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
-      console.log("base de datos abierta");
+      // console.log("base de datos abierta");
 
 
       db2.executeSql("select idlocal,idchecklist,fecha,foto, idusuario from resultadoschecklist", []).then((data) => {
         if (data.rows.length > 0) {
-
+          console.log('@@@CHECKLIST TO SYNC:',data.rows.length);
           for (let fila = 0; fila < data.rows.length; fila++) {
             let resultadoChecklist = new ResultadoCechklist(data.rows.item(fila).idlocal, data.rows.item(fila).idchecklist, data.rows.item(fila).fecha, data.rows.item(fila).foto, data.rows.item(fila).idusuario)
-            console.log(data.rows.item(fila));
+
             let idlocal = data.rows.item(fila).idlocal;
             //let arrayfila =[data.rows.item(fila)];
             let arrayfila = [resultadoChecklist];
@@ -220,8 +220,9 @@ isTokenExired (token) {
               .subscribe(data => {
                 this.sync_incidencias(idlocal, data.id, 'Checklists');
                 this.sync_checklistcontroles(data.id, idlocal);
+                //console.log('@@@ENTRADA ID:',this.servidor.getIdEntrada());
                 if (this.servidor.getIdEntrada()){
-                this.sync_serviciosEntrada(data.id, idlocal,this.servidor.getIdEntrada());
+                this.sync_serviciosEntrada(data.id, idlocal,this.servidor.getIdEntrada())
                 }
                 arrayfila.forEach((checklist)=>{this.updateFechaElemento(checklist.idchecklist,'checklist','idchecklist');})
                 
@@ -548,15 +549,24 @@ isTokenExired (token) {
       this.servidor.postObject(URLS.STD_ITEM, nuevaEntrada,param).subscribe(
         response => {
           if (response.success) {
+//**************** RESTAR REMANENTE INVENTARIO */    
+//**************** RESTAR REMANENTE INVENTARIO */ 
+//**************** RESTAR REMANENTE INVENTARIO */ 
+//**************** RESTAR REMANENTE INVENTARIO */
+//**************** RESTAR REMANENTE INVENTARIO */
+//**************** RESTAR REMANENTE INVENTARIO */          
             nuevaEntrada.id = response.id;
             console.log(nuevaEntrada.id);
             // if (parseInt(localStorage.getItem('triggerEntradasMP')) > 0){
             //   this.setServiciosDeEntrada(nuevaEntrada.id,data.rows.item(fila).albaran,data.rows.item(fila).idempresa,data.rows.item(fila).id,null,null);
             // }
+            // if (nuevaEntrada.idResultadoChecklist){
+              
             db2.executeSql("DELETE from entradasMP WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
               console.log("deleted 1 item");
             },
           (error)=>{console.log('Deleting entradasMP ERROR',error)});
+            // }
           idEntradas.push({'id':nuevaEntrada.id,'idLocal':data.rows.item(fila).id});
           }
       },
@@ -587,7 +597,9 @@ isTokenExired (token) {
         if (data.rows.length > 0) {
           console.log('*##RESULTADO TODAVÍA ESTÄ LA ENTRADA EN LOCAL',data);
           db2.executeSql("update entradasMP set idResultadoChecklist = ? WHERE id = ?", [id,idEntrada]).then(
-            (data) => {console.log('updated entrada local',data)},
+            (data) => {
+              console.log('updated entrada local',data);
+            },
             (error)=>{console.log('ERROR updated entrada local',error)});
         }else{
           console.log('*##YA NO ESTÄ LA ENTRADA EN LOCAL');
@@ -616,6 +628,7 @@ isTokenExired (token) {
     }, (error) => {
       console.log("ERROR al abrir la bd: ", error);
     });
+
   }
 
 

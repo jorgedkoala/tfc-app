@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget build="28" id="com.ntskoala.tfc2" version="0.0.28" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>TFC</name>
+    <name>TFC2</name>
     <description>By NTS Koala.</description>
     <author email="jorged@ntskoala.com" href="http://www.ntskoala.com/">NTS Koala</author>
     <content src="index.html" />
@@ -92,4 +92,5 @@
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
     <engine name="android" spec="7.1.4" />
+    <engine name="ios" spec="4.5.5" />
 </widget>

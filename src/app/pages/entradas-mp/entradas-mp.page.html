@@ -40,7 +40,7 @@
        
        <ion-item  *ngIf="loteSelected.idproveedor">
          <ion-label>{{'productos' | translate}}</ion-label>
-         <ion-select [(ngModel)]="loteSelected.idproducto"  name="idproducto">
+         <ion-select #selProds [(ngModel)]="loteSelected.idproducto"  name="idproducto">
            <ion-select-option *ngFor="let prod of productos; let i = index" [value]="prod.id">
              {{prod.nombre}}
            </ion-select-option>
@@ -60,12 +60,12 @@
 
             <ion-item *ngIf="loteSelected.numlote_proveedor">
                 <!-- <ion-label color="primary" floating>{{'traspasos.Cantidad traspaso' | translate}}</ion-label> -->
-                <ion-input type="number"  placeholder="{{'traspasos.Cantidad' | translate}}" [(ngModel)]="cantidadTraspaso" (change)="updateCantidad()">
+                <ion-input type="number"  placeholder="{{'traspasos.Cantidad' | translate}}" [(ngModel)]="loteSelected.cantidad_inicial">
                   </ion-input>
             </ion-item>
 
        <ion-item *ngIf="loteSelected.numlote_proveedor">
-          <ion-label>{{'produccion.unidad' | translate}}</ion-label>
+          <ion-label>{{'produccion.tipo medida' | translate}}</ion-label>
           <ion-select [(ngModel)]="loteSelected.tipo_medida"  name="tipo_medida">
             <ion-select-option *ngFor="let medida of medidas; let i = index" [value]="medida.label">
               {{medida.label}}
@@ -92,7 +92,7 @@
 
        <!--********************** CANTIDAD TRASPASO  ***************-->
        <div id="traspaso">
-        <ion-button (click)="setNuevaEntradaProveedor()">{{'añadir' | translate}}</ion-button>
+        <ion-button (click)="askOption()">{{'añadir' | translate}}</ion-button>
        </div>
        
        <!--********************** FIN CANTIDAD TRASPASO  ***************-->

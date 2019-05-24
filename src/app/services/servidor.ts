@@ -22,7 +22,7 @@ public idempresa= localStorage.getItem("idempresa");
 public userId= localStorage.getItem("login");
 public param:any=null;
 public incidencia:any=null;
-public idEntrada:object=null;
+public idEntrada:any[]=null;
 public entidad:string=null;
   constructor(public llamada: Http) {
     console.debug('Hello Servidor Provider');
@@ -141,9 +141,12 @@ getSimple(url: string, param: string){
     return this.incidencia;
   }
   setIdEntrada(id){
-    this.idEntrada=id;
+    if (!this.idEntrada) this.idEntrada=[];
+    this.idEntrada.push(id)
   }
   getIdEntrada(){
-    return this.idEntrada;
+    let resultado = null;
+    if (this.idEntrada) this.idEntrada.shift();
+    return resultado;
   }
 }

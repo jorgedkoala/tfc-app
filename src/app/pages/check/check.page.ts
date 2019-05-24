@@ -64,6 +64,7 @@ export class CheckPage implements OnInit {
   public albaran:string=null;
   public proveedor:string = null;
   public producto:string=null;
+  public syncOK:boolean=true;
   public slideOpts = {
     initialSlide: 0,
     speed: 400
@@ -198,42 +199,58 @@ let checklist= this.servidor.getParam();
 
   enviar(){
     // console.log('ENVIAR',this.entradasMP.length);
+    
     if(this.entradasMP.length>1){
-      
-      this.entradasMP.forEach((entrada)=>{
+      this.syncOK=false;
+      this.entradasMP.forEach(async (entrada)=>{
         // console.log('ENVIAR',entrada,entrada.checklistControles)
         let isfull=true;
         entrada.checklistControles.forEach((control)=>{
           if (control.checked == '') isfull=false;
         });
+        this.entradaActual = entrada;
         console.log('***ENVIAR ISFULL',isfull);
         if (isfull){
           this.checklistcontroles=entrada.checklistControles;
           this.base64Image=entrada.imagen;
-          this.terminar();
+          this.servidor.setIdEntrada({'id':entrada.id,'source':this.source,'albaran':entrada.albaran});
+          let next = await this.terminar();
+          console.log('NEXT ENTRADA', next);
         }else{
           console.log('***AVISAR SERVICIO INCOMPLETO')
           let aviso='';
           this.translate.get('Checklistincompleto').subscribe((valor)=>{aviso=valor})
-          const prompt = this.alertCtrl.create({
+          const prompt = await this.alertCtrl.create({
             message: 'aviso',
             buttons: [{text: 'Ok'}]
-            }).then(()=>console.log('aviso incompleto mostrado'))
+            })
+            await prompt.present().then((valor)=>{console.log('AVISO MOSTRADO')})
         }
-      })
+      });
 
+      if (this.network.type != 'none') {
+        console.log("SYNC");
+         this.sync.sync_data_checklist('ENVIAR CHECKPAGE');
+      }else{
+        console.log('SIN NETWORK');
+      }
     }else{
+      this.syncOK=true;
       this.terminar();
     }
 
   }
 
-  terminar(){
-    console.debug(this.checklistcontroles);
+terminar(){
+
+    console.log('ENTRADA ACTUAL',this.entradaActual);
     let fecha;
-    
-    (this.autocompletar)? fecha = moment(this.fecha_prevista).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:mm'): fecha= moment(this.hoy).format('YYYY-MM-DD HH:mm');
-    
+    (this.autocompletar)? fecha = moment(this.fecha_prevista).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:mm'): fecha= moment().format('YYYY-MM-DD HH:mm:ss');
+    if (this.entradaActual){
+      let indice=this.entradasMP.findIndex((ent)=>ent.id == this.entradaActual.id);
+      let RT = Math.random()*10;
+      fecha= moment(fecha).add(indice,'minutes').add(RT,'seconds').format('YYYY-MM-DD HH:mm:ss');
+    }
     this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
         db2.executeSql('INSERT INTO resultadoschecklist (idchecklist,fecha, foto,idusuario) VALUES (?,?,?,?)',
         [this.idchecklist, fecha, this.base64Image,sessionStorage.getItem("idusuario")]).then(
@@ -255,7 +272,9 @@ let checklist= this.servidor.getParam();
           (Resultado2) => {
             console.log('UPDATED  ENTRADAS Local',Resultado2);
           },
-          (error)=>console.log('ERROR UPDATE entrada Local',error));
+          (error)=>{
+            console.log('ERROR UPDATE entrada Local',error);
+          });
             });
           //this.updateEntrada();
         }
@@ -285,16 +304,18 @@ let checklist= this.servidor.getParam();
   
     //******UPDATE FECHA LOCAL*/
     //******UPDATE FECHA LOCAL*/
-    this.updateFecha(this.fecha_prevista,this.autocompletar);
-  
+   this.updateFecha(this.fecha_prevista,this.autocompletar);
+    
   },
     (error) => {console.log('ERROR al abrir DDBB',error)});
+    
     });
   
-  
+
   }
   
   updateFecha(fecha,completaFechas){
+    
     let proxima_fecha;
     if (moment(fecha).isValid() && this.periodicidad.repeticion != "por uso") {
       proxima_fecha = moment(this.periodos.nuevaFecha(this.periodicidad,fecha,completaFechas)).format('YYYY-MM-DD');
@@ -315,9 +336,9 @@ let checklist= this.servidor.getParam();
       console.debug('ERROR ACTUALIZANDO FECHA', error);
      });
       });        
-      if (this.network.type != 'none') {
+      if (this.network.type != 'none' && this.syncOK) {
         console.debug("conected");
-        this.sync.sync_data_checklist();
+        this.sync.sync_data_checklist('UPDATEFECHA CHECKPAGE');
       }
       else {
         localStorage.setItem("syncchecklist", (parseInt(localStorage.getItem("syncchecklist")) + 1).toString());
@@ -326,7 +347,6 @@ let checklist= this.servidor.getParam();
       //this.navCtrl.pop();
       this.goTo();
           }else{
-  
             console.log("sigue programando: ",proxima_fecha);
             this.fecha_prevista = proxima_fecha;
             this.terminar();
@@ -378,6 +398,7 @@ let checklist= this.servidor.getParam();
           //prompt.present();
   }
 async  opciones(control) {
+  if (this.entradaActual)
   this.entradaActual['checklist']=true;
       let todosOk;
       let correcto;
@@ -459,7 +480,6 @@ async  opciones(control) {
       });
   }
 setLote(index){
-  
   this.entradaActual = this.entradasMP[index];
         this.getProveedores(this.entradasMP[index].idproveedor)
         this.getProductos(this.entradasMP[index].idproducto,this.entradasMP[index].idproveedor)
@@ -521,6 +541,7 @@ checkSlide(slide){
                   "imagen":null
             });
                 });
+                if (this.entradasMP.length > 0)
                 this.setLote(0);
 
                 // this.getProveedores()
@@ -558,6 +579,7 @@ checkSlide(slide){
           });
         }
         console.log("entradas -> ",this.entradasMP);
+        if (this.entradasMP.length > 0)
         this.setLote(0);
         
   }, (error) => {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Platform, AlertController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Platform, AlertController, IonSelect } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
@@ -23,6 +23,7 @@ import { ConnectableObservable } from 'rxjs';
   providers: [SyncPage]
 })
 export class EntradasMPPage implements OnInit {
+  @ViewChild('selProds') selProds:IonSelect;
   private cantidadTraspaso: number;
   public productos: any[]=[];
   public proveedores: any[]=[];
@@ -32,8 +33,8 @@ export class EntradasMPPage implements OnInit {
   public proveedor:boolean=false;
   public idProveedorActual:number;
   public idProductoActual:number;
-  // public loteSelected:ProveedorLoteProducto=new ProveedorLoteProducto(null,'',new Date(),new Date(),0,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")),null,null);
-  public loteSelected:ProveedorLoteProducto=new ProveedorLoteProducto(null,'LOT01',new Date(),new Date(),100,'g',100,'',9,6,2,null,null);
+  public loteSelected:ProveedorLoteProducto=new ProveedorLoteProducto(null,'',new Date(),new Date(),null,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")),null,null);
+  // public loteSelected:ProveedorLoteProducto=new ProveedorLoteProducto(null,'LOT01',new Date(),new Date(),100,'g',100,'',9,6,2,null,null);
   public idempresa= localStorage.getItem("idempresa");
   public userId= sessionStorage.getItem("login");
   public ok:boolean=true;
@@ -167,6 +168,10 @@ getProveedores(){
   this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
     db2.executeSql("Select * FROM proveedores",[]).then((data) => {
     console.log ("resultado1 proveedores" + data.rows.length);
+    this.proveedores.push({
+      "id": 0,
+      "nombre": "selecciona"
+});    
     for (var index=0;index < data.rows.length;index++){
         this.proveedores.push({
               "id": data.rows.item(index).idproveedor,
@@ -181,11 +186,16 @@ getProveedores(){
     });
 }
 getProductos(idProveedor:number){
-  console.log(idProveedor);
+  console.log(idProveedor,this.selProds);
   this.productos=[];
   this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
     db2.executeSql("Select * FROM productosProveedor WHERE idproveedor = ?",[idProveedor]).then((data) => {
     console.log ("resultado1 productos" + data.rows.length);
+//     this.productos.push({
+//       "id": 0,
+//       "idproveedor": idProveedor,
+//       "nombre": 'Producto'
+// });
     for (var index=0;index < data.rows.length;index++){
         this.productos.push({
               "id": data.rows.item(index).idproducto,
@@ -193,6 +203,7 @@ getProductos(idProveedor:number){
               "nombre": data.rows.item(index).nombre
         });
       }
+      setTimeout(()=>{this.selProds.open()},300);
 }, (error) => {
     console.debug("ERROR -> " + JSON.stringify(error.err));
     alert("error " + JSON.stringify(error.err));
@@ -218,13 +229,15 @@ getEntradasProducto(idProducto){
 //this.entrada_productos.push(new ProveedorLoteProducto('nueva entrada',new Date(),new Date(),0,'l.',0,'',idProducto,this.idProveedorActual,parseInt(localStorage.getItem("idempresa"))));
  }
 
- updateCantidad(){
-   this.loteSelected.cantidad_inicial= this.cantidadTraspaso;
-   this.loteSelected.cantidad_remanente= this.cantidadTraspaso;
- }
+//  updateCantidad(){
+//    this.loteSelected.cantidad_inicial= this.cantidadTraspaso;
+//    this.loteSelected.cantidad_remanente= this.cantidadTraspaso;
+//  }
 
 
 setNuevaEntradaProveedor(){
+  return new Promise((resolve)=>{
+  this.loteSelected.cantidad_remanente= this.loteSelected.cantidad_inicial;
   this.db.create({name: 'data.db',location: 'default'})
   .then((db2: SQLiteObject) => { db2.executeSql('INSERT INTO entradasMP (numlote_proveedor, fecha_entrada, fecha_caducidad, cantidad_inicial, tipo_medida,cantidad_remanente,doc,idproducto,idproveedor,idempresa,albaran) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
   [this.loteSelected.numlote_proveedor,moment(this.loteSelected.fecha_entrada).format('YYYY-MM-DD'), this.loteSelected.fecha_caducidad, this.loteSelected.cantidad_inicial,this.loteSelected.tipo_medida,this.loteSelected.cantidad_remanente,'',this.loteSelected.idproducto,this.loteSelected.idproveedor,this.loteSelected.idempresa,this.loteSelected.albaran]).then(
@@ -233,7 +246,7 @@ setNuevaEntradaProveedor(){
   console.log(moment(this.loteSelected.fecha_entrada).format('YYYY-MM-DD'));
   console.log(this.loteSelected.fecha_caducidad);
 //******NUEVA ENTRADA?? O TERMINAR*/
-this.prompt();
+resolve(true);
     // if (this.hayIncidencia > 0){
     //   db2.executeSql('UPDATE incidencias set idElemento = ? WHERE id = ?',[Resultado.insertId,this.hayIncidencia]).then(
     //     (Resultado) => { console.log("update_Incidencia_ok:",Resultado);}
@@ -258,7 +271,7 @@ console.debug(JSON.stringify(error))
 });
 });
 
-
+  });
 
 
 //   let contadorP=0;
@@ -376,7 +389,7 @@ errorEn(motivo:string){
 
   syncProductos(){
     let proveedores=this.idsProveedores[0];
-    for (let x=1;x< (this.idsProveedores.length -1);x++){
+    for (let x=1;x< (this.idsProveedores.length);x++){
       proveedores+= ' OR idproveedor=' +this.idsProveedores[x];
     }
     let param = "&entidad=proveedores_productos"+"&field=idproveedor&idItem="+proveedores;
@@ -415,33 +428,50 @@ errorEn(motivo:string){
   }
 
 
-  async prompt() {
+  async askOption() {
     const alert = await this.alertController.create({
       header: 'Entrada MP',
-      subHeader: 'Materia prima guardada',
-      message: 'Crear nueva entrada del albaran o terminar?',
+      subHeader: 'Añadir entrada y después,',
+      // message: 'Crear nueva entrada del albaran o terminar?',
       buttons: [
         {
-          text: 'Nueva',
+          text: 'Nueva entrada',
           handler: () => {
             console.log('Nueva');
-            this.loteSelected = new ProveedorLoteProducto(null,'',new Date(),new Date(),0,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")),null,null);
+            this.setNuevaEntradaProveedor().then(()=>{
+            let albaran= this.loteSelected.albaran;
+            this.loteSelected = new ProveedorLoteProducto(null,'',new Date(),new Date(),null,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")),null,albaran);
+            });
           }
         }, 
         {
-          text: 'Checklist',
+          text: 'Terminar y rellena checklist',
           handler: () => {
+            this.setNuevaEntradaProveedor().then(()=>{
             this.terminar('check');
             console.log('Checklist');
+          });
           }
         }, 
           {
             text: 'Terminar',
             handler: () => {
+              this.setNuevaEntradaProveedor().then(()=>{
               console.log('Terminar');
               this.terminar('fin');
+            });
             }
-          }]
+          },
+          {
+            text: 'Cancelar',
+            role:'cancel',
+            handler: (cancelado) => {
+              console.log('cancel',cancelado);
+              // let albaran= this.loteSelected.albaran;
+              // this.loteSelected = new ProveedorLoteProducto(null,'',new Date(),new Date(),null,'',0,'',0,0,parseInt(localStorage.getItem("idempresa")),null,albaran);
+            }
+          }
+        ]
     });
 
     await alert.present().then(
@@ -467,6 +497,5 @@ errorEn(motivo:string){
         this.goTo('/check');
         break;
     }
-
   }
 }

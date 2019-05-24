@@ -5,9 +5,11 @@
     </ion-buttons>
     <ion-title class="titulo">
         <!-- <div style="float:left">{{"home" | translate }}</div> -->
-        <ion-icon name="home" style="float:left;margin-right:5px; margin-left:-10px"></ion-icon>
+        
         <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
-        <img style="float:left" [src]="logoempresa" *ngIf="empresa" class="center logo"/>
+        <img [src]="logoempresa " *ngIf="empresa" (error)="logoempresa='assets/img/pixel.png'" class="center logo"/>
+        <!-- <ion-img style="float:left" [src]="logoempresa" *ngIf="empresa && logoempresa" (ionError)="logoempresa=assets/img/pixel.png" class="center logo">
+        </ion-img> -->
       </ion-title>
   </ion-toolbar>
 </ion-header>

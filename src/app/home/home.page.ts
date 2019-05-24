@@ -285,6 +285,7 @@ refreshlogo(){
 this.empresa = parseInt(localStorage.getItem("idempresa"));
 // this.logoempresa = "url("+URLS.SERVER + "logos/"+localStorage.getItem("idempresa")+"/logo.jpg)";
 this.logoempresa = URLS.SERVER + "logos/"+localStorage.getItem("idempresa")+"/logo.jpg";
+console.log('LOGO',this.logoempresa);
 
 }
 sincronizate(version? : string){

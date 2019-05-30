@@ -548,13 +548,7 @@ isTokenExired (token) {
     let param = "&entidad=proveedores_entradas_producto";
       this.servidor.postObject(URLS.STD_ITEM, nuevaEntrada,param).subscribe(
         response => {
-          if (response.success) {
-//**************** RESTAR REMANENTE INVENTARIO */    
-//**************** RESTAR REMANENTE INVENTARIO */ 
-//**************** RESTAR REMANENTE INVENTARIO */ 
-//**************** RESTAR REMANENTE INVENTARIO */
-//**************** RESTAR REMANENTE INVENTARIO */
-//**************** RESTAR REMANENTE INVENTARIO */          
+          if (response.success) {        
             nuevaEntrada.id = response.id;
             console.log(nuevaEntrada.id);
             // if (parseInt(localStorage.getItem('triggerEntradasMP')) > 0){

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Platform, AlertController, IonSelect } from '@ionic/angular';
 
 import { Router } from '@angular/router';
@@ -14,6 +15,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
 import { ConnectableObservable } from 'rxjs';
+import { format } from 'url';
 
 //*****CUSTOM TEMPLATE */
 @Component({
@@ -44,8 +46,9 @@ export class EntradasMPPage implements OnInit {
   public idsProveedores:any[];
   public synProveedores:any;
   public synProductos:any;
-
-
+public today: string=moment().add(1,'days').format('YYYY-MM-DD');
+public limitDate:string=moment().add(3,'years').format('YYYY-MM-DD');
+public myform: FormGroup;
   //*************  CONSTRUCTOR *************/
   constructor(
   public router: Router,
@@ -56,12 +59,14 @@ export class EntradasMPPage implements OnInit {
   public periodos: PeriodosProvider,
   public platform: Platform,
   public sync: SyncPage,
-  public alertController: AlertController
+  public alertController: AlertController,
+  public formBuilder: FormBuilder
   ) {}
 
   //*************  INIT *************/
   ngOnInit() {
     this.platform.ready().then(() => {
+      this.formControl();
       this.sync.login();
       if (this.isTokenExired(localStorage.getItem('token')) && this.network.type != 'none'){
         let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
@@ -101,6 +106,19 @@ export class EntradasMPPage implements OnInit {
     }
   }
 
+  formControl(){
+
+    
+    this.myform = this.formBuilder.group({
+      albaran: ['',Validators.required],
+      proveedor:['',Validators.required],
+      producto:['',Validators.required],
+      lote:['',Validators.required],
+      fecha:['',Validators.required],
+      cantidad:['',Validators.required],
+      tipo_medida: ['',Validators.required]
+   });
+  }
 
   preLoad(){
     console.log('preload');
@@ -429,6 +447,7 @@ errorEn(motivo:string){
 
 
   async askOption() {
+    if (this.myform.valid){
     const alert = await this.alertController.create({
       header: 'Entrada MP',
       subHeader: 'Añadir entrada y después,',
@@ -477,7 +496,9 @@ errorEn(motivo:string){
     await alert.present().then(
       (valor)=>{console.log(valor)}
     )
-
+    }else{
+      console.log('FORM Incompleto');
+    }
   }
 
 

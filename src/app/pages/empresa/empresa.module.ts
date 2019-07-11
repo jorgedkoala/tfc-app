@@ -6,7 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EmpresaPage } from './empresa.page';
+ import { EmpresaPage } from './empresa.page';
+import { SharedModule } from '../../shared.module';
 
 const routes: Routes = [
   {
@@ -23,6 +24,8 @@ const routes: Routes = [
     TranslateModule.forChild(),
     RouterModule.forRoot(routes)
   ],
-  declarations: [EmpresaPage]
+  declarations: [
+  //  EmpresaPage
+  ]
 })
 export class EmpresaPageModule {}

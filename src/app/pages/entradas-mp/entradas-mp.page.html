@@ -16,10 +16,11 @@
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
       </ion-refresher>
+      <form [formGroup]="myform">
     <div id="origen">
         <ion-item>
             <!-- <ion-label color="primary" floating>{{'Albaran' | translate}}</ion-label> -->
-            <ion-input type="text"  placeholder="{{'Albaran' | translate}}" [(ngModel)]="loteSelected.albaran">
+            <ion-input formControlName="albaran"  type="text"  placeholder="{{'Albaran' | translate}}" [(ngModel)]="loteSelected.albaran">
               </ion-input>
             </ion-item>
  
@@ -27,7 +28,7 @@
        <div id="select_proveedor">
        <ion-item>
        <ion-label>{{'Proveedor' | translate}}</ion-label>
-         <ion-select [(ngModel)]="loteSelected.idproveedor"  name="idproveedor" (ionChange)="getProductos(loteSelected.idproveedor)">
+         <ion-select formControlName="proveedor" [(ngModel)]="loteSelected.idproveedor"  name="idproveedor" (ionChange)="getProductos(loteSelected.idproveedor)">
            <ion-select-option *ngFor="let prov of proveedores; let i = index" [value]="prov.id">
              {{prov.nombre}}
            </ion-select-option>
@@ -40,7 +41,7 @@
        
        <ion-item  *ngIf="loteSelected.idproveedor">
          <ion-label>{{'productos' | translate}}</ion-label>
-         <ion-select #selProds [(ngModel)]="loteSelected.idproducto"  name="idproducto">
+         <ion-select #selProds formControlName="producto" [(ngModel)]="loteSelected.idproducto"  name="idproducto">
            <ion-select-option *ngFor="let prod of productos; let i = index" [value]="prod.id">
              {{prod.nombre}}
            </ion-select-option>
@@ -50,23 +51,24 @@
        
           <ion-item  *ngIf="loteSelected.idproducto">
               <!-- <ion-label color="primary" floating>{{'traspasos.Num_Lote' | translate}}</ion-label> -->
-              <ion-input type="text"  placeholder="{{'traspasos.Num_Lote' | translate}}" [(ngModel)]="loteSelected.numlote_proveedor">
+              <ion-input formControlName="lote" type="text"  placeholder="{{'traspasos.Num_Lote' | translate}}" [(ngModel)]="loteSelected.numlote_proveedor">
                 </ion-input>
               </ion-item>
             <ion-item *ngIf="loteSelected.numlote_proveedor">
                <ion-label>{{'traspasos.Fecha caducidad' | translate}}</ion-label>
-               <ion-datetime display-format="DD MM YYYY" [(ngModel)]="loteSelected.fecha_caducidad"></ion-datetime>
+               <ion-datetime formControlName="fecha" display-format="DD MM YYYY" [(ngModel)]="loteSelected.fecha_caducidad"
+               [min]="today" [max]="limitDate"></ion-datetime>
              </ion-item>
 
             <ion-item *ngIf="loteSelected.numlote_proveedor">
                 <!-- <ion-label color="primary" floating>{{'traspasos.Cantidad traspaso' | translate}}</ion-label> -->
-                <ion-input type="number"  placeholder="{{'traspasos.Cantidad' | translate}}" [(ngModel)]="loteSelected.cantidad_inicial">
+                <ion-input formControlName="cantidad" type="number"  placeholder="{{'traspasos.Cantidad' | translate}}" [(ngModel)]="loteSelected.cantidad_inicial">
                   </ion-input>
             </ion-item>
 
        <ion-item *ngIf="loteSelected.numlote_proveedor">
           <ion-label>{{'produccion.tipo medida' | translate}}</ion-label>
-          <ion-select [(ngModel)]="loteSelected.tipo_medida"  name="tipo_medida">
+          <ion-select formControlName="tipo_medida"  [(ngModel)]="loteSelected.tipo_medida"  name="tipo_medida">
             <ion-select-option *ngFor="let medida of medidas; let i = index" [value]="medida.label">
               {{medida.label}}
             </ion-select-option>
@@ -92,11 +94,11 @@
 
        <!--********************** CANTIDAD TRASPASO  ***************-->
        <div id="traspaso">
-        <ion-button (click)="askOption()">{{'añadir' | translate}}</ion-button>
+        <ion-button (click)="askOption()" [disabled]="!myform.valid">{{'añadir' | translate}}</ion-button>
        </div>
        
        <!--********************** FIN CANTIDAD TRASPASO  ***************-->
-       
+      </form>
 
 
 

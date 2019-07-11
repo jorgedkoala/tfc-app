@@ -184,15 +184,15 @@
 </div>
 <!--********************** FIN DESTINO  ***************-->
 
-<button ion-button [disabled]="!ok" (click)="traspasar()">{{'traspasos.traspasar' | translate}}</button>
-<button ion-button *ngIf="ok2" (click)="setok()">ok</button>
+<ion-button [disabled]="!ok" (click)="traspasar()">{{'traspasos.traspasar' | translate}}</ion-button>
+<ion-button *ngIf="ok2" (click)="setok()">ok</ion-button>
 
 <div *ngIf="alerts.length >0" class="modal" >
 <div class="modal-window">
 <ion-list>
 <ion-item *ngFor="let alert of alerts">{{alert}}</ion-item>
 </ion-list>
-<button ion-button (click)="cierraMessage()">{{'traspasos.entendido' | translate}}</button>
+<ion-button (click)="cierraMessage()">{{'traspasos.entendido' | translate}}</ion-button>
 </div>
 </div>
 

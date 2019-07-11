@@ -11,8 +11,6 @@
 
 <ion-content padding>
 
-
-
     <ion-item *ngFor="let control of checklistcontroles">
       <ion-icon *ngIf="control.foto" name="camera" item-left></ion-icon>
       <ion-icon *ngIf="control.descripcion" name="clipboard" item-left></ion-icon>
@@ -51,7 +49,7 @@
       </ion-footer> -->
       <ion-footer *ngIf="entradasMP" style="padding:0px;" [ngClass]="{'isComplete':isActualChecklistComplete,'border':true}">
           <ion-slides #slide pager="false" scrollbar="true" [options]="slideOpts" (ionSlideDidChange)="setLoteActivo(slide,$event)" (ionSlidesDidLoad)="checkSlide(slide)">
-              <ion-slide *ngFor="let entrada of entradasMP">
+              <ion-slide *ngFor="let entrada of entradasMPGroupByAlbaran">
                   <ion-fab vertical="middle" horizontal="start" slot="fixed">
                       <!-- <ion-fab-button (click)="verEntradas()"> -->
                           <ion-icon name="arrow-dropleft-circle" (click)="swipe(slide,'left')"></ion-icon>

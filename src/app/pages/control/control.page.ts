@@ -80,13 +80,20 @@ export class ControlPage implements OnInit {
    // this.storage = new Storage(SqlStorage, {name: 'tfc'});
   //  translate.use('es');
   console.log('VALOR OBJETIVO',this.valorObjetivo);
-  if (this.valorObjetivo) {
+  if (this.valorObjetivo<0) {
     console.log('VALOR OBJETIVO')
-    this.setValue(this.valorObjetivo);
-    this.valor=this.valorObjetivo;
+    // this.setValue(this.valorObjetivo);
+    //  this.valor=this.valorObjetivo;
+    // this.valor = parseInt(String.fromCharCode(45));
   }
   //this.valor = this.valorObjetivo
-
+  }
+  
+  checkObjetivo(VL){
+    console.log(VL);
+    if (this.valorObjetivo<0) {
+      VL.value = String.fromCharCode(45);
+    }
   }
 
   ngOnInit() {
@@ -102,9 +109,15 @@ export class ControlPage implements OnInit {
             }
             });
     }
-    if (this.periodicidad.repeticion!='por uso'){
-    this.hayRetraso = this.periodos.hayRetraso(this.fecha_prevista,this.periodicidad);
-    }
+
+
+///ACTIVAR DESACTIVAR BUSCAR Y PERMITIR AUTORRELLENO PARA REPETICIONES PENDIENTES
+    // if (this.periodicidad.repeticion!='por uso'){
+    // this.hayRetraso = this.periodos.hayRetraso(this.fecha_prevista,this.periodicidad);
+    // }
+
+
+
   });
   }
 

@@ -44,6 +44,7 @@ export class CheckPage implements OnInit {
   public isActualChecklistComplete=false;
   // public templatechecklistcontroles: Checks[] = [];
   public entradasMP: any[] = [];
+  public entradasMPGroupByAlbaran: any[]=[];
   public entradaActual:any=null;
   public source: string = null;
   public resultadoschecklistcontroles: any;
@@ -69,6 +70,9 @@ export class CheckPage implements OnInit {
     initialSlide: 0,
     speed: 400
   };
+
+
+  public avisos_Incompleto:String[]=[];
 
   constructor(
   private platform: Platform,
@@ -114,12 +118,21 @@ let checklist= this.servidor.getParam();
           if (response.success == 'true') {
             // Guarda token en sessionStorage
             localStorage.setItem('token', response.token);
+            if (this.idchecklist == parseInt(localStorage.getItem('triggerEntradasMP'))){
+              let checklist= this.servidor.getParam();
+              this.lote=checklist.lote;
+              this.albaran=checklist.albaran;
+              console.log(checklist,checklist.lote)
+              this.loadEntradas();
+            }
             }
             });
     }
-    if (this.periodicidad.repeticion!='por uso'){
-    this.hayRetraso = this.periodos.hayRetraso(this.fecha_prevista,this.periodicidad);
-    }
+
+///ACTIVAR DESACTIVAR BUSCAR Y PERMITIR AUTORRELLENO PARA REPETICIONES PENDIENTES
+    // if (this.periodicidad.repeticion!='por uso'){
+    // this.hayRetraso = this.periodos.hayRetraso(this.fecha_prevista,this.periodicidad);
+    // }
 
     });
   }
@@ -150,6 +163,7 @@ let checklist= this.servidor.getParam();
     if (idchecklist == parseInt(localStorage.getItem('triggerEntradasMP'))){
       let checklist= this.servidor.getParam();
       this.lote=checklist.lote;
+      this.albaran=checklist.albaran;
       console.log(checklist,checklist.lote)
       this.loadEntradas();
     }
@@ -197,13 +211,22 @@ let checklist= this.servidor.getParam();
     return newArrayControles;
   }
 
-  enviar(){
+enviar(){
     // console.log('ENVIAR',this.entradasMP.length);
     
     if(this.entradasMP.length>1){
       this.syncOK=false;
       this.entradasMP.forEach(async (entrada)=>{
         // console.log('ENVIAR',entrada,entrada.checklistControles)
+        let indiceentradaMPG = this.entradasMPGroupByAlbaran.findIndex((entradaMPG)=>entradaMPG.albaran==entrada.albaran);
+
+        if (indiceentradaMPG >= 0){
+          let identrada = entrada.id;
+          entrada = this.entradasMPGroupByAlbaran[indiceentradaMPG];
+          entrada.id=identrada;
+          console.log('##IDENTRADA',indiceentradaMPG,identrada,entrada.id);
+        }
+
         let isfull=true;
         entrada.checklistControles.forEach((control)=>{
           if (control.checked == '') isfull=false;
@@ -211,6 +234,7 @@ let checklist= this.servidor.getParam();
         this.entradaActual = entrada;
         console.log('***ENVIAR ISFULL',isfull);
         if (isfull){
+ 
           this.checklistcontroles=entrada.checklistControles;
           this.base64Image=entrada.imagen;
           this.servidor.setIdEntrada({'id':entrada.id,'source':this.source,'albaran':entrada.albaran});
@@ -218,15 +242,23 @@ let checklist= this.servidor.getParam();
           console.log('NEXT ENTRADA', next);
         }else{
           console.log('***AVISAR SERVICIO INCOMPLETO')
-          let aviso='';
-          this.translate.get('Checklistincompleto').subscribe((valor)=>{aviso=valor})
+          this.avisos_Incompleto.push(entrada.albaran);
+        }
+      });
+      if(this.avisos_Incompleto.length>0){
+        let aviso='';
+        this.translate.get('Checklistincompleto').subscribe(async (valor)=>{
+          aviso=valor;
+          aviso+=this.avisos_Incompleto;
           const prompt = await this.alertCtrl.create({
-            message: 'aviso',
+            message: aviso,
             buttons: [{text: 'Ok'}]
             })
             await prompt.present().then((valor)=>{console.log('AVISO MOSTRADO')})
-        }
-      });
+
+        })
+
+      }
 
       if (this.network.type != 'none') {
         console.log("SYNC");
@@ -238,11 +270,10 @@ let checklist= this.servidor.getParam();
       this.syncOK=true;
       this.terminar();
     }
-
   }
 
 terminar(){
-
+return new Promise((resolve)=>{
     console.log('ENTRADA ACTUAL',this.entradaActual);
     let fecha;
     (this.autocompletar)? fecha = moment(this.fecha_prevista).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:mm'): fecha= moment().format('YYYY-MM-DD HH:mm:ss');
@@ -271,6 +302,7 @@ terminar(){
             [Resultado.insertId,this.entradaActual.id]).then(
           (Resultado2) => {
             console.log('UPDATED  ENTRADAS Local',Resultado2);
+            resolve(true);
           },
           (error)=>{
             console.log('ERROR UPDATE entrada Local',error);
@@ -310,8 +342,8 @@ terminar(){
     (error) => {console.log('ERROR al abrir DDBB',error)});
     
     });
-  
 
+  });//******FIN PROMISE*/
   }
   
   updateFecha(fecha,completaFechas){
@@ -386,48 +418,70 @@ terminar(){
               }).then(()=>console.log('prompt mostrado'));
           //prompt.present();
   }
-  setValor(control){
-            let prompt = this.alertCtrl.create({
+
+  setOpcion(control,opcion){
+    control.checked = opcion;
+    control.valor = opcion;
+  }
+ async setValor(control){
+            const prompt = await this.alertCtrl.create({
               message: 'Valor',
               inputs: [{name: 'valor'}],
               buttons: [
                   {text: 'Cancel'},
                   {text: 'Ok',handler: data => {control.checked = data.valor;control.valor = data.valor;}
                   }]
-              }).then(()=>console.log('prompt mostrado'))
-          //prompt.present();
+              })
+         prompt.present().then((respuesta)=>{
+           console.log('prompt mostrado');
+         })
   }
 async  opciones(control) {
+  console.log('CONTROL',control);
+  let todosOk;
+  let correcto;
+  let incorrecto;
+  let aplica;
+  let valor;
+  let descrip;
+  let cancel;
+  this.translate.get("todosOk").subscribe(resultado => {todosOk = resultado;});
+  this.translate.get("correcto").subscribe(resultado => {correcto = resultado;});
+  this.translate.get("incorrecto").subscribe(resultado => { incorrecto = resultado;});
+  this.translate.get("no aplica").subscribe(resultado => { aplica = resultado;});
+  this.translate.get("valor").subscribe(resultado => { valor = resultado;});
+  this.translate.get("descripcion").subscribe(resultado => { descrip = resultado;});
+  this.translate.get("cancel").subscribe(resultado => { cancel = resultado;});
   if (this.entradaActual)
   this.entradaActual['checklist']=true;
-      let todosOk;
-      let correcto;
-      let incorrecto;
-      let aplica;
-      let valor;
-      let descrip;
-      let cancel;
-      this.translate.get("todosOk").subscribe(resultado => {todosOk = resultado;});
-      this.translate.get("correcto").subscribe(resultado => {correcto = resultado;});
-      this.translate.get("incorrecto").subscribe(resultado => { incorrecto = resultado;});
-      this.translate.get("no aplica").subscribe(resultado => { aplica = resultado;});
-      this.translate.get("valor").subscribe(resultado => { valor = resultado;});
-      this.translate.get("descripcion").subscribe(resultado => { descrip = resultado;});
-      this.translate.get("cancel").subscribe(resultado => { cancel = resultado;});
-      const actionSheet = await this.actionSheetCtrl.create({
-        header: 'Opciones',
-        buttons: [
-          {text: todosOk,icon:'checkmark-circle',handler: () => {this.todosOk()}},
-          {text: correcto,icon:'checkmark-circle',handler: () => {control.checked='true';control.valor = '';}},
-          {text: incorrecto,icon:'close-circle',handler: () => {control.checked='false';control.valor = '';}},
-          {text: aplica,icon:'help-circle',handler: () => {control.checked='na';control.valor = '';}},
-          {text: valor,icon:'information-circle',handler: () => {this.setValor(control);}},
-          {text: descrip,icon:'clipboard',handler: () => {this.editar(control);}},
-          {text: 'Foto',icon:'camera',handler: () => {this.takeFoto(control);}},
-          {text: cancel,role: 'cancel',handler: () => {console.debug('Cancel clicked');}}
-          ]
-           })
+  let botones=[]
+  if (control.nombrecontrol.indexOf('//')>0){
+    let opciones = control.nombrecontrol.split('//');
+    opciones.forEach((opcion)=>{
+      botones.push({
+        text:opcion,handler:()=>{this.setOpcion(control,opcion);}
+      });
+      botones.push({text: cancel,role: 'cancel',handler: () => {console.debug('Cancel clicked');}});
+    })
+
+  }else{
+    botones= [
+      {text: todosOk,icon:'checkmark-circle',handler: () => {this.todosOk()}},
+      {text: correcto,icon:'checkmark-circle',handler: () => {control.checked='true';control.valor = '';}},
+      {text: incorrecto,icon:'close-circle',handler: () => {control.checked='false';control.valor = '';}},
+      {text: aplica,icon:'help-circle',handler: () => {control.checked='na';control.valor = '';}},
+      {text: valor,icon:'information-circle',handler: () => {this.setValor(control);}},
+      {text: descrip,icon:'clipboard',handler: () => {this.editar(control);}},
+      {text: 'Foto',icon:'camera',handler: () => {this.takeFoto(control);}},
+      {text: cancel,role: 'cancel',handler: () => {console.debug('Cancel clicked');}}
+      ]
+          }
+          const actionSheet = await this.actionSheetCtrl.create({
+            header: 'Opciones',
+            buttons: botones
+               });
       actionSheet.present().then(()=>{  this.checkControles();})
+         
     }
   
   todosOk(){
@@ -480,37 +534,39 @@ async  opciones(control) {
       });
   }
 setLote(index){
-  this.entradaActual = this.entradasMP[index];
-        this.getProveedores(this.entradasMP[index].idproveedor)
-        this.getProductos(this.entradasMP[index].idproducto,this.entradasMP[index].idproveedor)
-        this.servidor.setIdEntrada({'id':this.entradaActual.id,'source':this.source,'albaran':this.entradaActual.albaran});
+  this.entradaActual = this.entradasMPGroupByAlbaran[index];
+        this.getProveedores(this.entradasMPGroupByAlbaran[index].idproveedor)
+        this.getProductos(this.entradasMPGroupByAlbaran[index].idproducto,this.entradasMPGroupByAlbaran[index].idproveedor)
+   //     this.servidor.setIdEntrada({'id':this.entradaActual.id,'source':this.source,'albaran':this.entradaActual.albaran});
   //this.albaran = this.servicios[this.servicios.findIndex((servicio)=>servicio.idEntrada == this.entradasMP[index].id)]['albaran'];
     this.checklistcontroles=this.entradaActual['checklistControles'];
+    console.log('SETLOTE',index,this.checklistcontroles);
     this.base64Image=this.entradaActual['imagen'];
   this.checkControles();
 }
+
 
 checkSlide(slide){
   if(this.lote){
     console.log('####LOTE',this.lote);
     setTimeout(()=>{
-    let indice = this.entradasMP.findIndex((entrada)=>entrada.numlote_proveedor == this.lote.numlote_proveedor && entrada.idproducto == this.lote.idproducto)
+    let indice = this.entradasMPGroupByAlbaran.findIndex((entrada)=>entrada.albaran == this.albaran)
     if (indice > -1){
       console.log('####LOTE',indice);
     this.setLote(indice);
     slide.slideTo(indice);
     }else{
       alert('lote no encontrado'+indice );
-      console.log(this.lote,this.entradasMP);
+      console.log(this.lote,this.entradasMPGroupByAlbaran);
     }
   },1100);
   }
 }
 
+
   loadEntradas(){
     this.entradasMP=[]
     if (this.network.type != 'none') {
-
       console.log('ENTRADAS PRODUCTO ONLINE');
       let param = "&entidad=proveedores_entradas_producto&idempresa="+localStorage.getItem('idempresa')+"&WHERE=albaran is not null AND idResultadoChecklist is null";
         this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
@@ -541,12 +597,9 @@ checkSlide(slide){
                   "imagen":null
             });
                 });
-                if (this.entradasMP.length > 0)
-                this.setLote(0);
-
-                // this.getProveedores()
-                // this.getProductos(this.entradasMP[0].idproducto,this.entradasMP[0].idproveedor)
-                // this.entradaActual=this.entradasMP[0];
+                // if (this.entradasMP.length > 0)
+                // this.setLote(0);
+                this.loadEntradasMPG();
             }
         },
         error =>console.log("Error en nueva entrada producto",error),
@@ -578,10 +631,10 @@ checkSlide(slide){
                 "imagen":null
           });
         }
-        console.log("entradas -> ",this.entradasMP);
-        if (this.entradasMP.length > 0)
-        this.setLote(0);
-        
+        // console.log("entradas -> ",this.entradasMP);
+        // if (this.entradasMP.length > 0)
+        // this.setLote(0);
+        this.loadEntradasMPG();
   }, (error) => {
       console.log("ERROR -> " + JSON.stringify(error.err));
       alert("error " + JSON.stringify(error.err));
@@ -591,6 +644,22 @@ checkSlide(slide){
     }
   }
 
+  loadEntradasMPG(){
+    this.entradasMPGroupByAlbaran=[];
+    console.log("entradas -> ",this.entradasMP,this.entradasMPGroupByAlbaran);
+    let x=0;
+    this.entradasMP.forEach((entradaMP)=>{
+      let indiceEntrada = this.entradasMPGroupByAlbaran.findIndex((entrada)=>entrada.albaran==entradaMP.albaran);
+      if (indiceEntrada<0){
+        this.entradasMPGroupByAlbaran.push(entradaMP);
+        this.entradasMPGroupByAlbaran[x]["checklistControles"]=this.setTemplateControles();
+        x++;
+      }
+    });
+    console.log("entradas -> ",this.entradasMPGroupByAlbaran);
+    if (this.entradasMPGroupByAlbaran.length > 0)
+    this.setLote(0);
+  }
 //   getServicios(){
 //     return new Promise((resolve,reject)=>{
 //       if (this.network.type != 'none') {
@@ -680,7 +749,7 @@ checkSlide(slide){
     await prompt.present();  
 }
 selectEntrada(idLote){
-console.log('ENTRADA SELECCIONADA',idLote);
+console.log('ENTRADA (ALBARAN) SELECCIONADA',idLote);
 }
 
 

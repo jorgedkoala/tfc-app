@@ -30,9 +30,9 @@ export class SyncPage implements OnInit {
   public conexion: boolean = false;
   public badge: number;
   //public myapp:MyApp;
-
-
-
+public relationResultadosChecklistEntradas:any[];
+public idEntradas:any[];
+public intervalo:any;
   constructor(
   public translate: TranslateService,
   public initdb: Initdb, 
@@ -103,7 +103,21 @@ isTokenExired (token) {
       this.sync_data_supervision();
       this.sync_mantenimientos();
       this.sync_incidencias(-1,0,'Incidencias');
-      this.sync_entradasMP().then((ids)=>{console.log(ids)});
+      this.sync_entradasMP()
+      .then((resultadosEntradas)=>{
+        clearInterval(this.intervalo);
+        console.log('RESULTADOS ENTRADAS',resultadosEntradas,this.idEntradas.length,this.idEntradas);
+        this.idEntradas.forEach((entrada)=>{
+          console.log('SYNC ENTRADASMP',entrada,this.relationResultadosChecklistEntradas);
+          if(entrada.idResultadoChecklistLocal){
+            console.log('SYNC ENTRADASMP',entrada,this.relationResultadosChecklistEntradas);
+            let indiceRelation = this.relationResultadosChecklistEntradas.findIndex((resultadoChecklist)=>resultadoChecklist.idResultadoChecklistLocal==entrada.idResultadoChecklistLocal);
+            if (indiceRelation > -1)
+            this.sync_serviciosEntrada(this.relationResultadosChecklistEntradas[indiceRelation].idResultadoChecklist,entrada.idResultadoChecklistLocal,{'id':entrada.id,'albaran':entrada.albaran});
+          }
+        })
+        
+      });
           });
     }
     else {
@@ -201,6 +215,7 @@ isTokenExired (token) {
 
   sync_data_checklist(from?) {
     console.log('SYNC CHECKLIST FROM',from);
+    this.relationResultadosChecklistEntradas=[];
     //this.db = new SQLite();
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
       // console.log("base de datos abierta");
@@ -218,11 +233,15 @@ isTokenExired (token) {
             arrayfila.push()
             let idrespuesta = this.sync.setResultados(JSON.stringify(arrayfila), "resultadoschecklist")
               .subscribe(data => {
+                this.relationResultadosChecklistEntradas.push({'idResultadoChecklist':data.id,'idResultadoChecklistLocal':idlocal});
+                console.log('SET RELATION ENTRADASMP','idResultadoChecklist:',data.id,'idResultadoChecklistlocal:',idlocal);
                 this.sync_incidencias(idlocal, data.id, 'Checklists');
                 this.sync_checklistcontroles(data.id, idlocal);
                 //console.log('@@@ENTRADA ID:',this.servidor.getIdEntrada());
-                if (this.servidor.getIdEntrada()){
-                this.sync_serviciosEntrada(data.id, idlocal,this.servidor.getIdEntrada())
+                let entrada1=this.servidor.getIdEntrada();
+                console.log('@@@ENTRADA ID:',entrada1);
+                if (entrada1){
+                this.sync_serviciosEntrada(data.id, idlocal,entrada1)
                 }
                 arrayfila.forEach((checklist)=>{this.updateFechaElemento(checklist.idchecklist,'checklist','idchecklist');})
                 
@@ -533,12 +552,13 @@ isTokenExired (token) {
 
   sync_entradasMP(){
     return new Promise((resolve)=>{
-      let idEntradas:any[]=[];
+      this.idEntradas=[];
+      let x=1;
     console.log('seleccionar entradas MP a enviar:');
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
       db2.executeSql("select * from entradasMP", []).then((data) => {
         if (data.rows.length > 0) {
-          console.log('enviar incidencias:',data.rows.length);
+          console.log('enviar entradas:',data.rows.length);
           let arrayfila = [];
           for (let fila = 0; fila < data.rows.length; fila++) {
             let nuevaEntrada = new ProveedorLoteProducto(null,data.rows.item(fila).numlote_proveedor,data.rows.item(fila).fecha_entrada, data.rows.item(fila).fecha_caducidad, data.rows.item(fila).cantidad_inicial, 
@@ -550,28 +570,41 @@ isTokenExired (token) {
         response => {
           if (response.success) {        
             nuevaEntrada.id = response.id;
-            console.log(nuevaEntrada.id);
+            this.idEntradas.push({'id':nuevaEntrada.id,'idLocal':data.rows.item(fila).id,'idResultadoChecklistLocal':nuevaEntrada.idResultadoChecklistLocal,'albaran':nuevaEntrada.albaran});
+
+            console.log('nuevaEntrada id:',nuevaEntrada.id);
             // if (parseInt(localStorage.getItem('triggerEntradasMP')) > 0){
             //   this.setServiciosDeEntrada(nuevaEntrada.id,data.rows.item(fila).albaran,data.rows.item(fila).idempresa,data.rows.item(fila).id,null,null);
             // }
-            // if (nuevaEntrada.idResultadoChecklist){
+             
               
             db2.executeSql("DELETE from entradasMP WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
               console.log("deleted 1 item");
             },
           (error)=>{console.log('Deleting entradasMP ERROR',error)});
             // }
-          idEntradas.push({'id':nuevaEntrada.id,'idLocal':data.rows.item(fila).id});
           }
       },
       error =>{
         console.log("Error en nueva entrada producto",error);
-        idEntradas.push({'id':error,'idLocal':data.rows.item(fila).id});
+        this.idEntradas.push({'id':error,'idLocal':data.rows.item(fila).id});
       },
-      () =>console.log('entrada producto ok')
+      () =>{
+        x++;
+      }
+
       );
   }
-  resolve (idEntradas)
+  console.log('RESOLVE ENTRADAS');
+  this.intervalo = setInterval(()=>{
+    if (x>= this.idEntradas.length){
+      resolve ({'resultados1':true});
+    }
+  },400)
+  // setTimeout(()=>{
+  // resolve ({'resultados1':true})
+  // },900);
+
 }
       });
     });
@@ -583,7 +616,7 @@ isTokenExired (token) {
     let idEntrada=idEntrada1['id'];
     let source=idEntrada1['source'];
     let albaran=idEntrada1['albaran'];
-    this.servidor.setIdEntrada(null);
+    //this.servidor.setIdEntrada(null);
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
       // console.log("base de datos abierta");
        
@@ -600,9 +633,11 @@ isTokenExired (token) {
           let param='';
           if (source=='local'){
             param = "?entidad=proveedores_entradas_producto&WHERE=idResultadoChecklistLocal="+idEntrada+" AND albaran='"+albaran+"'";
+            // param = "?entidad=proveedores_entradas_producto&WHERE=albaran='"+albaran+"'";
             console.log('*##id LOCAL',param);
           }else{
            param = "?entidad=proveedores_entradas_producto&id="+idEntrada;
+          //  param = "?entidad=proveedores_entradas_producto&WHERE=albaran='"+albaran+"'";
            console.log('*##id SERVER',param);
           }
           let entrada={'idResultadoChecklist':id};

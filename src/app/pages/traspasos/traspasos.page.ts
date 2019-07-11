@@ -53,7 +53,7 @@ export class TraspasosPage implements OnInit {
   public max_cantidad:number=70;
   public contador:number;
   public alerts:string[]=[];
-  
+  public valorProvId:number;
   //***** */
   public numTanque:number;
   public ok:boolean=true;
@@ -430,7 +430,7 @@ this.nuevaOrden.tipo_medida = "l.";
 
 //buscamos las ordenes de produccion de la empresa actual, que tengan como fecha_inicio "creacion", igual a hoy, incremento contador para cada registro
 //Cuando termina, actualizazo el valor de numlote de la nuevaOrden, y creo la orden.
-    let parametros = '&idempresa=' + this.idempresa+"&entidad=produccion_orden&WHERE=fecha_inicio=curdate()%2B&valor=";
+    let parametros = '&idempresa=' + this.idempresa+"&entidad=produccion_orden&WHERE=fecha_inicio=curdate()&valor=";
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
             if (response.success == 'true' && response.data) {

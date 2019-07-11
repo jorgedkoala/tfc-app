@@ -7,13 +7,15 @@
         "incidencia":"Incidencia",
         "controles": "Controles",
         "checklist": "Checklist",
+        "check-limpieza":"Limpieza",
         "sync": "Sincronización",
         "login": "Login",
         "config": "Configuración",
         "traspasos":"Traspasos",
-        "informes":"Informes",
+        "informes":"Descarga informes",
         "atras":"",
-        "entradasMP":"Servicio de entrada"
+        "entradasMP":"Recepción M.P.",
+        "m-correctivo":"Matenimiento C."
     },
     "alertas": {
         "error": "Error",
@@ -136,12 +138,12 @@
   },
   "informes":{
     "download":"Para descargar el informe de los últimos 7 días pulsa el botón  de descarga y espera, la generación del informe puede tardar un par de minutos.",
-    "descarga":"Descarga informe"
+    "descarga":"Descarga pdf"
   },
     "asistencia": "Asistencia",
     "control": "control",
     "checklist": "checklist",
-    "valor": "valor",
+    "valor": "Valor",
     "valorc": "valor capturado: ",
     "minimo": "mínimo: ",
     "maximo": "máximo: ",
@@ -149,10 +151,10 @@
     "critico":"critico: ",
     "foto": "foto",
     "terminar": "enviar",
-    "todosOk": "todos ok",
-    "correcto": "correcto",
-    "incorrecto": "incorrecto",
-    "no aplica":"no aplica",
+    "todosOk": "Todos ok",
+    "correcto": "Correcto",
+    "incorrecto": "Incorrecto",
+    "no aplica":"No aplica",
     "descripcion":"Descripción",
     "cancel": "Cancelar",
     "por uso": "Por uso",
@@ -160,6 +162,7 @@
     "eventosPendientes":"eventos pendientes desde ",
     "autocompletar": "deseas autocompletar todas las fechas pendientes?",
     "realizado":"Realizado",
+    "elemento":"Elemento",
     "nombre":"Nombre",
     "maquinas":
     {
@@ -177,5 +180,5 @@
     "externo":"Externo",
     "incidencia":"Incidencia",
     "incidenciaTooltip":"Activa una incidencia para el elemento",
-    "Checklistincompleto":"Checklist incompleto, no se envia este elemento"
+    "Checklistincompleto":"Algunos checklist incompletos, no se envian los albaranes: "
 }

@@ -364,7 +364,7 @@ let medidas;
 if (localStorage.getItem("lang")=='es'){
 medidas = [{'label':'Kg.','value':'Kg.'},{'label':'g.','value':'g.'},{'label':'l.','value':'l.'},{'label':'ml.','value':'ml.'},{'label':'unidades','value':'unidades'}];
 }
-if (localStorage.getItem("lang")=='cat'){
+if (localStorage.getItem("lang")=='ca'){
 medidas = [{'label':'Kg.','value':'Kg.'},{'label':'g.','value':'g.'},{'label':'l.','value':'l.'},{'label':'ml.','value':'ml.'},{'label':'unitats','value':'unidades'}];
 }
 export const dropDownMedidas=medidas;

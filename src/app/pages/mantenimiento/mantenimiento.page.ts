@@ -98,7 +98,8 @@ export class MantenimientoPage implements OnInit {
                 });
         }
       
-        this.hayRetraso = this.periodos.hayRetraso(this.fechaPrevista,this.periodicidad);
+        ///ACTIVAR DESACTIVAR BUSCAR Y PERMITIR AUTORRELLENO PARA REPETICIONES PENDIENTES
+        // this.hayRetraso = this.periodos.hayRetraso(this.fechaPrevista,this.periodicidad);
       
     }
   )

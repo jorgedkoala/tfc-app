@@ -7,13 +7,15 @@
         "incidencia":"Incidència",
         "controles": "Controls",
         "checklist": "Checklist",
+        "check-limpieza":"Neteja",
         "sync": "Sincronització",
         "login": "Login",
         "config": "Configuració",
-        "traspaso":"Traspassos",
-        "informes":"Informes",
+        "traspasos":"Traspassos",
+        "informes":"Descarrega informes",
         "atras":"",
-        "entradasMP":"Servei d'admisió"
+        "entradasMP":"Recepció M.P.",
+        "m-correctivo":"Mateniment C."
     },
     "alertas": {
         "error": "Error",
@@ -136,12 +138,12 @@
   },
   "informes":{
     "download":"Per descarregar l'informe dels darrers 7 dies prem el botó de descàrrega i espera,  la generació de l'informe pot trigar un parell de minuts",
-    "descarga":"Descarrega informe"
+    "descarga":"Descarrega pdf"
   },
     "asistencia": "Asistencia",
     "control": "control",
     "checklist": "checklist",
-    "valor": "valor",
+    "valor": "Valor",
     "valorc": "valor capturat: ",
     "minimo": "mínim: ",
     "maximo": "màxim: ",
@@ -149,18 +151,19 @@
     "critico":"critic: ",
     "foto": "foto",
    "terminar": "enviar",
-   "todosOk": "tots correcte",
-    "correcto": "correcte",
-    "incorrecto": "incorrecte",
-    "no aplica":"no aplica",
+   "todosOk": "Tots correcte",
+    "correcto": "Correcte",
+    "incorrecto": "Incorrecte",
+    "no aplica":"No aplica",
     "descripcion":"Descripció",
-    "cancel": "Cancelar",
+    "cancel": "Cancel·lar",
     "por uso": "Per ús",
     "hay":"Hi ha ",
     "eventosPendientes":"events pendents desde ",
     "autocompletar": "desitges autocompletar totes les dates pendents?",
-    "realizado":"Realizado",
-    "nombre":"Nombre",
+    "realizado":"Realitzat",
+    "elemento":"Element",
+    "nombre":"Nom",
     "maquinas":
     {
     "maquinas":"Màquines",
@@ -177,5 +180,5 @@
     "externo":"Extern",
     "incidencia":"Incidència",
     "incidenciaTooltip":"Activa una incidència per l'element",
-    "Checklistincompleto":"Checklist incomplet, no s'envia aquest element"
+    "Checklistincompleto":"Alguns checklist incomplets, no s'envien els albarans: "
 }

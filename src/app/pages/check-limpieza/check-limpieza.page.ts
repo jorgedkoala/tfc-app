@@ -128,9 +128,13 @@ export class CheckLimpiezaPage implements OnInit {
                           let isbeforedate = moment(data.rows.item(index).fecha).isBefore(this.hoy,'day');
                           let repeticion = this.checkPeriodo(data.rows.item(index).periodicidad);
                           let check =false;
-                          if (!this.hayRetraso && repeticion != "por uso"){
-                        this.hayRetraso = this.periodos.hayRetraso(data.rows.item(index).fecha,JSON.parse(data.rows.item(index).periodicidad));
-                          }
+
+///ACTIVAR DESACTIVAR BUSCAR Y PERMITIR AUTORRELLENO PARA REPETICIONES PENDIENTES
+                        //   if (!this.hayRetraso && repeticion != "por uso"){
+                        // this.hayRetraso = this.periodos.hayRetraso(data.rows.item(index).fecha,JSON.parse(data.rows.item(index).periodicidad));
+                        //   }
+
+                        
                           if(this.checks){
                           if (this.checks[index]) {
                             // this.bloqueaCheck;

@@ -31,7 +31,7 @@ export class IncidenciasPage implements OnInit, OnDestroy {
   public textoBoton: string = 'guardar';
   public hayIncidencia:boolean=false;
 public hoy: Date = new Date();
-
+public desactivado:boolean=false;
   //*************  CONSTRUCTOR *************/
   constructor(
   public platform: Platform,

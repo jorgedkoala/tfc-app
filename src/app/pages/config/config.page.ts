@@ -23,14 +23,16 @@ export class ConfigPage implements OnInit {
   }
 
 
-  selectlang(){
+  selectlang(evento){
+    console.log(this.lang,evento);
     //  alert ("idioma" + this.lang);
-      localStorage.setItem("lang",this.lang);
-      this.translate.use(this.lang);
-      this.translate.setDefaultLang(this.lang);
+      localStorage.setItem("lang",evento.value);
+      this.translate.use(evento.value);
+      this.translate.setDefaultLang(evento.value);
     }
-    selectTeclado(){
-      localStorage.setItem("teclado",this.teclado);
+    selectTeclado(evento){
+      console.log(this.teclado,evento);
+      localStorage.setItem("teclado",evento.value);
     }
     setmail(){
     //alert (this.email);

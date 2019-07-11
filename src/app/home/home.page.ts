@@ -1012,7 +1012,10 @@ supervisar(){
 // this.navCtrl.push(SupervisionPage);
 this.goTo('/supervision');
 }
+
+
 doRefresh(refresher) {
+  if (this.network.type != 'none') {
 console.log('Begin async operation', refresher);
 //this.sincronizate();
 this.callSincroniza();
@@ -1020,6 +1023,10 @@ setTimeout(() => {
 console.log('Async operation has ended');
 refresher.target.complete();
 }, 2000);
+  }else{
+    console.log('No hay Red');
+    this.cargaListas();
+  }
 }
 
 async presentLoading() {

@@ -9,21 +9,25 @@
 </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-    <ion-card>
+<ion-content >
+    <ion-card >
       <ion-card-title>
         <strong>{{nombre}} </strong>
       </ion-card-title>
-     <ion-card-content>
+     <ion-card-content style="padding:0px 0px 10px 10px">
+        <div style="width:100%"> 
+       <div style="width:54%;float:left">
         <ion-item>
-         <ion-label floating>{{"valor" | translate}} <span *ngIf="pla"> en {{pla}}</span></ion-label>
- 
-         <ion-input *ngIf="teclado != 'text'" type="number" step="0.01"  [(ngModel)]="valor"></ion-input>
-         <ion-input *ngIf="teclado == 'text'" type="text" step="0.01"  [(ngModel)]="valor"></ion-input>
-         
+         <ion-label position="floating">{{"valor" | translate}} </ion-label>
+         <!-- <ion-input *ngIf="teclado != 'text'" type="number" step="0.01"  [(ngModel)]="valor"></ion-input> -->
+         <ion-input #VL type="text" inputmode="numeric" step="0.01"  [(ngModel)]="valor"
+         (ionFocus)="checkObjetivo(VL)"></ion-input>
        </ion-item>
- 
- 
+      </div>
+      <div style="width:44%;float:left;margin-top: 45px;">
+       <span *ngIf="pla">(en {{pla}})</span>
+      </div>
+        </div>
      <!-- INPUT PERSONALIZADO -->
  
      <!-- <div (click)="teclado=true">
@@ -100,10 +104,11 @@
  
      <!-- FIN INPUT PERSONALIZADO -->
        <hr>   
+ <div style="width:100%;display:flex"> 
  <ion-button (click)="takeFoto()" twitter style="width: 30%;">{{"foto" | translate}}</ion-button> 
- <ion-button (click)="terminar(idcontrol)" [disabled]="desactivado" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
- <ion-button [disabled]="hayIncidenciaAd>0"  color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%;">{{"incidencia" | translate}}</ion-button> 
-  
+ <ion-button (click)="terminar()" [disabled]="desactivado" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
+ <ion-button [disabled]="hayIncidenciaAd>0"  color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%">{{"incidencia" | translate}}</ion-button> 
+</div>     
  <img [src]="base64Image" *ngIf="base64Image" />
  </ion-card-content>
    </ion-card>

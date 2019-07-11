@@ -9,7 +9,8 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-list radio-group [(ngModel)]="lang" (ionChange)="selectlang()">
+    <ion-list>
+    <ion-radio-group [(ngModel)]="lang" (ionSelect)="selectlang($event.detail)"  name="lang" ngDefaultControl>
     
       <ion-list-header>
        {{"config.idioma" | translate }}
@@ -17,16 +18,19 @@
     
       <ion-item>
         <ion-label>Català</ion-label>
-        <ion-radio value="cat"></ion-radio>
+        <ion-radio value="ca"></ion-radio>
       </ion-item>
     
       <ion-item>
         <ion-label>Español</ion-label>
         <ion-radio value="es"></ion-radio>
       </ion-item>
+    </ion-radio-group>
     </ion-list>
     <hr>
-    <ion-list radio-group [(ngModel)]="teclado" (ionChange)="selectTeclado()">
+    <ion-list>
+
+    <ion-radio-group [(ngModel)]="teclado" (ionSelect)="selectTeclado($event.detail)" name="teclado" ngDefaultControl>
     
       <ion-list-header>
        {{"config.teclado" | translate }}
@@ -41,6 +45,8 @@
         <ion-label>{{"config.texto" | translate }}</ion-label>
         <ion-radio value="text"></ion-radio>
       </ion-item>
+
+    </ion-radio-group>
     </ion-list>
     <p style="font-size:smaller">{{"config.helpText" | translate }}</p>
     <hr>
@@ -52,7 +58,7 @@
     <!--<button ion-button (click)="setmail()" value="email">{{"config.ok" | translate}}</button>-->
     <ion-footer>
       <ion-toolbar>
-        <ion-title>TFC - Proacciona    v:2.0.0</ion-title>
+        <ion-title>TFC - Proacciona    v:4.0.0</ion-title>
       </ion-toolbar>
     </ion-footer>
     </ion-content>

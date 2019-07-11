@@ -124,6 +124,8 @@ getSimple(url: string, param: string){
     this.entidad=entidad;
     console.log(this.entidad);
   }
+
+  
   getParam(){
     let resultado= this.param;
     console.log(this.entidad);
@@ -132,6 +134,8 @@ getSimple(url: string, param: string){
     }
     return resultado;
   }
+
+
   setIncidencia(param){
     this.incidencia=null;
     if (param)
@@ -143,10 +147,12 @@ getSimple(url: string, param: string){
   setIdEntrada(id){
     if (!this.idEntrada) this.idEntrada=[];
     this.idEntrada.push(id)
+    console.log('***SETIDENTRADA',this.idEntrada);
   }
   getIdEntrada(){
     let resultado = null;
-    if (this.idEntrada) this.idEntrada.shift();
+    if (this.idEntrada) resultado = this.idEntrada.shift();
+    console.log('***GETIDENTRADA',this.idEntrada);
     return resultado;
   }
 }

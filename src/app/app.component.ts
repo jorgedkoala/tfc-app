@@ -26,7 +26,7 @@ export class AppComponent {
     {title: 'menu.home',url: '/home',icon: 'home'},
    {title: 'menu.entradasMP',url: '/entradas-mp',icon: 'cart'},
     {title: 'menu.informes',url: '/informes',icon: 'print'},
-    {title: 'menu.supervision', url: '/supervision',icon: 'done-all'},
+    // {title: 'menu.supervision', url: '/supervision',icon: 'done-all'},
     {title: 'menu.incidencia', url: '/incidencias',icon: 'information-circle' },
     { title: 'menu.sync' , url: '/sync',icon: 'sync' },
     {title: 'menu.config',url: '/config',icon: 'cog'},
@@ -75,7 +75,7 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
 //****************CHECK & START IDIOMA ***********/
       this.translate.setDefaultLang('es');
       this.translate.use('es');
-      if (localStorage.getItem("lang") =='cat'){
+      if (localStorage.getItem("lang") =='ca'){
         this.translate.use(localStorage.getItem("lang"));
         this.translate.setDefaultLang(localStorage.getItem("lang"));
       }
@@ -122,7 +122,30 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
         if (localStorage.getItem("idempresa") == traspasos && !this.existe()){
           this.appPages.push({title:'menu.traspasos',url:"/traspasos",icon:'repeat'})
         }
+
+      //****************CHECK SERVICIOS DE ENTRADA ******************/
+      if (localStorage.getItem("triggerEntradasMP") === null) {
+      let parametros = '&idempresa=' + localStorage.getItem("idempresa")+"&entidad=triggers";
+      this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
+        response => {
+          console.log(response);
+          if (response.success == 'true' && response.data) {
+            console.log(response.data,response.data.length)
+            for (let element of response.data) {
+              if (element.entidadOrigen == 'proveedores_entradas_producto' && element.entidadDestino=='checklist'){
+                localStorage.setItem('triggerEntradasMP',element.idDestino);
+              }
+              }
+          }else{
+            localStorage.setItem('triggerEntradasMP','0');
+          }
+      },
+  error =>{console.debug('hay Trigger servicios entrada', error);});
+    }
+
       }
+
+
 
     });//************END PLATFORM READY */ 
   }

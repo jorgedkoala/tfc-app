@@ -32,7 +32,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { PeriodosProvider } from './services/periodos/periodos';
 import { Initdb } from './services/initdb';
-import { EmpresaPage } from './pages/empresa/empresa.page';
+// import { EmpresaPage } from './pages/empresa/empresa.page';
+import { SharedModule } from './shared.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -41,12 +42,14 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: 
   [AppComponent,
-    EmpresaPage],
+    // EmpresaPage
+  ],
 
   entryComponents: [
-    EmpresaPage
+    // EmpresaPage
   ],
   imports: [
+    SharedModule,
     BrowserModule,
     FormsModule,
     HttpModule,
@@ -60,6 +63,9 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     IonicModule.forRoot(),
     AppRoutingModule
+  ],
+  exports:[
+  //  EmpresaPage
   ],
   providers: [
     Initdb,

@@ -99,7 +99,7 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
       console.debug("versionActual Usuarios",versionActual);
       if (versionActual > parseInt(localStorage.getItem("versionusers"))) {
         this.presentLoading();
-        this.initdb.sincronizate(versionActual.toString()).then(
+        this.initdb.sincronizate('APP COMPONENT',versionActual.toString()).then(
           ()=>{
             this.closeLoading();
           }
@@ -119,6 +119,7 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
     //    modalEmpresa.present();
     //  this.nav.push(Empresa,null,null,()=>this.existe())
       }else{
+        console.log('fuera');
         if (localStorage.getItem("idempresa") == traspasos && !this.existe()){
           this.appPages.push({title:'menu.traspasos',url:"/traspasos",icon:'repeat'})
         }

@@ -47,7 +47,7 @@
 <ion-list *ngFor="let control of controlesList">
 <ion-item (click)="takeControl(control)">
   <ion-avatar item-left>
-  <img src="assets/img/temp.png">
+  <img src="assets/img/temp.png" height="40px" width="40px">
 </ion-avatar>
   <h2 [ngClass]="{'marquee': control.nombre.length+control.pla.length>25,'onDate':!control.isbeforedate,'beforeOnDate':control.isbeforedate,'porUso':control.frecuencia == 'por uso'}">{{control.nombre}} {{control.pla}} {{control.frecuencia}} </h2>  
      
@@ -57,7 +57,7 @@
 <ion-list *ngFor="let checklist of checklistList">
 <ion-item (click)="takeChecklist(checklist)">
   <ion-avatar item-left>
-  <img src="assets/img/checks.jpg">
+  <img src="assets/img/checks.jpg"  height="40px" width="40px">
 </ion-avatar>
      <h2 [ngClass]="{'marquee': checklist.nombrechecklist.length>25,'onDate':!checklist.isbeforedate,'beforeOnDate':checklist.isbeforedate,'porUso':checklist.frecuencia == 'por uso'}">{{checklist.nombrechecklist}}</h2>
 </ion-item>
@@ -68,7 +68,7 @@
 <ion-list *ngFor="let Limpieza of checkLimpiezas">
 <ion-item (click)="takeLimpieza(Limpieza)">
   <ion-avatar item-left>
-  <img src="assets/img/clean.png">
+  <img src="assets/img/clean.png"  height="40px" width="40px">
 </ion-avatar>
      <h2>{{Limpieza.nombrelimpieza}}</h2>  
 </ion-item>
@@ -76,7 +76,7 @@
 
 <ion-item (click)="takeMCorrectivo()"  *ngIf="superuser==1">
 <ion-avatar item-left>
-<img src="assets/img/correctivo.png">
+<img src="assets/img/correctivo.png"  height="40px" width="40px">
 </ion-avatar>
 <h2 [ngClass]="{'marquee': true}">{{'Mantenimiento Correctivo' | translate}}</h2>  
 </ion-item>
@@ -84,7 +84,7 @@
 <ion-list *ngFor="let Mantenimiento of mantenimientos">
 <ion-item (click)="takeMantenimiento(Mantenimiento,'maquina_mantenimiento')">
     <ion-avatar item-left>
-    <img src="assets/img/machine.png">
+    <img src="assets/img/machine.png"  height="40px" width="40px">
   </ion-avatar>
   <h2 [ngClass]="{'marquee': (Mantenimiento.nombre.length + Mantenimiento.nombreMaquina.length) >25,'onDate':!Mantenimiento.isbeforedate,'beforeOnDate':Mantenimiento.isbeforedate}">{{Mantenimiento.nombre}} {{Mantenimiento.nombreMaquina}}</h2>  
 </ion-item>
@@ -93,7 +93,7 @@
 <ion-list *ngFor="let Calibracion of calibraciones">
 <ion-item (click)="takeMantenimiento(Calibracion,'maquina_calibraciones')">
       <ion-avatar item-left>
-      <img src="assets/img/balance.png">
+      <img src="assets/img/balance.png"  height="40px" width="40px">
     </ion-avatar>
     <h2 [ngClass]="{'marquee': (Calibracion.nombre.length + Calibracion.nombreMaquina.length) >25,'onDate':!Calibracion.isbeforedate,'beforeOnDate':Calibracion.isbeforedate}">{{Calibracion.nombre}} {{Calibracion.nombreMaquina}}</h2>  
 </ion-item>

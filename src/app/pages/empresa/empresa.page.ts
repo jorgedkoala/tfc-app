@@ -41,14 +41,18 @@ export class EmpresaPage implements OnInit {
 
   goTo(link?){
     if (!link) link='/home'
-    this.router.navigateByUrl(link);
+    console.log('goto',link);
+    this.router.navigateByUrl(link).then(
+      (valor)=>{console.log('ok going1',valor)},
+      (error)=>{console.log('error going',error)}
+      )
   }
 
   //*************  FUNCTIONS *************/
 
 
   setEmpresa(){
-    console.debug("es debug",this.debug);
+    console.log("es debug",this.debug);
   if (this.debug) {
    // this.sync.baseurl = 'http://tfc.ntskoala.com/api';
    // localStorage.setItem("modo","debug");
@@ -67,17 +71,24 @@ export class EmpresaPage implements OnInit {
         let codigo = id.substring(2,id.length -2);
         localStorage.setItem("idempresa",codigo);
         this.presentLoading();
-        this.initdb.sincronizate().then(
+        console.log('go  sincronizado');
+        this.initdb.sincronizate('EMPRESA').then(
           (data)=>{
-            console.log(data);
+            console.log('ok sincronizado',data);
             this.closeLoading();
             // if (this.routerOutlet.canGoBack()){
             // this.navCtrl.pop();
             // }else{
             //   this.goTo('/login');
             // }
+            // this.dismiss();
+            this.mdlCtrl.dismiss({'result': 'ok','idEmpresa':codigo}).then(
+              (valor)=>{console.log('EMPRESA DISSMISED',valor)},
+              (error)=>{console.log('EMPRESA DISSMISED',error)});
+            this.dismiss();
           },
           (error)=>{
+            console.log('ERROR Sincronizando',error)
             this.closeLoading();
             alert('error actualizando usuarios, vuelve a intentarlo. Prueba estirando hacia abajo');
           }
@@ -85,7 +96,7 @@ export class EmpresaPage implements OnInit {
        
        // this.navCtrl.pop();
         //this.viewCtrl.dismiss(codigo);
-        this.mdlCtrl.dismiss({'result': 'ok','idEmpresa':codigo});
+        
       }
       else //CODIGO ERRONEO
       {
@@ -100,7 +111,8 @@ export class EmpresaPage implements OnInit {
      } 
   }
   dismiss(){
-  this.goTo();
+    console.log('going to login');
+  this.goTo('/login');
   }
   
    async presentLoading() {
@@ -113,7 +125,7 @@ export class EmpresaPage implements OnInit {
       //loader.dismiss();
     }
     closeLoading(){
-      console.debug('##CLOSE LOADING');
+      console.log('##CLOSE LOADING');
      setTimeout(() => {
         console.debug('Async operation has ended');
         this.loader.dismiss()

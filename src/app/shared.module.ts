@@ -7,12 +7,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
 import { EmpresaPage } from './pages/empresa/empresa.page';
 
-const routes: Routes = [
-    {
-      path: '',
-      component: EmpresaPage
-    }
-  ];
+// const routes: Routes = [
+//     {
+//       path: '',
+//       component: EmpresaPage
+//     }
+//   ];
 
 @NgModule({
     imports: [
@@ -20,7 +20,8 @@ const routes: Routes = [
         FormsModule,
         IonicModule,
         TranslateModule.forChild(),
-        RouterModule.forRoot(routes)
+        //
+        //RouterModule.forRoot(routes)
     ],
     declarations: 
     [

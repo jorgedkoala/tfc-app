@@ -4,21 +4,22 @@ echo Inicio
 
 #creamos el build
 
-ionic cordova build android --release
+ionic cordova build android --release --prod
 
 
 
 #FIRMAR APK
 echo FIRMAR EL APK
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/jorged/keystore/tfc ./platforms/android/build/outputs/apk/android-release-unsigned.apk tfc
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/jorged/keystore/tfc ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk tfc
 
 #ALINEAR Y RENOMBRAR
 
 #IR AL DIR
 
-cd ./platforms/android/build/outputs/apk/
+cd ./platforms/android/app/build/outputs/apk/release/
 
-zipalign -v 4 android-release-unsigned.apk tfc_v28.apk
+rm -f tfc_v29.apk
+zipalign -v 4 app-release-unsigned.apk tfc_v29.apk
 
 echo FIN DEL PROCESO

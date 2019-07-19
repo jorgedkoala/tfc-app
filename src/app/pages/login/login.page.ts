@@ -19,8 +19,8 @@ import { PeriodosProvider } from '../../services/periodos/periodos';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  public nombre: string="demo";
-  public password: string="demo";
+  public nombre: string="";
+  public password: string="";
   public miDistancia: any;
   public logged;
   public accesomenu: any;
@@ -51,7 +51,7 @@ export class LoginPage implements OnInit {
     this.empresa = parseInt(localStorage.getItem("idempresa"));
     this.logoempresa = URLS.SERVER +"logos/"+localStorage.getItem("idempresa")+"/logo.jpg";
     if (this.empresa > 0 && this.data.newDB){
-      this.doRefresh()
+      //this.doRefresh()
     }
   }
 
@@ -151,7 +151,7 @@ export class LoginPage implements OnInit {
     doRefresh(refresher?) {
       console.debug('Begin async operation', refresher);
     //  this.presentLoading();
-      this.data.sincronizate().then(
+      this.data.sincronizate('LOGIN REFRESH').then(
       (response)=>{
         console.debug('######',response);
      //   this.loader.dismiss();

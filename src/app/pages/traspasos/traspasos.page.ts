@@ -32,13 +32,13 @@ export class TraspasosPage implements OnInit {
   //*** ESPECIFIC VAR */
   public traspaso:boolean=false;
   public almacenes: any;
-  private almacenesOrigen: Almacen[];
-  private almacenOrigenSelected: Almacen;
-  private almacenesDestino: Almacen[];
-  private almacenDestinoSelected: Almacen;
-  private level:number;
+  public almacenesOrigen: Almacen[];
+  public almacenOrigenSelected: Almacen;
+  public almacenesDestino: Almacen[];
+  public almacenDestinoSelected: Almacen;
+  public level:number;
   private idAlmacenDestino: number;
-  private cantidadTraspaso: number;
+  public cantidadTraspaso: number;
   public productos: any[]=[];
   public proveedores: any[]=[];
   public clientes: Cliente[]=[];
@@ -54,6 +54,7 @@ export class TraspasosPage implements OnInit {
   public contador:number;
   public alerts:string[]=[];
   public valorProvId:number;
+  public valorClienteId:number;
   //***** */
   public numTanque:number;
   public ok:boolean=true;

@@ -15,7 +15,8 @@
         "informes":"Descarga informes",
         "atras":"",
         "entradasMP":"Recepción M.P.",
-        "m-correctivo":"Matenimiento C."
+        "m-correctivo":"Matenimiento C.",
+        "empresa":"Empresa"
     },
     "alertas": {
         "error": "Error",

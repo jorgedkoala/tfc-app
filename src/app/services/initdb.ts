@@ -199,9 +199,9 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
 
 
 
-  sincronizate(version?:string){
+  sincronizate(origin:string,version?:string){
      
-      console.log("llamada sincronizando");
+      console.log("llamada sincronizando",origin,version);
    //USUARIOS
    //USUARIOS
    // DESCARGA USUARIOS ENTONCES BORRA LOS LOCALES, LUEGO INSERTA LOS DESCARGADOS EN LOCAL.
@@ -224,16 +224,16 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
                       });
                       valores = valores.substr(0,valores.length-1);
                      let query = "INSERT INTO logins (id, user, password, tipouser, nombre, superuser) VALUES " + valores;
-                      console.log('########',query);                    
+                      console.log('########',origin,query);                    
                     db2.executeSql(query ,[])
                       .then((data) => {
                         console.log('***********OK INSERT USERS', data)
                       },
-                      (error)=>{ console.log('***********ERROR', error)});
+                      (error)=>{ console.log('***********ERROR',origin, error)});
 
 
                             }, (error) => {
-                            console.log("ERROR -> " + JSON.stringify(error.err));
+                            console.log("ERROR -> ",origin,JSON.stringify(error.err));
                             });
  
 
@@ -242,10 +242,10 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
                         }
         },
             err => {
-                console.error(err);
+                console.error(err,origin);
                 reject('error, getting users. initdb#130');
                 },
-            () => {console.log('getUsuarios completed');
+            () => {console.log('getUsuarios completed',origin);
                 resolve('ok1');
                 if (version) localStorage.setItem("versionusers",version);
                 //return new Promise(resolve => {resolve('ok')});
@@ -270,8 +270,8 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
                         localStorage.setItem("email",array.toString());
                         }
         },
-            err => console.error(err),
-            () => {console.log('getGerentes completed')
+            err => console.error('ERROR GERENTES 273',err,origin),
+            () => {console.log('getGerentes completed',origin)
             }
         );
 
@@ -288,8 +288,8 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
                         localStorage.setItem("empresa",miempresa);
                         }
         },
-            err => console.error(err),
-            () => {console.log('getGerentes completed')
+            err => console.error('setempresa error',err,origin),
+            () => {console.log('set empresa completed',origin)
             }
         );  
 

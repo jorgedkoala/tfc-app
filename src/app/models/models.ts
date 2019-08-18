@@ -15,6 +15,7 @@ export const URLS = {
   STD_FECHA: base + 'std_fecha.php',
   VERSION_USERS: base + 'actions/version_users.php',
   ALERTES: base + 'alertes.php',
+  OPCIONES_EMPRESA: base + 'opcionesempresa.php',
   //**********TRAZABILIDAD */
   TRAZA_ORDENES:  base + 'traza_ordenes.php',
   UPDATE_REMANENTE: base+ 'update_remanente.php',

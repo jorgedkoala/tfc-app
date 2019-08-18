@@ -16,7 +16,7 @@ import { PeriodosProvider } from '../../services/periodos/periodos';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
   public nombre: string="";
@@ -56,7 +56,7 @@ export class LoginPage implements OnInit {
   }
 
   goTo(link?){
-
+    //this.appComponent.checkProveedores();
     if (!link) link='/home';
     console.log('GOTO ',link);
     this.router.navigateByUrl(link);

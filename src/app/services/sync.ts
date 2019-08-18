@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { map,tap } from 'rxjs/operators';
@@ -23,6 +24,7 @@ export class Sync {
 private posturl: string;
 
 public idchecklist;
+proveedoresActivo = new BehaviorSubject(null);
 
  //public baseurl: string = "https://tfc.proacciona.es/api";
 //public baseurl: string = "http://tfc.ntskoala.com/api";
@@ -204,6 +206,10 @@ setResultados(resultados,table):any
  //   this.http.post(`${this.config.baseurl}/actions/getusers.php?idempresa=${this.config.idempresa}&_dc=1470480375978`,);
 
 }
+
+
+
+
 
 
 

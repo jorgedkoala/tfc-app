@@ -66,6 +66,7 @@ public myform: FormGroup;
   //*************  INIT *************/
   ngOnInit() {
     this.platform.ready().then(() => {
+      this.medidas = dropDownMedidas;
       this.formControl();
       this.sync.login();
       if (this.isTokenExired(localStorage.getItem('token')) && this.network.type != 'none'){

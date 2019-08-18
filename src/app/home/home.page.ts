@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 
+
+
 import { Router } from '@angular/router';
 import {TranslateService  } from '@ngx-translate/core';
 
@@ -12,6 +14,7 @@ import { LoadingController } from '@ionic/angular';
 // import {ControlPage} from '../pages/control/control.page';
 // import { CheckPage } from '../pages/check/check.page';
 import { SyncPage } from '../pages/sync/sync.page';
+import { AppComponent } from '../app.component';
 // import { CheckLimpiezaPage } from '../pages/check-limpieza/check-limpieza.page';
 // import { MantenimientoPage } from '../pages/mantenimiento/mantenimiento.page';
 // import { MCorrectivoPage } from '../pages/m-correctivo/m-correctivo.page';
@@ -33,7 +36,7 @@ import * as moment from 'moment';
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  providers: [SyncPage]
+  providers: [SyncPage, AppComponent]
 })
 export class HomePage implements OnInit {
   miscontroles: any;
@@ -78,15 +81,24 @@ public superuser: number=parseInt(localStorage.getItem("superuser"));
     public network:Network,
     public loadingCtrl: LoadingController, 
     //public params: NavParams, 
-    public events: Events
+    public events: Events,
+    public appComponent: AppComponent
   ){
     this.checkEstados()
   }
 
     //*************  INIT *************/
+    changeProov(){
+      this.menu.get().then(
+        (resultado)=>{
+          console.log('MENU',resultado);
+        }
+      )
+    }
 
   checkEstados(){
     this.platform.ready().then(() => {
+      this.checkProveedores();
     console.log("Checking estados...");
     this.network.onDisconnect().subscribe(
       estado=>{
@@ -1065,6 +1077,78 @@ return 'por uso';
 }
 }
 
+
+
+
+
+checkProveedores(){
+
+  let paramLogin = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
+  this.servidor.login(URLS.LOGIN, paramLogin).subscribe(
+    response => {
+      console.log('RESPONSE LOGIN',response);
+      if (response["success"] == 'true') {
+        localStorage.setItem('token', response["token"]);
+        }
+  //****************CHECK PROVEEDORES ******************/
+  let param = '&idempresa=' + localStorage.getItem("idempresa");
+  console.log('MODULO PROVEEDORES START');
+  this.servidor.getObjects(URLS.OPCIONES_EMPRESA, param).subscribe(
+    response => {
+      console.log(response);
+      console.log('MODULO PROVEEDORES REQUEST');
+      if (response.success == 'true' && response.data) {
+        console.log(response.data,response.data.length)
+        for (let element of response.data) {
+          if (element.opcion == 'Modulo Proveedores'){
+            console.log('MODULO PROVEEDORES ACTIVO');
+            //this.appComponent.appPages.splice(1,0,{title: 'menu.entradasMP',url: '/entradas-mp',icon: 'cart'});
+            //this.appComponent.hayProveedores = true;
+            this.sync.proveedoresActivo.next(true);
+
+            this.checkServiciosEntrada();
+          }
+          }
+      }
+  },
+error =>{
+  console.debug(error);
+  console.log('MODULO PROVEEDORES ERROR,' + error);
+  },
+  ()=>{});
+
+
+        },
+    error=>{console.log('LOGIN ERROR',error)}
+    );
+
+
+}
+checkServiciosEntrada(){
+  //****************CHECK SERVICIOS DE ENTRADA ******************/
+  if (localStorage.getItem("triggerEntradasMP") === null) {
+    let parametros = '&idempresa=' + localStorage.getItem("idempresa")+"&entidad=triggers";
+    this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
+      response => {
+        console.log(response);
+        if (response.success == 'true' && response.data) {
+          console.log(response.data,response.data.length)
+          for (let element of response.data) {
+            if (element.entidadOrigen == 'proveedores_entradas_producto' && element.entidadDestino=='checklist'){
+              localStorage.setItem('triggerEntradasMP',element.idDestino);
+            }
+            // else{
+            //   localStorage.removeItem('triggerEntradasMP');
+            // }
+            }
+        }else{
+          localStorage.removeItem('triggerEntradasMP');
+          // localStorage.setItem('triggerEntradasMP','0');
+        }
+    },
+error =>{console.debug('hay Trigger servicios entrada', error);});
+  }
+}
 
 
 }

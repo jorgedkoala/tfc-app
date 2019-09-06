@@ -107,7 +107,7 @@ export class MantenimientoPage implements OnInit {
   }
 
   goTo(link?){
-    if (!link) link='/home'
+    if (!link) link='/home/mantenimientos'
     this.router.navigateByUrl(link);
   }
 
@@ -174,7 +174,7 @@ updateFecha(fecha,completaFechas){
   //console.log("updating fecha",proxima_fecha);
   if (moment(proxima_fecha).isAfter(moment(),'day')){
     this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
-      db2.executeSql('UPDATE ' + this.entidad + ' set  fecha = ? WHERE id = ?',[proxima_fecha, this.id]).then
+      db2.executeSql('UPDATE ' + this.entidad + ' set  fecha = ? WHERE idmantenimiento = ?',[proxima_fecha, this.id]).then
       ((Resultado) => {
          console.log("updated fecha: ", proxima_fecha);
       },

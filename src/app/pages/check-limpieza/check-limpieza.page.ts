@@ -94,7 +94,7 @@ export class CheckLimpiezaPage implements OnInit {
   }
 
   goTo(link?){
-    if (!link) link='/home'
+    if (!link) link='/home/checkLimpiezas'
     this.router.navigateByUrl(link);
   }
 
@@ -237,7 +237,9 @@ export class CheckLimpiezaPage implements OnInit {
       this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
     //******UPDATE FECHA LOCAL*/
     //******UPDATE FECHA LOCAL*/
-    db2.executeSql('UPDATE checklimpieza set  fecha = ? WHERE id = ?',[proxima_fecha,elemento.id]).then
+    //db2.executeSql('UPDATE checklimpieza set  fecha = ? WHERE id = ?',[proxima_fecha,elemento.id]).then
+    db2.executeSql('UPDATE checklimpieza set  fecha = ? WHERE idelemento = ?',[proxima_fecha,elemento.idElementoLimpieza]).then
+
     ((Resultado) => {
          console.log("updated fecha:2 ", Resultado);
     },

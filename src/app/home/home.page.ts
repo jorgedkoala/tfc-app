@@ -3,10 +3,10 @@ import { Platform } from '@ionic/angular';
 
 
 
-import { Router } from '@angular/router';
+import { Router, Event as NavigationEvent, NavigationEnd, ChildActivationStart } from '@angular/router';
 import {TranslateService  } from '@ngx-translate/core';
 
-import { Observable } from 'rxjs';
+import { Observable,pipe } from 'rxjs';
 import { MenuController, Events } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 
@@ -84,6 +84,7 @@ public superuser: number=parseInt(localStorage.getItem("superuser"));
     public events: Events,
     public appComponent: AppComponent
   ){
+    console.log('**********************CONSTRUCTOR HOME LLAMADO*******************************')
     this.checkEstados()
   }
 
@@ -166,6 +167,33 @@ public superuser: number=parseInt(localStorage.getItem("superuser"));
 
   ngOnInit(){
     this.platform.ready().then(() => {
+      this.router.events
+      .filter(event => event instanceof NavigationEnd)
+      .subscribe(
+        (routerEvent: NavigationEvent)=>{
+            console.log('ROUTER EVENT SI HOMEPAGE',routerEvent["url"])
+            switch(routerEvent["url"]){
+              case "/home/mantenimientos":
+                  this.getMantenimientos();
+                  this.getCalibraciones();
+                break;
+              case "/home/checks":
+                  this.getChecklists();
+                break;
+              case "/home/controles":
+                  this.getControles();
+                break;
+              case "/home/checkLimpiezas":
+                  this.getLimpiezas();
+                  this.getLimpiezasRealizadas();
+                break;
+            }
+            //this.cargaListas();
+          
+
+
+        })
+
     this.cambio=0;
     console.log("didEnter...");
     this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {

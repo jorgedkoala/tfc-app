@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import {  Events } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 //*****CUSTOM TEMPLATE */
 import { TranslateService } from '@ngx-translate/core';
 import { Initdb } from '../../services/initdb';
@@ -60,7 +61,8 @@ export class ControlPage implements OnInit {
   public network:Network, 
   public periodos: PeriodosProvider,
   public sync: SyncPage,
-  public events: Events
+  public events: Events,
+  public alertController: AlertController
   ) {
 
     this.control = this.servidor.getParam();
@@ -122,7 +124,7 @@ export class ControlPage implements OnInit {
   }
 
   goTo(link?){
-    if (!link) link='/home'
+    if (!link) link='/home/controles'
 this.router.navigateByUrl(link);
   }
 
@@ -177,7 +179,7 @@ this.creaIncidencia(fuerarango);
 }
 
 creaIncidencia(incidencia){
-
+  
 let control,valorc, minimo,maximo, tolerancia,critico : string;
 this.translate.get("control").subscribe(resultado => { control = resultado});
 this.translate.get("valorc").subscribe(resultado => { valorc = resultado});
@@ -220,7 +222,24 @@ this.hayIncidencia= Resultado.insertId;
 console.log('ERROR INSERTANDO INCIDENCIA',JSON.stringify(error))
 });
 });
+this.presentAlert();
 }
+
+presentAlert() {
+  this.translate.get('alertas.rangoerror').subscribe(
+    async (valor)=>{
+      const alert = await this.alertController.create({
+        header: 'Alert',
+        //subHeader: 'Subtitle',
+        message: valor,
+        buttons: ['OK']
+      });
+    
+      await alert.present();
+
+    })
+}
+
 
 terminar(){
 // this.valor = parseFloat(this.valorText);

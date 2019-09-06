@@ -29,6 +29,7 @@ export class LoginPage implements OnInit {
   public introvista;
   public logoempresa;
   public empresa = 0;
+  public nombreEmpresa:string='';
   public loader:any;
   //*************  CONSTRUCTOR *************/
   constructor(
@@ -49,6 +50,7 @@ export class LoginPage implements OnInit {
       this.goTo();
     }
     this.empresa = parseInt(localStorage.getItem("idempresa"));
+    this.nombreEmpresa = localStorage.getItem("empresa")
     this.logoempresa = URLS.SERVER +"logos/"+localStorage.getItem("idempresa")+"/logo.jpg";
     if (this.empresa > 0 && this.data.newDB){
       //this.doRefresh()

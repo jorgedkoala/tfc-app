@@ -138,7 +138,7 @@ let checklist= this.servidor.getParam();
   }
 
   goTo(link?){
-    if (!link) link='/home'
+    if (!link) link='/home/checks'
     this.router.navigateByUrl(link);
   }
 

@@ -181,8 +181,9 @@ isTokenExired (token) {
     if (this.network.type != 'none') {
       let fecha = moment(new Date()).format('YYYY-MM-DD');
       let proxima_fecha = '';
+      let idusuario = sessionStorage.getItem("idusuario");
       this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
-        db2.executeSql("Select * FROM " + entidad + " WHERE " + identificador + " = ? AND fecha >= ?", [idElemento, fecha]).then((data) => {
+        db2.executeSql("Select * FROM " + entidad + " WHERE " + identificador + " = ? AND fecha >= ? AND idusuario= ?", [idElemento, fecha, idusuario]).then((data) => {
           let proxima_fecha;
           console.log('resultados update fecha',data.rows.length);
           for (var index = 0; index < data.rows.length; index++) {
@@ -309,10 +310,11 @@ isTokenExired (token) {
             //arrayfila.push(new limpiezaRealizada(null, data.rows.item(fila).idelemento, data.rows.item(fila).idempresa, data.rows.item(fila).fecha_prevista, data.rows.item(fila).fecha, data.rows.item(fila).nombre, data.rows.item(fila).descripcion, data.rows.item(fila).tipo, data.rows.item(fila).idusuario, data.rows.item(fila).responsable, data.rows.item(fila).idlimpiezazona))
             let limpieza = new limpiezaRealizada(null, data.rows.item(fila).idelemento, data.rows.item(fila).idempresa, data.rows.item(fila).fecha_prevista, data.rows.item(fila).fecha, data.rows.item(fila).nombre, data.rows.item(fila).descripcion, data.rows.item(fila).tipo, data.rows.item(fila).idusuario, data.rows.item(fila).responsable, data.rows.item(fila).idlimpiezazona, data.rows.item(fila).idsupervisor);
             //arrayfila.push(data.rows.item[fila]);
+            let idUser = data.rows.item(fila).idusuario;
             this.servidor.postObject(URLS.STD_ITEM, limpieza, param).subscribe(
               response => {
                 if (response.success) {
-                  this.updateFechaElementoLimpieza(data.rows.item(fila).idelemento,data.rows.item(fila));
+                  this.updateFechaElementoLimpieza(data.rows.item(fila).idelemento,data.rows.item(fila),idUser);
                   //this.sync_incidencias(fila.idLocal, data.id, 'Controles');
                   this.sync_incidencias(data.rows.item(fila).id, response.id, 'Limpiezas');
                   console.log('limpieza realizada sended', response.id);
@@ -346,14 +348,14 @@ isTokenExired (token) {
     });
   }
 
-  updateFechaElementoLimpieza(idElementoLimpieza,LimpiezaRealizada) {
+  updateFechaElementoLimpieza(idElementoLimpieza,LimpiezaRealizada,idUser) {
     if (this.network.type != 'none') {
       let fecha = moment(new Date()).format('YYYY-MM-DD');
       let proxima_fecha = '';
       console.log("updating elementoLimpieza");
       this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
         //this.checklistList = data.rows;
-        db2.executeSql("Select * FROM checklimpieza WHERE idelemento = ? AND fecha >= ?", [idElementoLimpieza, fecha]).then((data) => {
+        db2.executeSql("Select * FROM checklimpieza WHERE idelemento = ? AND fecha >= ? AND idusuario = ?", [idElementoLimpieza, fecha,idUser ]).then((data) => {
           let proxima_fecha;
           for (var index = 0; index < data.rows.length; index++) {
             console.log(data.rows.item(index),data.rows.item(index),LimpiezaRealizada.descripcion,LimpiezaRealizada.fecha_prevista)
@@ -451,7 +453,7 @@ isTokenExired (token) {
                     entidad = "maquina_calibraciones";              
                     }   
                   this.sync_incidencias(data.rows.item(fila).id, response.id, 'Maquinaria');        
-                  this.updateFechaElemento(mantenimiento.idmantenimiento,entidad,'id');
+                  this.updateFechaElemento(mantenimiento.idmantenimiento,entidad,'idmantenimiento');
                     }
                   db2.executeSql("DELETE from mantenimientosrealizados WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
                     console.log("deleted 1 item");

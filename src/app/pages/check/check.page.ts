@@ -407,16 +407,17 @@ return new Promise((resolve)=>{
       });
       console.debug(this.checklistcontroles);
     }
-  editar(control){
-            let prompt = this.alertCtrl.create({
+  async editar(control){
+            const prompt = await this.alertCtrl.create({
               message: 'Descripcion',
               inputs: [{name: 'descripcion'}],
               buttons: [
                   {text: 'Cancel'},
                   {text: 'Add',handler: data => {control.descripcion = data.descripcion;}
                   }]
-              }).then(()=>console.log('prompt mostrado'));
-          //prompt.present();
+              })
+          prompt.present().then(
+            (respuesta)=>{console.log('prompt mostrado',respuesta)});
   }
 
   setOpcion(control,opcion){

@@ -12,6 +12,7 @@ export class ConfigPage implements OnInit {
   public lang:string;
   public email:string;
   public teclado:string;
+  public version:string;
   constructor(
     public translate: TranslateService
   ) { }
@@ -20,6 +21,7 @@ export class ConfigPage implements OnInit {
     console.log('On init works on config page')
     this.lang=localStorage.getItem('lang');
     this.teclado=localStorage.getItem('teclado');
+    this.version='TFC-v:'+localStorage.getItem("v");
   }
 
 

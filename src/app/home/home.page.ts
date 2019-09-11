@@ -66,7 +66,7 @@ public Momento = moment();
 public cargando: boolean=false;
 public tipoUser: string=localStorage.getItem("tipoUser");
 public superuser: number=parseInt(localStorage.getItem("superuser"));
-
+public moduloMantenimiento:boolean=false;
 
   constructor(
     private platform: Platform,
@@ -1136,6 +1136,10 @@ checkProveedores(){
 
             this.checkServiciosEntrada();
           }
+          if (element.opcion == 'fichas maquinaria'){
+            console.log('MODULO MANTENIMIENTO ACTIVO');
+            this.moduloMantenimiento=true;;
+          }         
           }
       }
   },

@@ -61,7 +61,10 @@ export class LoginPage implements OnInit {
     //this.appComponent.checkProveedores();
     if (!link) link='/home';
     console.log('GOTO ',link);
-    this.router.navigateByUrl(link);
+    this.router.navigateByUrl(link).then(
+      (valor)=>{console.log('went To:',valor)},
+      (error)=>{console.log('error going: ',error)}
+    )
   }
 
   //*************  FUNCTIONS *************/

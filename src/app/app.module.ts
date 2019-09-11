@@ -17,7 +17,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-
+import { Device } from '@ionic-native/device/ngx';
 
 
 
@@ -80,6 +80,7 @@ export function createTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     TranslateService,
+    Device,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -6,6 +6,7 @@ import { map,tap } from 'rxjs/operators';
 import 'rxjs/add/operator/catch';
 import 'rxjs/Rx';
 import {Observable} from 'rxjs';
+import { Device } from '@ionic-native/device/ngx';
 
 //import { Config } from '../config/config';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
@@ -24,6 +25,7 @@ export class Sync {
 private posturl: string;
 
 public idchecklist;
+public platform;
 proveedoresActivo = new BehaviorSubject(null);
 
  //public baseurl: string = "https://tfc.proacciona.es/api";
@@ -37,7 +39,8 @@ createAuthorizationHeader(headers:Headers) {
   constructor(
       public http: Http,
       public loadingCtrl: LoadingController,
-      public db :SQLite) {
+      public db :SQLite,
+      public device:Device) {
     console.log('Hello Sync Provider');
     if (localStorage.getItem("modo")=="debug"){
     //    this.baseurl = "http://tfc.ntskoala.com/api";
@@ -45,6 +48,7 @@ createAuthorizationHeader(headers:Headers) {
     else{
      //   this.baseurl = "http://tfc.proacciona.es/api";
     }
+    this.platform= device.platform+'V:'+localStorage.getItem("v");
   }
 
   presentLoading() {
@@ -149,7 +153,7 @@ public setGerentes(): Observable<any>
 setResultados(resultados,table):any
 {
    console.log('resultados ' + table + ": " +resultados);
-    this.posturl = this.baseurl+'actions/set'+table+'.php?idempresa='+this.idempresa+"&userId="+localStorage.getItem("idusuario")+"&plataforma=app";
+    this.posturl = this.baseurl+'actions/set'+table+'.php?idempresa='+this.idempresa+"&userId="+localStorage.getItem("idusuario")+"&plataforma=app"+this.platform;
     console.debug(this.posturl);
         let params = resultados;
         //let headers = new Headers();

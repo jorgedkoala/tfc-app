@@ -83,7 +83,7 @@ if (localStorage.getItem("syncsupervision") === null) {localStorage.setItem("syn
 if (localStorage.getItem("syncmantenimiento") === null) {localStorage.setItem("syncmantenimiento","0")}
 if (localStorage.getItem("syncincidencia") === null) {localStorage.setItem("syncincidencia","0")}
 if (localStorage.getItem("lang") === null) {localStorage.setItem("lang","es")}
-
+localStorage.setItem("v","4.35");
 if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem("inicializado","1");
 
 

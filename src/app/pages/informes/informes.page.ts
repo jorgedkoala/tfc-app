@@ -49,7 +49,8 @@ export class InformesPage implements OnInit {
   async download(){
     this.progress(10);
      //let url ='https://script.google.com/a/proacciona.es/macros/s/AKfycbzIpotMyRcSxISIMvMLWN0-boPG8drRZ9wD8IQO5eQ/dev?idEmpresa='+this.empresasService.seleccionada;
-     let url ='https://script.google.com/a/proacciona.es/macros/s/AKfycbzumyP_ybsAfEC_I0xww2Pz5XPOJim-51zCoEnFBhjl/dev';
+      //FULLREPORTTFC
+     let url ='https://script.google.com/macros/s/AKfycbxsIGXBMBgGXgfCZbZ-Nc7A-3zN3FTaoZEG2ZR3cGyq4XcQKV61/exec';
      let param = '?idempresa='+localStorage.getItem("idempresa")+'&download=pdf';
     this.innerHtml += 'Solicitado<br>...';
     this.servidor.getSimple(url,param).subscribe(

@@ -74,14 +74,15 @@
 </ion-item>
 </ion-list>
 
-<ion-item (click)="takeMCorrectivo()"  *ngIf="superuser==1">
+<ion-item (click)="takeMCorrectivo()"  *ngIf="superuser==1 && moduloMantenimiento">
 <ion-avatar item-left>
 <img src="assets/img/correctivo.png"  height="40px" width="40px">
 </ion-avatar>
 <h2 [ngClass]="{'marquee': true}">{{'Mantenimiento Correctivo' | translate}}</h2>  
 </ion-item>
 
-<ion-list *ngFor="let Mantenimiento of mantenimientos">
+<span  *ngIf="moduloMantenimiento">
+<ion-list *ngFor="let Mantenimiento of mantenimientos" >
 <ion-item (click)="takeMantenimiento(Mantenimiento,'maquina_mantenimiento')">
     <ion-avatar item-left>
     <img src="assets/img/machine.png"  height="40px" width="40px">
@@ -89,6 +90,7 @@
   <h2 [ngClass]="{'marquee': (Mantenimiento.nombre.length + Mantenimiento.nombreMaquina.length) >25,'onDate':!Mantenimiento.isbeforedate,'beforeOnDate':Mantenimiento.isbeforedate}">{{Mantenimiento.nombre}} {{Mantenimiento.nombreMaquina}}</h2>  
 </ion-item>
 </ion-list> 
+
 
 <ion-list *ngFor="let Calibracion of calibraciones">
 <ion-item (click)="takeMantenimiento(Calibracion,'maquina_calibraciones')">
@@ -98,6 +100,8 @@
     <h2 [ngClass]="{'marquee': (Calibracion.nombre.length + Calibracion.nombreMaquina.length) >25,'onDate':!Calibracion.isbeforedate,'beforeOnDate':Calibracion.isbeforedate}">{{Calibracion.nombre}} {{Calibracion.nombreMaquina}}</h2>  
 </ion-item>
 </ion-list> 
+</span>
+
 
 </ion-card-content>
 </ion-card>

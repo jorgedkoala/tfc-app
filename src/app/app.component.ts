@@ -15,6 +15,8 @@ import { Servidor } from './services/servidor';
 import { URLS } from './models/models';
 import { environment,vaqueria } from '../environments/environment';
 import * as moment from 'moment';
+import  * as cordova  from 'cordova';
+import { Cordova } from '@ionic-native/core';
 
 const traspasos = vaqueria;
 @Component({
@@ -72,6 +74,21 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
+      this.platform.backButton.subscribeWithPriority(9999, () => {
+        document.addEventListener('backbutton', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          console.log('BACL BUTTON STOPED');
+        }, false);
+      });
+      // cordova.exec(
+      //   (ok)=>{console.log('Cordova success',ok)},
+      //   (error)=>{console.log('Cordova success',error)},
+      //   'getIntent().getStringExtra("MyCustomParam")',
+      //   'getActivity().getIntent().getStringExtra("MyCustomParam")'
+      // )
+      // this.platform.
+      // this.platform.getActivity().getIntent().getStringExtra("MyCustomParam");
       this.statusBar.styleDefault();
       console.log('Produccion',this.produccion);
       console.log('versionusers',localStorage.getItem("versionusers"));
@@ -83,7 +100,7 @@ if (localStorage.getItem("syncsupervision") === null) {localStorage.setItem("syn
 if (localStorage.getItem("syncmantenimiento") === null) {localStorage.setItem("syncmantenimiento","0")}
 if (localStorage.getItem("syncincidencia") === null) {localStorage.setItem("syncincidencia","0")}
 if (localStorage.getItem("lang") === null) {localStorage.setItem("lang","es")}
-localStorage.setItem("v","4.35");
+localStorage.setItem("v","4.37");
 if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem("inicializado","1");
 
 

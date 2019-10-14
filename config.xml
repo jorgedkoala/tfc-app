@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget build="35" id="com.ntskoala.tfc" version="0.0.35" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget build="36" id="com.ntskoala.tfc" version="0.0.36" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <preference name="MyCustomParam" value="0.0.36" />
     <name>TFC</name>
     <description>By Jorge Domínguez.</description>
     <author email="jorged@ntskoala.com" href="http://www.movil.works/">Jorge Domínguez</author>

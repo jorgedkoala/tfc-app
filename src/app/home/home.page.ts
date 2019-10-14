@@ -177,14 +177,36 @@ public moduloMantenimiento:boolean=false;
                   this.getMantenimientos();
                   this.getCalibraciones();
                 break;
+              case "/mantenimiento":
+                  this.getMantenimientos();
+                  this.getCalibraciones();
+                break;
               case "/home/checks":
+                    this.getChecklists();
+                    break;
+              case "/check":
                   this.getChecklists();
                 break;
               case "/home/controles":
+                    this.getControles();
+                    break;
+              case "/control":
                   this.getControles();
                 break;
-              case "/home/checkLimpiezas":
+              case "/home/check-limpieza":
+                    this.getLimpiezas();
+                    this.getLimpiezasRealizadas();
+                break;
+              case "/check-limpieza":
                   this.getLimpiezas();
+                  this.getLimpiezasRealizadas();
+                break;
+              case "/supervision":
+                  console.log('supervision');
+                  this.getLimpiezasRealizadas();
+                break;
+              case "/home/supervision":
+                  console.log('/home/supervision');
                   this.getLimpiezasRealizadas();
                 break;
             }

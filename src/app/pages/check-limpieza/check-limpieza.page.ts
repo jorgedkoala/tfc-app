@@ -172,7 +172,8 @@ export class CheckLimpiezaPage implements OnInit {
       console.log("terminar2",elemento.nombreElementoLimpieza,elemento.checked,elemento.periodicidad);
   if (elemento.checked){
     let fecha;
-    (this.autocompletar)? fecha = moment(elemento.fecha_prevista).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:mm'): fecha= moment(this.hoy).format('YYYY-MM-DD HH:mm');
+   // (this.autocompletar)? fecha = moment(elemento.fecha_prevista).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:mm'): fecha= moment(this.hoy).format('YYYY-MM-DD HH:mm');
+   fecha= moment(this.hoy).format('YYYY-MM-DD HH:mm')
     this.guardarLimpiezaRealizada(elemento,fecha,x)
     console.log("TERMINAR",elemento);
   

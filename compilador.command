@@ -19,7 +19,7 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/jorged/k
 
 cd ./platforms/android/app/build/outputs/apk/release/
 
-rm -f tfc_v34.apk
-zipalign -v 4 app-release-unsigned.apk tfc_v34.apk
+rm -f tfc_v37.apk
+zipalign -v 4 app-release-unsigned.apk tfc_v37.apk
 
 echo FIN DEL PROCESO

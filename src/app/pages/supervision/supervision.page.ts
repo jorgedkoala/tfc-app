@@ -62,7 +62,7 @@ export class SupervisionPage implements OnInit {
   }
 
   goTo(link?){
-    if (!link) link='/home'
+    if (!link) link='/home/supervision'
     this.router.navigateByUrl(link);
   }
 
@@ -324,6 +324,8 @@ logAndSend(){
     let valor;
     let descrip;
     let cancel;
+    let todosOk;
+    this.translate.get("todosOk").subscribe(resultado => {todosOk = resultado;});
     this.translate.get("correcto").subscribe(resultado => { correcto = resultado; });
     this.translate.get("incorrecto").subscribe(resultado => { incorrecto = resultado; });
     this.translate.get("no aplica").subscribe(resultado => { aplica = resultado; });
@@ -333,6 +335,7 @@ logAndSend(){
     let actionSheet = await this.actionSheetCtrl.create({
       header: 'Opciones',
       buttons: [
+        {text: todosOk,icon:'checkmark-circle',handler: () => {this.todosOk()}},
         { text: correcto, icon: 'checkmark-circle', handler: () => { supervision.supervision = 1; } },
         { text: incorrecto, icon: 'close-circle', handler: () => { supervision.supervision = 2; } },
         { text: descrip, icon: 'clipboard', handler: () => { this.editar(supervision); } },
@@ -343,6 +346,14 @@ logAndSend(){
     });
     actionSheet.present();
   }
+
+
+  todosOk(){
+    this.supervisionLimpiezas.forEach((limpiezaRealizada)=>{
+      limpiezaRealizada.supervision = 1;
+    });
+  }
+
 
   async editar(supervision) {
     let prompt = await this.alertCtrl.create({

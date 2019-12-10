@@ -27,7 +27,8 @@ const routes: Routes = [
   { path: 'm-correctivo', loadChildren: './pages/m-correctivo/m-correctivo.module#MCorrectivoPageModule' },
   { path: 'mantenimiento', loadChildren: './pages/mantenimiento/mantenimiento.module#MantenimientoPageModule' },
   { path: 'traspasos', loadChildren: './pages/traspasos/traspasos.module#TraspasosPageModule' },
-  { path: 'entradas-mp', loadChildren: './pages/entradas-mp/entradas-mp.module#EntradasMPPageModule' }
+  { path: 'entradas-mp', loadChildren: './pages/entradas-mp/entradas-mp.module#EntradasMPPageModule' },
+   { path: 'lector', loadChildren: './pages/lector/lector.module#LectorPageModule' }
 ];
 
 @NgModule({

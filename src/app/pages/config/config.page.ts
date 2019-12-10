@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ConfigPage implements OnInit {
   public lang:string;
   public email:string;
-  public teclado:string;
+  public teclado:string="text";
   public version:string;
   constructor(
     public translate: TranslateService

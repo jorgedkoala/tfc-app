@@ -54,6 +54,7 @@
         "teclado":"Teclat",
         "texto":"Text normal",
         "num":"Numèric",
+        "decimal":"Decimal",
         "helpText":"(selecciona 'text normal' si tens problemes per introduir valors amb coma decimal amb el teclat numèric)"        
     },
     "empresa":{

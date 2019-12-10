@@ -108,7 +108,7 @@ export class MantenimientoPage implements OnInit {
 
   goTo(link?){
     if (!link) link='/home/mantenimientos'
-    this.router.navigateByUrl(link);
+    this.router.navigateByUrl(link, {replaceUrl:true});
   }
 
   //*************  FUNCTIONS *************/

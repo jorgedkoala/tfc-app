@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
+      </ion-buttons>
+  <div class="menuTitle">{{"menu.lector" | translate }}</div>
+  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+</ion-toolbar>
+</ion-header>
+
+<!-- ***********CONTENT************** -->
+<!-- ***********CONTENT************** -->
+<ion-content>
+  <ion-card >
+    <ion-card-title>
+      <strong>SCAN QR </strong>
+    </ion-card-title>
+   <ion-card-content style="padding:0px 0px 10px 10px">
+      <div style="width:100%"> 
+        {{estado}}
+        <ion-list>
+          <ion-item *ngFor="let accion of acciones">
+            <ion-label class="ion-text-wrap">{{accion}}</ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+
+   <!-- INPUT PERSONALIZADO -->
+   <!-- FIN INPUT PERSONALIZADO -->
+
+<div style="width:100%;display:flex">
+<ion-button (click)="scan()" twitter style="width: 30%;">{{"scan" | translate}}</ion-button> 
+<!-- <ion-button (click)="terminar()" [disabled]="desactivado" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
+<ion-button [disabled]="hayIncidenciaAd>0"  color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%">{{"incidencia" | translate}}</ion-button>  -->
+</div>     
+<!-- <img [src]="base64Image" *ngIf="base64Image" /> -->
+</ion-card-content>
+ </ion-card>
+</ion-content>

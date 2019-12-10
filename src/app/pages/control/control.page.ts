@@ -43,7 +43,7 @@ export class ControlPage implements OnInit {
   public hayIncidencia: number = 0;
   public hayIncidenciaAd: number =0;
   public valorText:string="";
-  public teclado:boolean=true;
+  public teclado:string="text";
   public inputActive:boolean=false;
 
 
@@ -100,6 +100,7 @@ export class ControlPage implements OnInit {
 
   ngOnInit() {
     this.platform.ready().then(() => {
+      this.teclado=localStorage.getItem('teclado');
     this.sync.login();
     if (this.isTokenExired(localStorage.getItem('token')) && this.network.type != 'none'){
       let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
@@ -125,7 +126,9 @@ export class ControlPage implements OnInit {
 
   goTo(link?){
     if (!link) link='/home/controles'
-this.router.navigateByUrl(link);
+this.router.navigateByUrl(link, {replaceUrl:true});
+
+
   }
 
 

@@ -139,7 +139,7 @@ let checklist= this.servidor.getParam();
 
   goTo(link?){
     if (!link) link='/home/checks'
-    this.router.navigateByUrl(link);
+    this.router.navigateByUrl(link, {replaceUrl:true});
   }
 
 

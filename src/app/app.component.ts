@@ -27,16 +27,16 @@ export class AppComponent {
   public loader:any;
   public hayProveedores:boolean=false;
   public produccion=environment['production']
-
+  public version=this.initdb.version;
   public appPages = [
     {title: 'menu.home',url: '/home',icon: 'home'},
-
     {title: 'menu.informes',url: '/informes',icon: 'print'},
     // {title: 'menu.supervision', url: '/supervision',icon: 'done-all'},
     {title: 'menu.incidencia', url: '/incidencias',icon: 'information-circle' },
     { title: 'menu.sync' , url: '/sync',icon: 'sync' },
     {title: 'menu.config',url: '/config',icon: 'cog'},
-    { title: 'menu.login' , url: '/login',icon: 'key' }
+    { title: 'menu.login' , url: '/login',icon: 'key' },
+     { title: 'menu.lector' , url: '/lector',icon: 'key' }
   ];
 
   //if (localStorage.getItem("idempresa") == "26"){//Entorno produccion
@@ -100,7 +100,8 @@ if (localStorage.getItem("syncsupervision") === null) {localStorage.setItem("syn
 if (localStorage.getItem("syncmantenimiento") === null) {localStorage.setItem("syncmantenimiento","0")}
 if (localStorage.getItem("syncincidencia") === null) {localStorage.setItem("syncincidencia","0")}
 if (localStorage.getItem("lang") === null) {localStorage.setItem("lang","es")}
-localStorage.setItem("v","4.37");
+this.version=this.initdb.version;
+localStorage.setItem("v",this.version);
 if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem("inicializado","1");
 
 

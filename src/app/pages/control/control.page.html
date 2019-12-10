@@ -12,7 +12,7 @@
 <ion-content >
     <ion-card >
       <ion-card-title>
-        <strong>{{nombre}} </strong>
+        <strong>{{nombre}} {{teclado}}</strong>
       </ion-card-title>
      <ion-card-content style="padding:0px 0px 10px 10px">
         <div style="width:100%"> 
@@ -20,7 +20,7 @@
         <ion-item>
          <ion-label position="floating">{{"valor" | translate}} </ion-label>
          <!-- <ion-input *ngIf="teclado != 'text'" type="number" step="0.01"  [(ngModel)]="valor"></ion-input> -->
-         <ion-input #VL type="text" inputmode="numeric" step="0.01"  [(ngModel)]="valor"
+         <ion-input #VL type="text" [inputmode]="teclado" step="0.01"  [(ngModel)]="valor"
          (ionFocus)="checkObjetivo(VL)"></ion-input>
        </ion-item>
       </div>

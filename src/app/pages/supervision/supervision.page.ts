@@ -63,7 +63,7 @@ export class SupervisionPage implements OnInit {
 
   goTo(link?){
     if (!link) link='/home/supervision'
-    this.router.navigateByUrl(link);
+    this.router.navigateByUrl(link, {replaceUrl:true});
   }
 
   //*************  FUNCTIONS *************/

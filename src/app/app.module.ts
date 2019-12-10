@@ -18,7 +18,7 @@ import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-nati
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Device } from '@ionic-native/device/ngx';
-
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 
 import { AppComponent } from './app.component';
@@ -73,6 +73,7 @@ export function createTranslateLoader(http: HttpClient) {
     SQLite,
     Network,
     Camera,
+    BarcodeScanner,
     SocialSharing,
     FileTransfer,
     File,

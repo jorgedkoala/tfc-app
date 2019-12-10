@@ -94,7 +94,7 @@ public desactivado:boolean=false;
 
   goTo(link?){
     if (!link) link='/home'
-    this.router.navigateByUrl(link);
+    this.router.navigateByUrl(link, {replaceUrl:true});
   }
 
   //*************  FUNCTIONS *************/

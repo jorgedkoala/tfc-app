@@ -772,7 +772,7 @@ if (version) localStorage.setItem("versioncontrols",version);
 
                 this.sql.executeSql(query,[])
                 .then((data) => {
-                  console.log('***********OK INSERT LIMPIEZASREALIZADAS', data)
+                  console.log('***********OK INSERT LIMPIEZASREALIZADAS PARA SUPERVISAR', data)
                 },
                 (error)=>{ console.log('***********ERROR SUPERVISIONLIMPIEZA', error)});
               }
@@ -848,7 +848,7 @@ getLimpiezasRealizadas() {
 console.log("479->Inicio LimpizasRealizadas", moment(this.Momento).diff(moment(), 'seconds'));
 this.supervisionLimpiezas=[];
 //this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
-            this.sql.executeSql("SELECT * FROM supervisionlimpieza WHERE idsupervisor = ?",[sessionStorage.getItem("idusuario")]).then((data) => {
+            this.sql.executeSql("SELECT * FROM supervisionlimpieza WHERE idsupervisor = ? AND supervision < 1",[sessionStorage.getItem("idusuario")]).then((data) => {
             for(let i = 0; i < data.rows.length; i++) {
                 this.supervisionLimpiezas.push(new supervisionLimpieza(
                   data.rows.item(i).id,

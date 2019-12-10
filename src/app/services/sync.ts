@@ -105,6 +105,7 @@ public getMisMaquinas(userid): Observable<any>
     let mismaquinas = this.http.get(`${this.baseurl}views/getmaquinas.php?idempresa=${this.idempresa}&_dc=1470480375978`);
     return mismaquinas;
 }
+
 public getMisPiezas(userid): Observable<any>
 {
     let mispiezas = this.http.get(`${this.baseurl}views/getpiezas.php?idempresa=${this.idempresa}&_dc=1470480375978`);
@@ -121,7 +122,7 @@ public getMisLimpiezasRealizadas(userid): Observable<any>
        let mislimpiezas = this.http.get(`${this.baseurl}views/getlimpiezasrealizadas.php?idempresa=${this.idempresa}&_dc=1470480375978`);
         return mislimpiezas;
         
-    }
+}
 
 
 public getMisUsers(): Observable<any>

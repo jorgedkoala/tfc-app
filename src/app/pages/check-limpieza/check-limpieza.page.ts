@@ -95,7 +95,7 @@ export class CheckLimpiezaPage implements OnInit {
 
   goTo(link?){
     if (!link) link='/home/checkLimpiezas'
-    this.router.navigateByUrl(link);
+    this.router.navigateByUrl(link, {replaceUrl:true});
   }
 
   //*************  FUNCTIONS *************/
@@ -176,12 +176,9 @@ export class CheckLimpiezaPage implements OnInit {
    fecha= moment(this.hoy).format('YYYY-MM-DD HH:mm')
     this.guardarLimpiezaRealizada(elemento,fecha,x)
     console.log("TERMINAR",elemento);
-  
   }
   x++;
   });
-  
-  
   }
   
   guardarLimpiezaRealizada(elemento: checkLimpieza, fecha:Date, x?){
@@ -465,5 +462,8 @@ async  showHelp(elem){
     toast.present();
   }
   
+test(){
+  alert('TEST OK');
+}
   
 }

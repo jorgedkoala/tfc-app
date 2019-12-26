@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, Event as NavigationEvent, NavigationEnd, } from '@angular/router';
 //*****CUSTOM TEMPLATE */
 import { TranslateService } from '@ngx-translate/core';
 import { Servidor } from '../../services/servidor';
@@ -46,9 +46,18 @@ export class LoginPage implements OnInit {
   //*************  INIT *************/
   ngOnInit() {
     console.log('INIT login');
-    if (this.checkLogin() == true){
-      this.goTo();
-    }
+
+    // console.log('LOGIN ROUTER EVENT: ',this.router.url,this.router.routerState)
+    // console.log('LOGIN ROUTER MENU: ',this.router.url != '/login/menu');
+            if (this.checkLogin() == true && this.router.url != '/login/menu'){
+              // console.log('GO HOME: ',this.checkLogin() == true,this.router.url != '/login/menu',this.router.url);
+              this.goTo();
+            }else{
+              // console.log('NO GO HOME: ',this.router.url != '/login/menu');
+              this.permanentLoginDelete();
+            }
+
+    
     this.empresa = parseInt(localStorage.getItem("idempresa"));
     this.nombreEmpresa = localStorage.getItem("empresa")
     this.logoempresa = URLS.SERVER +"logos/"+localStorage.getItem("idempresa")+"/logo.jpg";
@@ -114,6 +123,19 @@ export class LoginPage implements OnInit {
           sessionStorage.setItem("nombre",this.nombre);
           sessionStorage.setItem("password",this.password);
           sessionStorage.setItem("idusuario",this.data.logged.toString());
+  }
+  permanentLoginDelete(){
+    let fecha =new Date().toString();
+          localStorage.removeItem("loggedTime");
+          localStorage.removeItem("nombre");
+          localStorage.removeItem("password");
+          localStorage.removeItem("idusuario");
+          localStorage.removeItem("tipoUser");
+          localStorage.removeItem("superuser");
+          localStorage.removeItem("login");
+          sessionStorage.removeItem("nombre");
+          sessionStorage.removeItem("password");
+          sessionStorage.removeItem("idusuario");
   }
   checkLogin():boolean{
     console.log('CHECKLOGIN');

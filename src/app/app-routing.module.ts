@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'check', loadChildren: './pages/check/check.module#CheckPageModule' },
   { path: 'sync', loadChildren: './pages/sync/sync.module#SyncPageModule' },
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },
+  { path: 'login/:menu', loadChildren: './pages/login/login.module#LoginPageModule' },
   { path: 'check-limpieza', loadChildren: './pages/check-limpieza/check-limpieza.module#CheckLimpiezaPageModule' },
   { path: 'control', loadChildren: './pages/control/control.module#ControlPageModule' },
   { path: 'informes', loadChildren: './pages/informes/informes.module#InformesPageModule' },
@@ -28,7 +29,7 @@ const routes: Routes = [
   { path: 'mantenimiento', loadChildren: './pages/mantenimiento/mantenimiento.module#MantenimientoPageModule' },
   { path: 'traspasos', loadChildren: './pages/traspasos/traspasos.module#TraspasosPageModule' },
   { path: 'entradas-mp', loadChildren: './pages/entradas-mp/entradas-mp.module#EntradasMPPageModule' },
-   { path: 'lector', loadChildren: './pages/lector/lector.module#LectorPageModule' }
+  { path: 'lector', loadChildren: './pages/lector/lector.module#LectorPageModule' }
 ];
 
 @NgModule({

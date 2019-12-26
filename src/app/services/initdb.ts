@@ -28,7 +28,7 @@ public newDB:boolean=false;
 //Crea nuevas tablas servicios de entrada
 //************  */
 public versionDBLocal: number=16;
-public version:string="v.4.40"
+public version:string="v.4.41"
 //*****************  VERSION BBDD */
 
 public hayConexion:boolean=false;

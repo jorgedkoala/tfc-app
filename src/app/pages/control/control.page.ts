@@ -341,10 +341,12 @@ quality: 50,
 targetWidth: 300,
 targetHeight: 300,
 correctOrientation: true
-}).then((imageData) => {
+}).then(
+  (imageData) => {
 // imageData is a base64 encoded string
 this.base64Image = "data:image/jpeg;base64," + imageData;
-}, (err) => {
+}, 
+(err) => {
 console.debug(err);
 });
 }

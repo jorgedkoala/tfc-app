@@ -22,6 +22,15 @@
           <ion-item *ngFor="let accion of acciones">
             <ion-label class="ion-text-wrap">{{accion}}</ion-label>
           </ion-item>
+          <hr>
+          <ion-item-divider color="secondary" *ngIf="alertas.length>0">
+            <ion-label>
+              Alertas
+            </ion-label>
+          </ion-item-divider>
+          <ion-item *ngFor="let alert of alertas">
+            <ion-label class="ion-text-wrap">{{alert}}</ion-label>
+          </ion-item>
         </ion-list>
       </div>
 
@@ -30,8 +39,8 @@
 
 <div style="width:100%;display:flex">
 <ion-button (click)="scan()" twitter style="width: 30%;">{{"scan" | translate}}</ion-button> 
-<!-- <ion-button (click)="terminar()" [disabled]="desactivado" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
-<ion-button [disabled]="hayIncidenciaAd>0"  color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%">{{"incidencia" | translate}}</ion-button>  -->
+<ion-button (click)="finaliza()" [disabled]="desactivado" twitter style="width: 30%;">{{"terminar" | translate}}</ion-button> 
+<!-- <ion-button [disabled]="hayIncidenciaAd>0"  color="danger" (click)="nuevaIncidencia()" twitter style="width: 30%">{{"incidencia" | translate}}</ion-button>  -->
 </div>     
 <!-- <img [src]="base64Image" *ngIf="base64Image" /> -->
 </ion-card-content>

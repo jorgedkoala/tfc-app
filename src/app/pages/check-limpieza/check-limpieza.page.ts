@@ -56,14 +56,19 @@ export class CheckLimpiezaPage implements OnInit {
   public events: Events,
   public platform: Platform
   ) {
-    let limpieza = this.servidor.getParam();
-    this.idlimpiezazona =  limpieza.idlimpiezazona;
-    this.nombreLimpieza = limpieza.nombrelimpieza;
-    this.fecha_prevista = limpieza.fecha;
+
   }
 
   //*************  INIT *************/
   ngOnInit() {
+
+    let limpieza = this.servidor.getParam();
+    if (limpieza){
+    this.idlimpiezazona =  limpieza.idlimpiezazona;
+    this.nombreLimpieza = limpieza.nombrelimpieza;
+    this.fecha_prevista = limpieza.fecha;
+    }
+    
     this.platform.ready().then(() => {
       if (!this.checks) {
         console.log('crea Checks',this.checks);
@@ -165,7 +170,7 @@ export class CheckLimpiezaPage implements OnInit {
   }
   
   terminar(){
-    console.debug("terminar",this.checkLimpiezas);
+    console.log("terminar",this.checkLimpiezas);
     this.numProcesados = this.checkLimpiezas.filter(element=>element.checked==true).length;
     let x = 0;
     this.checkLimpiezas.forEach((elemento)=>{

@@ -16,7 +16,8 @@
         "atras":"",
         "entradasMP":"Recepció M.P.",
         "m-correctivo":"Mateniment C.",
-        "empresa":"Empresa"
+        "empresa":"Empresa",
+        "lector":"Lector QR"
     },
     "alertas": {
         "error": "Error",

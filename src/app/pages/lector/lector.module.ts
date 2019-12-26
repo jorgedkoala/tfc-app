@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
-
+//import { CheckLimpiezaPageModule } from '../check-limpieza/check-limpieza.module'
  import { LectorPage } from './lector.page';
 
 const routes: Routes = [
@@ -19,6 +19,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+ //   CheckLimpiezaPageModule,
     TranslateModule.forChild(),
     RouterModule.forChild(routes)
   ],

@@ -29,7 +29,7 @@ const routes: Routes = [
   { path: 'mantenimiento', loadChildren: './pages/mantenimiento/mantenimiento.module#MantenimientoPageModule' },
   { path: 'traspasos', loadChildren: './pages/traspasos/traspasos.module#TraspasosPageModule' },
   { path: 'entradas-mp', loadChildren: './pages/entradas-mp/entradas-mp.module#EntradasMPPageModule' },
-  { path: 'lector', loadChildren: './pages/lector/lector.module#LectorPageModule' }
+  // { path: 'lector', loadChildren: './pages/lector/lector.module#LectorPageModule' }
 ];
 
 @NgModule({

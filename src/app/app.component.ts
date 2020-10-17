@@ -36,7 +36,7 @@ export class AppComponent {
     { title: 'menu.sync' , url: '/sync',icon: 'sync' },
     {title: 'menu.config',url: '/config',icon: 'cog'},
     { title: 'menu.login' , url: '/login/menu',icon: 'key' },
-     { title: 'menu.lector' , url: '/lector',icon: 'qr-scanner' }
+    //  { title: 'menu.lector' , url: '/lector',icon: 'qr-scanner' }
   ];
 
   //if (localStorage.getItem("idempresa") == "26"){//Entorno produccion

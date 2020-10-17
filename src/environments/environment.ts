@@ -7,7 +7,8 @@ export const environment = {
 };
 
 export const vaqueria="2";
-export const server = 'https://tfc1-181808.appspot.com/';
+// export const server = 'https://tfc1-181808.appspot.com/';
+export const server = 'https://api-dot-tfc-proacciona-es.ew.r.appspot.com/';
 // export var usuario: Object = {"user":"demo","password":"demo","idioma":null};
 // export const server = 'https://tfc.proacciona.es/';
 /*

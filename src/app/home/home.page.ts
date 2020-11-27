@@ -213,7 +213,6 @@ public moduloMantenimiento:boolean=false;
             //this.cargaListas();
           
 
-
         })
 
     this.cambio=0;
@@ -1107,6 +1106,7 @@ closeLoading(){
 console.log('##HIDE LOADING HOME');
 setTimeout(() => {
 console.log('Async operation has ended');
+if (this.loader)
 this.loader.dismiss();
 }, 2500);
 }

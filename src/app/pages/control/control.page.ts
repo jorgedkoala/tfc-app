@@ -106,7 +106,7 @@ export class ControlPage implements OnInit {
       let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
       this.servidor.login(URLS.LOGIN, param).subscribe(
         response => {
-          if (response.success == 'true') {
+          if (response["success"] == 'true') {
             // Guarda token en sessionStorage
             localStorage.setItem('token', response.token);
             }
@@ -125,6 +125,7 @@ export class ControlPage implements OnInit {
   }
 
   goTo(link?){
+    console.log('GOTO',link);
     if (!link) link='/home/controles'
 this.router.navigateByUrl(link, {replaceUrl:true});
 

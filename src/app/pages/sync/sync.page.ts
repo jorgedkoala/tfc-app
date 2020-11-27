@@ -64,7 +64,7 @@ login(){
     let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
   this.servidor.login(URLS.LOGIN, param).subscribe(
     response => {
-      if (response.success == 'true') {
+      if (response["success"] == 'true') {
         // Guarda token en sessionStorage
         localStorage.setItem('token', response.token);
         }
@@ -93,7 +93,7 @@ isTokenExired (token) {
  let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
     this.servidor.login(URLS.LOGIN, param).subscribe(
       response => {
-        if (response.success == 'true') {
+        if (response["success"] == 'true') {
           // Guarda token en sessionStorage
           localStorage.setItem('token', response.token);
         }else{}

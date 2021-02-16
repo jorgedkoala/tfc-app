@@ -25,8 +25,8 @@ const routes: Routes = [
   { path: 'supervision', loadChildren: './pages/supervision/supervision.module#SupervisionPageModule' },
   { path: 'tanques', loadChildren: './pages/tanques/tanques.module#TanquesPageModule' },
   { path: 'incidencias', loadChildren: './pages/incidencias/incidencias.module#IncidenciasPageModule' },
-  { path: 'm-correctivo', loadChildren: './pages/m-correctivo/m-correctivo.module#MCorrectivoPageModule' },
-  { path: 'mantenimiento', loadChildren: './pages/mantenimiento/mantenimiento.module#MantenimientoPageModule' },
+  // { path: 'm-correctivo', loadChildren: './pages/m-correctivo/m-correctivo.module#MCorrectivoPageModule' },
+  // { path: 'mantenimiento', loadChildren: './pages/mantenimiento/mantenimiento.module#MantenimientoPageModule' },
   { path: 'traspasos', loadChildren: './pages/traspasos/traspasos.module#TraspasosPageModule' },
   { path: 'entradas-mp', loadChildren: './pages/entradas-mp/entradas-mp.module#EntradasMPPageModule' },
   // { path: 'lector', loadChildren: './pages/lector/lector.module#LectorPageModule' }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { NavController,Events } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 
 import { Sync } from '../../services/sync';
+import { EventosService } from '../../services/eventos.service';
 
 import { ResultadoControl, ResultadoControlLocal, ResultadoCechklist, ResultadosControlesChecklist, checkLimpieza, limpiezaRealizada, Supervision, mantenimientoRealizado, Incidencia,ServicioEntrada, ProveedorLoteProducto } from '../../models/models';
 
@@ -41,7 +42,8 @@ public intervalo:any;
   public db :SQLite,
   public network:Network, 
   public periodos: PeriodosProvider,
-  public events:Events
+  // public events:Events,
+  public eventos: EventosService
   ) {}
 
   ngOnInit() {
@@ -66,7 +68,7 @@ login(){
     response => {
       if (response["success"] == 'true') {
         // Guarda token en sessionStorage
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('token', response["token"]);
         }
         });
       
@@ -101,7 +103,7 @@ isTokenExired (token) {
       this.sync_data_checklist('SYNC');
       this.sync_checklimpieza();
       this.sync_data_supervision();
-      this.sync_mantenimientos();
+      // this.sync_mantenimientos();
       this.sync_incidencias(-1,0,'Incidencias');
       this.sync_entradasMP()
       .then((resultadosEntradas)=>{
@@ -165,7 +167,7 @@ isTokenExired (token) {
           );
           //*******FIN FOREACH */
         });
-        this.events.publish('sync','stop');
+        this.eventos.setProcesing({'estado':'stop'});
         }
       }, (error) => {
         console.log(error);
@@ -328,7 +330,8 @@ isTokenExired (token) {
           }
           localStorage.setItem("syncchecklimpieza", "0");
           this.initdb.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage.getItem("syncchecklist"))+parseInt(localStorage.getItem("syncsupervision"))+parseInt(localStorage.getItem("syncchecklimpieza"))+parseInt(localStorage.getItem("syncmantenimiento"))+parseInt(localStorage.getItem("syncincidencia"));
-          this.events.publish('sync',{'estado':'stop'});
+          // this.events.publish('sync',{'estado':'stop'});
+          this.eventos.setProcesing({'estado':'stop'})
           console.log('***STOP SENDED');
           // let param = "&entidad=limpieza_realizada";
           // this.servidor.postObject(URLS.STD_ITEM, JSON.stringify(arrayfila),param).subscribe(
@@ -429,52 +432,52 @@ isTokenExired (token) {
     });
   }
 
-  sync_mantenimientos(){
-    this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
-      db2.executeSql("select * from mantenimientosrealizados", []).then((data) => {
-        if (data.rows.length > 0) {
-          console.log('anviar elementos:',data.rows.length);
-          let param = "&entidad=mantenimientos_realizados";
-          let entidad;
-          let arrayfila = [];
-          for (let fila = 0; fila < data.rows.length; fila++) {
-            let mantenimiento = new mantenimientoRealizado(null, data.rows.item(fila).idmantenimiento, data.rows.item(fila).idmaquina, data.rows.item(fila).maquina, 
-            data.rows.item(fila).mantenimiento,data.rows.item(fila).fecha_prevista,data.rows.item(fila).fecha,data.rows.item(fila).idusuario,data.rows.item(fila).responsable,
-            data.rows.item(fila).descripcion,data.rows.item(fila).elemento,data.rows.item(fila).tipo,data.rows.item(fila).tipo2,
-            data.rows.item(fila).causas,data.rows.item(fila).tipo_evento,data.rows.item(fila).idempresa,data.rows.item(fila).imagen,data.rows.item(fila).pieza,data.rows.item(fila).cantidadPiezas);
+  // sync_mantenimientos(){
+  //   this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
+  //     db2.executeSql("select * from mantenimientosrealizados", []).then((data) => {
+  //       if (data.rows.length > 0) {
+  //         console.log('anviar elementos:',data.rows.length);
+  //         let param = "&entidad=mantenimientos_realizados";
+  //         let entidad;
+  //         let arrayfila = [];
+  //         for (let fila = 0; fila < data.rows.length; fila++) {
+  //           let mantenimiento = new mantenimientoRealizado(null, data.rows.item(fila).idmantenimiento, data.rows.item(fila).idmaquina, data.rows.item(fila).maquina, 
+  //           data.rows.item(fila).mantenimiento,data.rows.item(fila).fecha_prevista,data.rows.item(fila).fecha,data.rows.item(fila).idusuario,data.rows.item(fila).responsable,
+  //           data.rows.item(fila).descripcion,data.rows.item(fila).elemento,data.rows.item(fila).tipo,data.rows.item(fila).tipo2,
+  //           data.rows.item(fila).causas,data.rows.item(fila).tipo_evento,data.rows.item(fila).idempresa,data.rows.item(fila).imagen,data.rows.item(fila).pieza,data.rows.item(fila).cantidadPiezas);
           
-            this.servidor.postObject(URLS.STD_ITEM, mantenimiento, param).subscribe(
-              response => {
-                if (response.success) {
-                  if (data.rows.item(fila).idmantenimiento > 0){
-                  if(mantenimiento.tipo_evento == "mantenimiento"){
-                    entidad = "maquina_mantenimiento";
-                    }else{
-                    entidad = "maquina_calibraciones";              
-                    }   
-                  this.sync_incidencias(data.rows.item(fila).id, response.id, 'Maquinaria');        
-                  this.updateFechaElemento(mantenimiento.idmantenimiento,entidad,'idmantenimiento');
-                    }
-                  db2.executeSql("DELETE from mantenimientosrealizados WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
-                    console.log("deleted 1 item");
-                  },
-                (error)=>{console.log('Deleting mantenimientosrelizados ERROR',error)});
-                }
-              },
-              error => console.log(error),
-              () => { });
-            }
-            localStorage.setItem("syncmantenimiento","0");
-            this.initdb.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage.getItem("syncchecklist"))+parseInt(localStorage.getItem("syncsupervision"))+parseInt(localStorage.getItem("syncchecklimpieza"))+parseInt(localStorage.getItem("syncmantenimiento"))+parseInt(localStorage.getItem("syncincidencia"));
-        }
-      }, (error) => {
-        console.log(error);
-        alert("error, no se han podido sincronizar todos los datos [mantenimientosrealizados] " + error.message);
-      });
-    }, (error) => {
-      console.log("ERROR al abrir la bd: ", error);
-    });
-  }
+  //           this.servidor.postObject(URLS.STD_ITEM, mantenimiento, param).subscribe(
+  //             response => {
+  //               if (response.success) {
+  //                 if (data.rows.item(fila).idmantenimiento > 0){
+  //                 if(mantenimiento.tipo_evento == "mantenimiento"){
+  //                   entidad = "maquina_mantenimiento";
+  //                   }else{
+  //                   entidad = "maquina_calibraciones";              
+  //                   }   
+  //                 this.sync_incidencias(data.rows.item(fila).id, response.id, 'Maquinaria');        
+  //                 this.updateFechaElemento(mantenimiento.idmantenimiento,entidad,'idmantenimiento');
+  //                   }
+  //                 db2.executeSql("DELETE from mantenimientosrealizados WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
+  //                   console.log("deleted 1 item");
+  //                 },
+  //               (error)=>{console.log('Deleting mantenimientosrelizados ERROR',error)});
+  //               }
+  //             },
+  //             error => console.log(error),
+  //             () => { });
+  //           }
+  //           localStorage.setItem("syncmantenimiento","0");
+  //           this.initdb.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage.getItem("syncchecklist"))+parseInt(localStorage.getItem("syncsupervision"))+parseInt(localStorage.getItem("syncchecklimpieza"))+parseInt(localStorage.getItem("syncmantenimiento"))+parseInt(localStorage.getItem("syncincidencia"));
+  //       }
+  //     }, (error) => {
+  //       console.log(error);
+  //       alert("error, no se han podido sincronizar todos los datos [mantenimientosrealizados] " + error.message);
+  //     });
+  //   }, (error) => {
+  //     console.log("ERROR al abrir la bd: ", error);
+  //   });
+  // }
 
   sync_incidencias(idElemento,idOrigen, origen){
     console.log('seleccionar incidencias a enviar:',idElemento, idOrigen, origen);

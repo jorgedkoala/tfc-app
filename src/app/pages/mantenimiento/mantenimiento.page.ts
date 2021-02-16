@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Events, Platform } from '@ionic/angular';
+import {  Platform } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
@@ -14,6 +14,7 @@ import { Network } from '@ionic-native/network/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
+import { EventosService } from '../../services/eventos.service';
 import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 //*****CUSTOM TEMPLATE */
 @Component({
@@ -56,7 +57,7 @@ export class MantenimientoPage implements OnInit {
   private sync: SyncPage, 
   private initdb: Initdb,
   public camera: Camera,
-  public events: Events,
+  public eventos: EventosService,
   public platform: Platform
   ) {
     //console.debug("param",this.params.get('mantenimiento'));
@@ -91,9 +92,9 @@ export class MantenimientoPage implements OnInit {
           let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
           this.servidor.login(URLS.LOGIN, param).subscribe(
             response => {
-              if (response.success == 'true') {
+              if (response["success"] == 'true') {
                 // Guarda token en sessionStorage
-                localStorage.setItem('token', response.token);
+                localStorage.setItem('token', response["token"]);
                 }
                 });
         }
@@ -184,7 +185,7 @@ updateFecha(fecha,completaFechas){
     });        
     if (this.network.type != 'none') {
       console.debug("conected");
-      this.sync.sync_mantenimientos();
+      // this.sync.sync_mantenimientos();
     }
     else {
       console.debug("update badge syncmantenimientos");
@@ -223,12 +224,17 @@ nuevaIncidencia(){
   //this.navCtrl.push(IncidenciasPage,params);
   this.servidor.setIncidencia(params);
   this.goTo('/incidencias');
-  this.events.subscribe('nuevaIncidencia', (param) => {
-    // userEventData is an array of parameters, so grab our first and only arg
+  this.eventos.incidencia.subscribe((param)=>{
     console.log('Id Incidencia Local', param);
-    this.hayIncidencia = param.idLocal;
+    this.hayIncidencia = param["idLocal"];
     this.servidor.setIncidencia(null);
-  });
+  })
+  // this.events.subscribe('nuevaIncidencia', (param) => {
+  //   // userEventData is an array of parameters, so grab our first and only arg
+  //   console.log('Id Incidencia Local', param);
+  //   this.hayIncidencia = param.idLocal;
+  //   this.servidor.setIncidencia(null);
+  // });
 }
 
 

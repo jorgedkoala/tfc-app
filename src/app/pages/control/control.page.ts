@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import {  Events } from '@ionic/angular';
+// import {  Events } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 //*****CUSTOM TEMPLATE */
@@ -14,6 +14,7 @@ import { Network } from '@ionic-native/network/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
+import { EventosService } from '../../services/eventos.service';
 import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 import {SyncPage} from '../sync/sync.page';
 
@@ -61,7 +62,8 @@ export class ControlPage implements OnInit {
   public network:Network, 
   public periodos: PeriodosProvider,
   public sync: SyncPage,
-  public events: Events,
+  // public events: Events,
+  public eventos: EventosService,
   public alertController: AlertController
   ) {
 
@@ -108,7 +110,7 @@ export class ControlPage implements OnInit {
         response => {
           if (response["success"] == 'true') {
             // Guarda token en sessionStorage
-            localStorage.setItem('token', response.token);
+            localStorage.setItem('token', response["token"]);
             }
             });
     }
@@ -464,12 +466,17 @@ parseInt(localStorage.getItem("idempresa")),'Controles',this.control.id ,'Contro
 //this.navCtrl.push(IncidenciasPage,params);
 this.servidor.setIncidencia(params);
 this.goTo('/incidencias')
-this.events.subscribe('nuevaIncidencia', (param) => {
-// userEventData is an array of parameters, so grab our first and only arg
-console.log('Id Incidencia Local', param);
-this.hayIncidenciaAd = param.idLocal;
-this.servidor.setIncidencia(null);
-});
+this.eventos.incidencia.subscribe((param)=>{
+  console.log('Id Incidencia Local', param);
+  this.hayIncidenciaAd = param["idLocal"];
+  this.servidor.setIncidencia(null);
+})
+// this.events.subscribe('nuevaIncidencia', (param) => {
+// // userEventData is an array of parameters, so grab our first and only arg
+// console.log('Id Incidencia Local', param);
+// this.hayIncidenciaAd = param.idLocal;
+// this.servidor.setIncidencia(null);
+// });
 }
 
 setValue(valorText:number | string){

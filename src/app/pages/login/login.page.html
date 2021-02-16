@@ -13,7 +13,7 @@
 <!-- ***********CONTENT************** -->
 <!-- ***********CONTENT************** -->
 <ion-content padding>
-    <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
   <ion-refresher-content
     pullingIcon="arrow-dropdown"
     pullingText="Pull to refresh"

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {  IonRouterOutlet,Events, Platform } from '@ionic/angular';
+import {  IonRouterOutlet, Platform } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
@@ -15,6 +15,8 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
 import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
+import { EventosService } from '../../services/eventos.service';
+
 //*****CUSTOM TEMPLATE */
 @Component({
   selector: 'app-incidencias',
@@ -44,7 +46,8 @@ public desactivado:boolean=false;
   public periodos: PeriodosProvider,
   public initdb: Initdb,
   public sync: SyncPage, 
-  public events: Events,
+  // public events: Events,
+  public eventos: EventosService,
   public camera: Camera
   ) {
 
@@ -53,11 +56,13 @@ public desactivado:boolean=false;
   //*************  INIT *************/
   ngOnDestroy(){
     if(!this.hayIncidencia){
-      this.events.publish('nuevaIncidencia', 0);
+      // this.events.publish('nuevaIncidencia', 0);
+      this.eventos.setIncidencia(0);
     }
   }
 
   ngOnInit() {
+    this.eventos.setIncidencia('TEST COMUNICACION INCIDENCIA');
     console.log('can go back',this.navCtrl.canGoBack());
    this.platform.ready().then(
      ()=>{
@@ -82,9 +87,9 @@ public desactivado:boolean=false;
       let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
       this.servidor.login(URLS.LOGIN, param).subscribe(
         response => {
-          if (response.success == 'true') {
+          if (response["success"] == 'true') {
             // Guarda token en sessionStorage
-            localStorage.setItem('token', response.token);
+            localStorage.setItem('token', response["token"]);
             }
             });
     }
@@ -114,13 +119,17 @@ public desactivado:boolean=false;
   creaIncidencia(){
      let fecha = moment(this.hoy).format('YYYY-MM-DD HH:mm');
      let mensaje;
+     console.log("creando incidencia:");
      //this.translate.get("alertas."+incidencia).subscribe(resultado => { mensaje = resultado});
     this.db.create({name: 'data.db',location: 'default'})
-    .then((db2: SQLiteObject) => { db2.executeSql('INSERT INTO incidencias (fecha, incidencia, solucion, responsable, idempresa, origen, idOrigen, origenasociado, idOrigenasociado, foto, descripcion, estado,idElemento) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    .then((db2: SQLiteObject) => { 
+      console.log("insert local incidencia");
+      db2.executeSql('INSERT INTO incidencias (fecha, incidencia, solucion, responsable, idempresa, origen, idOrigen, origenasociado, idOrigenasociado, foto, descripcion, estado,idElemento) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
     [fecha, this.incidencia.incidencia,this.incidencia.solucion,parseInt(sessionStorage.getItem("idusuario")),parseInt(localStorage.getItem("idempresa")),this.incidencia.origen,this.incidencia.idOrigen,this.incidencia.origenasociado,this.incidencia.idOrigenasociado,this.incidencia.foto,this.incidencia.descripcion,-1,-1]).then(
-  (Resultado) => { console.debug("insert_incidencia_ok:",Resultado);
+  (Resultado) => { console.log("insert_incidencia_ok:",Resultado);
   let incidencia = {'idLocal':Resultado.insertId}
-  this.events.publish('nuevaIncidencia', incidencia);
+  this.eventos.setIncidencia(incidencia);
+  // this.events.publish('nuevaIncidencia', incidencia);
   this.hayIncidencia=true;
   console.log('can go back',this.navCtrl.canGoBack());
   
@@ -148,13 +157,25 @@ public desactivado:boolean=false;
   }
 
   closeIncidenciaPage(){
+    console.log('close Incidencia Page',this.navCtrl.getLastUrl());
+    this.navCtrl.getLastUrl()
     if (this.navCtrl.canGoBack()){
-      this.navCtrl.pop();
+      console.log('close Incidencia Page via GoBack');
+      // this.navCtrl.pop();
+      console.log('#',this.navCtrl.activateEvents);
+      console.log('#',this.navCtrl.activatedRoute);
+      console.log('#',this.navCtrl.activatedRouteData);
+      console.log('#',this.navCtrl.component);
+      console.log('#',this.navCtrl.stackEvents);
+      this.goTo(this.navCtrl.getLastUrl());
     }else{
-      //this.navCtrl.setRoot(HomePage);     
+      //this.navCtrl.setRoot(HomePage);   
+      console.log('close Incidencia Page via goto /HOME');  
       this.goTo();
     }
   }
+
+
 
   takeFoto(){
     this.base64Image = "data:image/jpeg;base64,";

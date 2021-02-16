@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController,ActionSheetController, Events, Platform } from '@ionic/angular';
+import { ToastController,ActionSheetController, Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
 import { TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,8 @@ import { Network } from '@ionic-native/network/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
+import { EventosService } from '../../services/eventos.service';
+
 import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 //*****CUSTOM TEMPLATE */
 @Component({
@@ -53,7 +55,8 @@ export class CheckLimpiezaPage implements OnInit {
   public actionSheetCtrl: ActionSheetController,
   private sync: SyncPage, 
   private initdb: Initdb,
-  public events: Events,
+  // public events: Events,
+  public eventos: EventosService,
   public platform: Platform
   ) {
 
@@ -89,9 +92,9 @@ export class CheckLimpiezaPage implements OnInit {
           let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
           this.servidor.login(URLS.LOGIN, param).subscribe(
             response => {
-              if (response.success == 'true') {
+              if (response["success"] == 'true') {
                 // Guarda token en sessionStorage
-                localStorage.setItem('token', response.token);
+                localStorage.setItem('token', response["token"]);
                 }
                 });
         }
@@ -254,7 +257,8 @@ export class CheckLimpiezaPage implements OnInit {
       if (this.network.type != 'none') {
         console.log("conected**");
         if (this.numProcesados==0) {
-          this.events.publish('sync',{'estado':'start'});
+          // this.events.publish('sync',{'estado':'start'});
+          this.eventos.setProcesing({'estado':'start'});
           console.log('***START SENDED');
           this.sync.sync_checklimpieza();
         }
@@ -428,14 +432,24 @@ export class CheckLimpiezaPage implements OnInit {
     //this.navCtrl.push(IncidenciasPage,params);
     this.servidor.setIncidencia(params);
     this.goTo('/incidencias');
-    this.events.subscribe('nuevaIncidencia',(param)=>{
-      this.hayIncidencia[i] = param.idLocal;
+
+    this.eventos.incidencia.subscribe((param)=>{
+      console.log('Id Incidencia Local', param);
+      this.hayIncidencia = param["idLocal"];
       this.indexIncidenciaActivada=-1;
       console.log(i,this.hayIncidencia);
       
-      this.events.unsubscribe('nuevaIncidencia');
+      // this.eventos.incidencia.unsubscribe();
       this.servidor.setIncidencia(null);
     })
+    // this.events.subscribe('nuevaIncidencia',(param)=>{
+    //   this.hayIncidencia[i] = param.idLocal;
+    //   this.indexIncidenciaActivada=-1;
+    //   console.log(i,this.hayIncidencia);
+      
+    //   this.events.unsubscribe('nuevaIncidencia');
+    //   this.servidor.setIncidencia(null);
+    // })
   }
   
   }

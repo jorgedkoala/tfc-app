@@ -121,7 +121,7 @@ if (this.machine >0){
       //this.initdb.badge += 1;
       if (this.network.type != 'none') {
         console.debug("conected");
-        this.sync.sync_mantenimientos();
+        // this.sync.sync_mantenimientos();
         //this.navCtrl.pop();
         this.goTo();
       }

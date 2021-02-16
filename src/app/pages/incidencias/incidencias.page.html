@@ -33,7 +33,7 @@
       <hr>   
     <ion-button (click)="takeFoto()" twitter style="width: 47%;">{{"foto" | translate}}</ion-button> 
     <ion-button (click)="creaIncidencia()" [disabled]="desactivado" twitter style="width: 47%;">{{textoBoton | translate}}</ion-button> 
-     
+    <ion-button (click)="closeIncidenciaPage()"  twitter style="width: 47%;">{{'cerrar' | translate}}</ion-button> 
     <img [src]="base64Image" *ngIf="base64Image" />
     </ion-content>
     

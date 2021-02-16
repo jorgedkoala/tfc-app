@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AlertController,ActionSheetController, Platform, Events, IonSlides } from '@ionic/angular';
+import { AlertController,ActionSheetController, Platform, IonSlides } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
@@ -14,6 +14,7 @@ import {SyncPage} from '../sync/sync.page';
 import { Initdb } from '../../services/initdb';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
+import { EventosService } from '../../services/eventos.service';
 import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 // import { ConsoleReporter } from 'jasmine';
 //*****CUSTOM TEMPLATE */
@@ -87,7 +88,8 @@ export class CheckPage implements OnInit {
   public camera: Camera,
   private alertCtrl: AlertController,  
   public actionSheetCtrl: ActionSheetController,
-  public events: Events
+  // public events: Events,
+  public eventos: EventosService
   ) {
 let checklist= this.servidor.getParam();
     this.idchecklist =  checklist.idchecklist;
@@ -115,9 +117,9 @@ let checklist= this.servidor.getParam();
       let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
       this.servidor.login(URLS.LOGIN, param).subscribe(
         response => {
-          if (response.success == 'true') {
+          if (response["success"] == 'true') {
             // Guarda token en sessionStorage
-            localStorage.setItem('token', response.token);
+            localStorage.setItem('token', response["token"]);
             if (this.idchecklist == parseInt(localStorage.getItem('triggerEntradasMP'))){
               let checklist= this.servidor.getParam();
               this.lote=checklist.lote;
@@ -511,12 +513,17 @@ async  opciones(control) {
     
     //this.navCtrl.push(IncidenciasPage,params);
     this.goTo('/incidencias')
-    this.events.subscribe('nuevaIncidencia', (param) => {
-      // userEventData is an array of parameters, so grab our first and only arg
-      console.log('Id Incidencia Local', param);
-      this.hayIncidencia = param.idLocal;
-      this.servidor.setIncidencia(null);
-    });
+this.eventos.incidencia.subscribe((param)=>{
+  console.log('Id Incidencia Local', param);
+  this.hayIncidencia = param["idLocal"];
+  this.servidor.setIncidencia(null);
+})
+    // this.events.subscribe('nuevaIncidencia', (param) => {
+    //   // userEventData is an array of parameters, so grab our first and only arg
+    //   console.log('Id Incidencia Local', param);
+    //   this.hayIncidencia = param.idLocal;
+    //   this.servidor.setIncidencia(null);
+    // });
   }
 
 

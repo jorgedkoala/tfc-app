@@ -136,6 +136,7 @@ export class LoginPage implements OnInit {
           sessionStorage.removeItem("nombre");
           sessionStorage.removeItem("password");
           sessionStorage.removeItem("idusuario");
+          console.log('logged deleted')
   }
   checkLogin():boolean{
     console.log('CHECKLOGIN');

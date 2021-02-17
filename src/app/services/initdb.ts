@@ -35,7 +35,12 @@ public hayConexion:boolean=false;
 public momentoCambioEstado:number=0;
 //public db: SQLite;
 
-  constructor(public http: Http, public sync: Sync,public db :SQLite,private platform: Platform,) {
+  constructor(
+    //   public http: Http, 
+      public sync: Sync,
+      public db :SQLite,
+      private platform: Platform
+      ) {
     console.log('Hello Initdb Provider');
     //this.db = new SQLite();
     this.platform.ready().then(() => {

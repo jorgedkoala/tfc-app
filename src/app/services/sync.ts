@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Http, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { map,tap } from 'rxjs/operators';
 import 'rxjs/add/operator/catch';

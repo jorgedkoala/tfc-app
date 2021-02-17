@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Events, Platform, NavController } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */

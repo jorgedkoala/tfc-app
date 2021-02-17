@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Events, Platform,AlertController, ActionSheetController, LoadingController } from '@ionic/angular';
+import { Platform,AlertController, ActionSheetController, LoadingController } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */

@@ -14,7 +14,9 @@ import * as moment from 'moment';
 
 export class PeriodosProvider {
 
-  constructor(public http: Http) {
+  constructor(
+    // public http: Http
+    ) {
     console.log('Hello PeriodosProvider Provider');
   }
 

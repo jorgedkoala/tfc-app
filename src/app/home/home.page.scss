@@ -1,9 +1,11 @@
-.welcome-card ion-img {
-  max-height: 35vh;
-  overflow: hidden;
-}
 
-// page-home {
+
+ page-home {
+  .welcome-card ion-img {
+    max-height: 35vh;
+    overflow: hidden;
+  }
+  
   img.center{
       display:block;
       margin:0 auto;
@@ -34,5 +36,5 @@
       background-position-x: 50%;
       background-size: 180px;
   }
-//   }
+  }
   

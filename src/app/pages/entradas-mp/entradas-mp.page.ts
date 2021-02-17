@@ -73,9 +73,9 @@ public myform: FormGroup;
         let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
         this.servidor.login(URLS.LOGIN, param).subscribe(
           response => {
-            if (response.success == 'true') {
+            if (response["success"] == 'true') {
               // Guarda token en sessionStorage
-              localStorage.setItem('token', response.token);
+              localStorage.setItem('token', response["token"]);
               this.preLoad();
               }
               });
@@ -147,8 +147,8 @@ hayUpdates() {
     this.servidor.getObjects(URLS.VERSION_USERS, parametros).subscribe(
       response => {
   
-        if (response.success == 'true' && response.data) {
-          for (let element of response.data) {
+        if (response["success"] == 'true' && response["data"]) {
+          for (let element of response["data"]) {
             updates = element.updatecontrols;
           }
           resolve(updates);
@@ -171,8 +171,8 @@ getFamilias() {
       this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
         response => {
           this.familias = [];
-          if (response.success == 'true' && response.data) {
-            for (let element of response.data) {
+          if (response["success"] == 'true' && response["data"]) {
+            for (let element of response["data"]) {
               this.familias.push(new FamiliasProducto(element.nombre,element.idempresa,element.nivel_destino,element.id));
             }
            // this.listaZonas.emit(this.limpiezas);
@@ -297,8 +297,8 @@ console.debug(JSON.stringify(error))
 // let param = "&entidad=proveedores_entradas_producto"+"&field=idproveedor&idItem="+this.loteSelected.idproveedor;
 //   this.servidor.postObject(URLS.STD_ITEM, this.loteSelected,param).subscribe(
 //     response => {
-//       if (response.success) {
-//         this.loteSelected.id = response.id;
+//       if (response["success"]) {
+//         this.loteSelected.id = response["id"];
 //         console.log(this.loteSelected.id);
 //         if (this.hayTrigger){
 //           this.setServiciosDeEntrada(this.loteSelected.id);
@@ -317,10 +317,10 @@ hayTriggerServiciosEntrada(){
       this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
         response => {
           console.log(response);
-          if (response.success == 'true' && response.data) {
-            console.log(response.data,response.data.length)
+          if (response["success"] == 'true' && response["data"]) {
+            console.log(response["data"],response["data"].length)
 
-            for (let element of response.data) {
+            for (let element of response["data"]) {
               if (element.entidadOrigen == 'proveedores_entradas_producto' && element.entidadDestino=='checklist'){
                 this.hayTrigger=true;
                 localStorage.setItem('triggerEntradasMP',element.idDestino);
@@ -340,7 +340,7 @@ hayTriggerServiciosEntrada(){
 // let servicioEntrada=new ServicioEntrada(null,idLote,null,new Date(),this.albaran, parseInt(this.idempresa),null,null);
 //   this.servidor.postObject(URLS.STD_ITEM, servicioEntrada,param).subscribe(
 //     response => {
-//       if (response.success) {
+//       if (response["success"]) {
 //         console.log('servicio de entrada ok');
 //       }
 //   },
@@ -374,7 +374,7 @@ errorEn(motivo:string){
         let valores = '';
         this.idsProveedores=[];
         //this.proveedores.push({"id":0,"nombre":"selecciona"});
-        if (response.success && response.data) {
+        if (response["success"] && response["data"]) {
           this.db.create({name: 'data.db',location: 'default'})
           .then((db2: SQLiteObject) => {
           db2.executeSql("DELETE from proveedores", []).then((data) => {
@@ -383,7 +383,7 @@ errorEn(motivo:string){
         (error)=>{console.log('Deleting proveedores ERROR',error)});
         }
       );
-          for (let element of response.data) { 
+          for (let element of response["data"]) { 
               //this.proveedores.push({"id":element.id,"nombre":element.nombre});
               valores+="("+element.id+",'"+element.nombre+"'),"
             this.idsProveedores.push(element.id);
@@ -416,7 +416,7 @@ errorEn(motivo:string){
       response => {
         let valores = '';
         //this.proveedores.push({"id":0,"nombre":"selecciona"});
-        if (response.success && response.data) {
+        if (response["success"] && response["data"]) {
           this.db.create({name: 'data.db',location: 'default'})
           .then((db2: SQLiteObject) => {
           db2.executeSql("DELETE from productosProveedor", []).then((data) => {
@@ -425,7 +425,7 @@ errorEn(motivo:string){
         (error)=>{console.log('Deleting productos ERROR',error)});
         }
       );
-          for (let element of response.data) { 
+          for (let element of response["data"]) { 
               //this.proveedores.push({"id":element.id,"nombre":element.nombre});
               valores += "("+element.id+","+element.idproveedor+",'"+element.nombre+"'),"
          }

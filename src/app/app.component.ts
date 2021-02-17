@@ -199,8 +199,8 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
     return new Promise(resolve => {
         this.servidor.getObjects(URLS.VERSION_USERS, parametros).subscribe(
           response => {
-            if (response.success == 'true' && response.data) {
-              for (let element of response.data) {
+            if (response["success"] == 'true' && response["data"]) {
+              for (let element of response["data"]) {
                 updates = element.updateusers;
               }
             }

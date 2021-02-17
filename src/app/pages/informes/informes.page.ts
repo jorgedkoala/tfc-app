@@ -55,12 +55,12 @@ export class InformesPage implements OnInit {
     this.innerHtml += 'Solicitado<br>...';
     this.servidor.getSimple(url,param).subscribe(
       async (respuesta)=>{
-        console.log('########',respuesta.json());
+        console.log('########',respuesta);
         this.progreso=90;
-        this.innerHtml += respuesta.json()["contenido"];
-        let descargaUrl = respuesta.json()["url"]; 
-        let descargaPdf = respuesta.json()["urlPdf"]; 
-        let id = respuesta.json()["id"]; 
+        this.innerHtml += respuesta["contenido"];
+        let descargaUrl = respuesta["url"]; 
+        let descargaPdf = respuesta["urlPdf"]; 
+        let id = respuesta["id"]; 
         let time=0;
 
      // if (this.pdf){

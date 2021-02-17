@@ -15,7 +15,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
 import { EventosService } from '../../services/eventos.service';
-import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
+// import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 //*****CUSTOM TEMPLATE */
 @Component({
   selector: 'app-mantenimiento',

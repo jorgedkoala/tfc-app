@@ -14,7 +14,7 @@ import { Network } from '@ionic-native/network/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
-import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
+// import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 import { EventosService } from '../../services/eventos.service';
 
 //*****CUSTOM TEMPLATE */

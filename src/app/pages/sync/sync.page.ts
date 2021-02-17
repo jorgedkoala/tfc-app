@@ -97,7 +97,7 @@ isTokenExired (token) {
       response => {
         if (response["success"] == 'true') {
           // Guarda token en sessionStorage
-          localStorage.setItem('token', response.token);
+          localStorage.setItem('token', response["token"]);
         }else{}
       this.sync_data_control();
       this.sync_data_checklist('SYNC');
@@ -201,9 +201,9 @@ isTokenExired (token) {
           console.log('UPDATING REMOTE DATE',entidad,idElemento,identificador,control);
           this.servidor.putObject(URLS.STD_FECHA, param, control).subscribe(
             (resultado) =>{
-              if (resultado.success == "nuevaFecha"){
-              db2.executeSql("UPDATE " + entidad + " SET fecha  = ? WHERE " + identificador + " = ?", [resultado.nuevaFecha, idElemento]).then((data) => {
-                console.log('UPDATING LOCAL DATE',entidad,resultado.nuevaFecha);
+              if (resultado["success"] == "nuevaFecha"){
+              db2.executeSql("UPDATE " + entidad + " SET fecha  = ? WHERE " + identificador + " = ?", [resultado["nuevaFecha"], idElemento]).then((data) => {
+                console.log('UPDATING LOCAL DATE',entidad,resultado["nuevaFecha"]);
               },
             (error)=>{console.log('ERRORLOG',error)});
               }
@@ -315,11 +315,11 @@ isTokenExired (token) {
             let idUser = data.rows.item(fila).idusuario;
             this.servidor.postObject(URLS.STD_ITEM, limpieza, param).subscribe(
               response => {
-                if (response.success) {
+                if (response["success"]) {
                   this.updateFechaElementoLimpieza(data.rows.item(fila).idelemento,data.rows.item(fila),idUser);
                   //this.sync_incidencias(fila.idLocal, data.id, 'Controles');
-                  this.sync_incidencias(data.rows.item(fila).id, response.id, 'Limpiezas');
-                  console.log('limpieza realizada sended', response.id);
+                  this.sync_incidencias(data.rows.item(fila).id, response["id"], 'Limpiezas');
+                  console.log('limpieza realizada sended', response["id"]);
                   db2.executeSql("DELETE from resultadoslimpieza WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
                     console.log("deleted",data.rows.length);
                   });
@@ -336,8 +336,8 @@ isTokenExired (token) {
           // let param = "&entidad=limpieza_realizada";
           // this.servidor.postObject(URLS.STD_ITEM, JSON.stringify(arrayfila),param).subscribe(
           //   response => {
-          //     if (response.success) {
-          //     console.log('limpieza realizada sended',response.id);
+          //     if (response["success"]) {
+          //     console.log('limpieza realizada sended',response["id"]);
           //   }},
           // error=>console.log(error),
           // ()=>{});
@@ -401,8 +401,8 @@ isTokenExired (token) {
             let param = "?entidad=limpieza_realizada&id="+data.rows.item(fila).idlimpiezarealizada;
             this.servidor.putObject(URLS.STD_ITEM, param, supervision).subscribe(
               response => {
-                if (response.success) {
-                  console.log('#Supervision sended', response.id, supervision);
+                if (response["success"]) {
+                  console.log('#Supervision sended', response["id"], supervision);
                   db2.executeSql("DELETE from supervisionlimpieza WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
                     console.log("deleted",data.rows.length);
                   });
@@ -417,8 +417,8 @@ isTokenExired (token) {
           // let param = "&entidad=limpieza_realizada";
           // this.servidor.postObject(URLS.STD_ITEM, JSON.stringify(arrayfila),param).subscribe(
           //   response => {
-          //     if (response.success) {
-          //     console.log('limpieza realizada sended',response.id);
+          //     if (response["success"]) {
+          //     console.log('limpieza realizada sended',response["id"]);
           //   }},
           // error=>console.log(error),
           // ()=>{});
@@ -448,14 +448,14 @@ isTokenExired (token) {
           
   //           this.servidor.postObject(URLS.STD_ITEM, mantenimiento, param).subscribe(
   //             response => {
-  //               if (response.success) {
+  //               if (response["success"]) {
   //                 if (data.rows.item(fila).idmantenimiento > 0){
   //                 if(mantenimiento.tipo_evento == "mantenimiento"){
   //                   entidad = "maquina_mantenimiento";
   //                   }else{
   //                   entidad = "maquina_calibraciones";              
   //                   }   
-  //                 this.sync_incidencias(data.rows.item(fila).id, response.id, 'Maquinaria');        
+  //                 this.sync_incidencias(data.rows.item(fila).id, response["id"], 'Maquinaria');        
   //                 this.updateFechaElemento(mantenimiento.idmantenimiento,entidad,'idmantenimiento');
   //                   }
   //                 db2.executeSql("DELETE from mantenimientosrealizados WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
@@ -496,9 +496,9 @@ isTokenExired (token) {
           
             this.servidor.postObject(URLS.STD_ITEM, incidencia, param).subscribe(
               response => {
-                if (response.success) {
-                  console.log('incidencia guardada:',response.id);
-                  incidencia.id= response.id;
+                if (response["success"]) {
+                  console.log('incidencia guardada:',response["id"]);
+                  incidencia.id= response["id"];
                   this.sendMailIncidencia(incidencia);
                   db2.executeSql("DELETE from incidencias WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
                     console.log("deleted 1 item incidencia");
@@ -547,7 +547,7 @@ isTokenExired (token) {
     let parametros2 = '&idempresa=' + localStorage.getItem("idempresa") + "&body="+body;
         this.servidor.getObjects(URLS.ALERTES, parametros2).subscribe(
           response => {
-            if (response.success && response.data) {
+            if (response["success"] && response["data"]) {
               console.log('email alerta enviado');
             }
         });
@@ -573,8 +573,8 @@ isTokenExired (token) {
     let param = "&entidad=proveedores_entradas_producto";
       this.servidor.postObject(URLS.STD_ITEM, nuevaEntrada,param).subscribe(
         response => {
-          if (response.success) {        
-            nuevaEntrada.id = response.id;
+          if (response["success"]) {        
+            nuevaEntrada.id = response["id"];
             this.idEntradas.push({'id':nuevaEntrada.id,'idLocal':data.rows.item(fila).id,'idResultadoChecklistLocal':nuevaEntrada.idResultadoChecklistLocal,'albaran':nuevaEntrada.albaran});
 
             console.log('nuevaEntrada id:',nuevaEntrada.id);
@@ -648,7 +648,7 @@ isTokenExired (token) {
           let entrada={'idResultadoChecklist':id};
           this.servidor.putObject(URLS.STD_ITEM,param,entrada).subscribe(
             response => {
-              if (response.success) {
+              if (response["success"]) {
                 console.log('**servicio de entrada updated ok',response);
                 }
           },
@@ -677,9 +677,9 @@ isTokenExired (token) {
         this.servidor.getObjects(URLS.STD_ITEM, parametros2).subscribe(
           response => {
             responsables = [];
-            if (response.success && response.data) {
-            //  console.log(response.data)
-              for (let element of response.data) {  
+            if (response["success"] && response["data"]) {
+            //  console.log(response["data"])
+              for (let element of response["data"]) {  
                 responsables.push({'label':element.usuario,'value':element.id});
              }
              resolve ({"data":responsables})

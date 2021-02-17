@@ -15,7 +15,7 @@ import { Initdb } from '../../services/initdb';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
 import { EventosService } from '../../services/eventos.service';
-import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
+// // import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 // import { ConsoleReporter } from 'jasmine';
 //*****CUSTOM TEMPLATE */
 
@@ -579,9 +579,9 @@ checkSlide(slide){
       let param = "&entidad=proveedores_entradas_producto&idempresa="+localStorage.getItem('idempresa')+"&WHERE=albaran is not null AND idResultadoChecklist is null";
         this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
           response => {
-            if (response.success) {
-              console.log('servicio de entrada ok',response.data);
-              let entradas = response.data;
+            if (response["success"]) {
+              console.log('servicio de entrada ok',response["data"]);
+              let entradas = response["data"];
               console.log('resultado entradas: ' + entradas);
               this.source='server';
                 entradas.forEach (entrada => {
@@ -676,10 +676,10 @@ checkSlide(slide){
 //     this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
 //       response => {
 //         this.servicios=[];
-//         if (response.success && response.data) {
-//           console.log('servicio de entrada ok',response.data);
+//         if (response["success"] && response["data"]) {
+//           console.log('servicio de entrada ok',response["data"]);
 //           let resultado = '';
-//           let entradas = response.data;
+//           let entradas = response["data"];
 //           console.log('resultado entradas: ' + entradas);
 //             entradas.forEach (entrada => {
 //               this.servicios.push({
@@ -708,9 +708,9 @@ checkSlide(slide){
 //     db2.executeSql("Select * FROM serviciosEntrada",[]).then((data) => {
 //     console.log ("resultado servicios" + data.rows.length);
 //     this.servicios=[];
-//     // console.log('servicio de entrada ok',response.data);
+//     // console.log('servicio de entrada ok',response["data"]);
 //      let resultado = '';
-//     // let entradas = response.data;
+//     // let entradas = response["data"];
 //     // console.log('resultado entradas: ' + entradas);
 //     //   entradas.forEach (entrada => {
 //     //     this.servicios.push({

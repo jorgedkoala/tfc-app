@@ -325,8 +325,8 @@ return new Promise(resolve => {
   this.servidor.getObjects(URLS.VERSION_USERS, parametros).subscribe(
     response => {
 
-      if (response.success == 'true' && response.data) {
-        for (let element of response.data) {
+      if (response["success"] == 'true' && response["data"]) {
+        for (let element of response["data"]) {
           updates = element.updatecontrols;
         }
         resolve(updates);
@@ -870,9 +870,9 @@ checkProveedores(){
     response => {
       console.log(response);
       console.log('MODULO PROVEEDORES REQUEST');
-      if (response.success == 'true' && response.data) {
-        console.log(response.data,response.data.length)
-        for (let element of response.data) {
+      if (response["success"] == 'true' && response["data"]) {
+        console.log(response["data"],response["data"].length)
+        for (let element of response["data"]) {
           if (element.opcion == 'Modulo Proveedores'){
             console.log('MODULO PROVEEDORES ACTIVO');
             //this.appComponent.appPages.splice(1,0,{title: 'menu.entradasMP',url: '/entradas-mp',icon: 'cart'});
@@ -908,9 +908,9 @@ checkServiciosEntrada(){
     this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
       response => {
         console.log(response);
-        if (response.success == 'true' && response.data) {
-          console.log(response.data,response.data.length)
-          for (let element of response.data) {
+        if (response["success"] == 'true' && response["data"]) {
+          console.log(response["data"],response["data"].length)
+          for (let element of response["data"]) {
             if (element.entidadOrigen == 'proveedores_entradas_producto' && element.entidadDestino=='checklist'){
               localStorage.setItem('triggerEntradasMP',element.idDestino);
             }

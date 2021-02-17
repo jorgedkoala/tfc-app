@@ -14,7 +14,7 @@ import { Network } from '@ionic-native/network/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
-import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
+// import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 //*****CUSTOM TEMPLATE */
 @Component({
   selector: 'app-m-correctivo',
@@ -58,9 +58,9 @@ export class MCorrectivoPage implements OnInit {
           let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
           this.servidor.login(URLS.LOGIN, param).subscribe(
             response => {
-              if (response.success == 'true') {
+              if (response["success"] == 'true') {
                 // Guarda token en sessionStorage
-                localStorage.setItem('token', response.token);
+                localStorage.setItem('token', response["token"]);
                 }
                 });
         }

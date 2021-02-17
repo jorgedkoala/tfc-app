@@ -12,7 +12,7 @@ import { Network } from '@ionic-native/network/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
-import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
+// // import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 //*****CUSTOM TEMPLATE */
 @Component({
   selector: 'app-traspasos',
@@ -92,9 +92,9 @@ export class TraspasosPage implements OnInit {
             let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
             this.servidor.login(URLS.LOGIN, param).subscribe(
               response => {
-                if (response.success == 'true') {
+                if (response["success"] == 'true') {
                   // Guarda token en sessionStorage
-                  localStorage.setItem('token', response.token);
+                  localStorage.setItem('token', response["token"]);
                   this.preLoad();
                   }
                   });
@@ -136,10 +136,10 @@ getOrden(idorden:number,fuente:string) {
     let parametros = '&idempresa=' + this.idempresa+"&entidad=produccion_orden&WHERE=id=&valor="+idorden+"";
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
-            if (response.success == 'true' && response.data) {
-              for (let element of response.data) {
-                  console.debug(response.data);
-                 // if (response.data.length==1){
+            if (response["success"] == 'true' && response["data"]) {
+              for (let element of response["data"]) {
+                  console.debug(response["data"]);
+                 // if (response["data"].length==1){
                       if (fuente=="origen"){
                         this.ordenOrigen = new ProduccionOrden(element.id,element.idempresa,element.numlote,new Date(element.fecha_inicio),new Date(element.fecha_fin),new Date(element.fecha_caducidad),element.responsable,element.cantidad,element.tipo_medida,element.nombre,element.familia,element.estado);
                         console.debug("origen",fuente,this.ordenOrigen)
@@ -163,8 +163,8 @@ getAlmacenes() {
             // Vaciar la lista actual
             this.almacenesOrigen = [];
            // this.almacenesOrigen.push(new Almacen(0,0,'Selecciona',0,0,0));
-            if (response.success == 'true' && response.data) {
-              for (let element of response.data) {
+            if (response["success"] == 'true' && response["data"]) {
+              for (let element of response["data"]) {
                 this.almacenesOrigen.push(new Almacen(element.id,element.idempresa,element.nombre,element.capacidad,element.estado,element.idproduccionordenactual,element.level));
               }
              // this.listaZonas.emit(this.limpiezas);
@@ -183,8 +183,8 @@ getAlmacenes() {
           response => {
             this.clientes = [];
             this.clientes.push(new Cliente(this.translateTanque,0,'','','',0));
-            if (response.success == 'true' && response.data) {
-              for (let element of response.data) {
+            if (response["success"] == 'true' && response["data"]) {
+              for (let element of response["data"]) {
                 this.clientes.push(new Cliente(element.nombre,element.idempresa,element.contacto,element.telf,element.email,element.id));
               }
              // this.listaZonas.emit(this.limpiezas);
@@ -197,8 +197,8 @@ getAlmacenes() {
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
             this.familias = [];
-            if (response.success == 'true' && response.data) {
-              for (let element of response.data) {
+            if (response["success"] == 'true' && response["data"]) {
+              for (let element of response["data"]) {
                 this.familias.push(new FamiliasProducto(element.nombre,element.idempresa,element.nivel_destino,element.id));
               }
              // this.listaZonas.emit(this.limpiezas);
@@ -212,8 +212,8 @@ getProveedores(){
             this.proveedores = [];
             //this.proveedores.push({"id":0,"nombre":"selecciona"});
             this.proveedores.push({"id":0,"nombre":this.translateTanque});
-            if (response.success && response.data) {
-              for (let element of response.data) { 
+            if (response["success"] && response["data"]) {
+              for (let element of response["data"]) { 
                   this.proveedores.push({"id":element.id,"nombre":element.nombre});
              }
             }
@@ -234,8 +234,8 @@ getProductos(idProveedor:number){
           response => {
             this.productos = [];
            // this.productos.push({"id":0,"nombre":'selecciona',"familia":0});
-            if (response.success && response.data) {
-              for (let element of response.data) { 
+            if (response["success"] && response["data"]) {
+              for (let element of response["data"]) { 
                   this.productos.push({"id":element.id,"nombre":element.nombre,"familia":element.idfamilia});
              }
             }
@@ -258,8 +258,8 @@ getEntradasProducto(idProducto){
             this.entrada_productos = [];
             this.entrada_productos.push(new ProveedorLoteProducto(null,'nueva entrada',new Date(),new Date(),0,'l.',0,'',idProducto,this.idProveedorActual,parseInt(localStorage.getItem("idempresa")),null,null));
             //this.entrada_productos.push(new ProveedorLoteProducto('selecciona',new Date(),new Date(),0,'',0,'',0,0,0,0));
-            if (response.success && response.data) {
-              for (let element of response.data) { 
+            if (response["success"] && response["data"]) {
+              for (let element of response["data"]) { 
                   this.entrada_productos.push(new ProveedorLoteProducto(element.id,element.numlote_proveedor,element.fecha_entrada,element.fecha_caducidad,element.cantidad_inicial,element.tipo_medida,element.cantidad_remanente,element.doc,element.idproducto,element.idproveedor,element.idempresa,null,null));
              }
             }
@@ -348,8 +348,8 @@ setNuevaEntradaProveedor(){
     let parametros = '&idempresa=' + this.idempresa+"&entidad=proveedores_entradas_producto"+"&field=idproveedor&idItem="+this.loteSelected.idproveedor+"&WHERE=fecha_entrada=curdate()";
         this.servidor.getObjects(URLS.STD_SUBITEM, parametros).subscribe(
           response => {
-            if (response.success == 'true' && response.data) {
-              for (let element of response.data) {
+            if (response["success"] == 'true' && response["data"]) {
+              for (let element of response["data"]) {
                       contadorP++;
                 }
             }
@@ -367,10 +367,10 @@ let param = "&entidad=proveedores_entradas_producto"+"&field=idproveedor&idItem=
     this.loteSelected.fecha_caducidad = moment().add(7,'days').toDate();
     this.servidor.postObject(URLS.STD_ITEM, this.loteSelected,param).subscribe(
       response => {
-        if (response.success) {
+        if (response["success"]) {
           //this.items.push(this.nuevoItem);
-          //this.items[this.items.length-1].id= response.id;
-          this.loteSelected.id = response.id;
+          //this.items[this.items.length-1].id= response["id"];
+          this.loteSelected.id = response["id"];
           this.setNewOrdenProduccion();
         }
     },
@@ -434,8 +434,8 @@ this.nuevaOrden.tipo_medida = "l.";
     let parametros = '&idempresa=' + this.idempresa+"&entidad=produccion_orden&WHERE=fecha_inicio=curdate()&valor=";
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
-            if (response.success == 'true' && response.data) {
-              for (let element of response.data) {
+            if (response["success"] == 'true' && response["data"]) {
+              for (let element of response["data"]) {
                   if (element.numlote.substr(0,1)=='F'){
                       contadorF++;
                   }else{
@@ -466,10 +466,10 @@ this.nuevaOrden.nombre = this.nuevaOrden.numlote;
 let param = "&entidad=produccion_orden";
     this.servidor.postObject(URLS.STD_ITEM, this.nuevaOrden,param).subscribe(
       response => {
-        if (response.success) {
-          this.nuevaOrden.id = response.id;
+        if (response["success"]) {
+          this.nuevaOrden.id = response["id"];
           //this.items.push(this.nuevoItem);
-          this.prepareNewOrdenProduccionDetalle(response.id);
+          this.prepareNewOrdenProduccionDetalle(response["id"]);
           this.nuevaOrden = new ProduccionOrden(0,0,'',new Date(),new Date());
         }
     },
@@ -530,12 +530,12 @@ setNewOrdenProduccionDetalle(idOrden:number, detalleOrden: ProduccionDetalle,fue
     let param = "&entidad=produccion_detalle"+"&field=idorden&idItem="+idOrden;
     this.servidor.postObject(URLS.STD_ITEM, detalleOrden,param).subscribe(
       response => {
-        if (response.success) {
+        if (response["success"]) {
             if (fuente=='origen'){
-          this.nuevoDetalleOrden_Origen.id = response.id
+          this.nuevoDetalleOrden_Origen.id = response["id"]
           this.setRemanente(this.nuevoDetalleOrden_Origen);
             }else{
-          this.nuevoDetalleOrden_Destino.id = response.id
+          this.nuevoDetalleOrden_Destino.id = response["id"]
           this.setRemanente(this.nuevoDetalleOrden_Destino);
             }
         }
@@ -581,8 +581,8 @@ setAlmacen(almacen: Almacen){
     let param = '?id=' + almacen.id +   "&entidad=almacenes";
     this.servidor.putObject(URLS.STD_ITEM,param, almacen).subscribe(
       response => {
-        if (response.success) {
-          //this.passItem.id = response.id
+        if (response["success"]) {
+          //this.passItem.id = response["id"]
           //this.setRemanente(this.passItem);
         }
     },
@@ -602,7 +602,7 @@ setRemanente(detalleProduccion: ProduccionDetalle){
         this.servidor.getObjects(URLS.UPDATE_REMANENTE, parametros).subscribe(
           response => {
             this.entrada_productos = [];
-            if (response.success && response.data) {
+            if (response["success"] && response["data"]) {
               console.debug('updated');
              }
         },
@@ -622,7 +622,7 @@ setNewClienteDistribucion(distribucion: Distribucion ){
     let param = "&entidad=clientes_distribucion";
     this.servidor.postObject(URLS.STD_ITEM, distribucion,param).subscribe(
       response => {
-        if (response.success) {
+        if (response["success"]) {
         }
     },
     error =>{

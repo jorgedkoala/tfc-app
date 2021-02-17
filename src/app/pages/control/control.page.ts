@@ -15,7 +15,7 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
 import { EventosService } from '../../services/eventos.service';
-import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
+// import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 import {SyncPage} from '../sync/sync.page';
 
 
@@ -392,9 +392,9 @@ let param = '&idempresa=' + localStorage.getItem("idempresa") + '&body=' +body;
 this.servidor.getObjects(URLS.SENDALERT, param).subscribe(
 response => {
 console.log('respuesta send alert: ', response);
-if (response.success == 'true') {
+if (response["success"] == 'true') {
 // Guarda token en sessionStorage
-//localStorage.setItem('token', response.token);
+//localStorage.setItem('token', response["token"]);
 
 }
 });

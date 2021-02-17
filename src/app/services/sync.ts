@@ -38,7 +38,7 @@ createAuthorizationHeader(headers:Headers) {
     headers.append('token', 'qwerty123456'); 
   }
   constructor(
-      public http: Http,
+      public http: HttpClient,
       public loadingCtrl: LoadingController,
       public db :SQLite,
       public device:Device) {
@@ -164,12 +164,12 @@ setResultados(resultados,table):any
         // devuelve un Observable
        return this.http.post(this.posturl, params)
             .pipe(
-            map(res => JSON.parse(res.json())),       
+            // map(res => JSON.parse(res.json())),       
             //.map (res => JSON.parse(res.json()))
             tap((data => {console.debug(data);
                         //alert("data" + data);
                         console.debug("control2" + table);
-                         if (data.success== "true"){
+                         if (data["success"]== "true"){
                              console.debug("insert correcto " + table);
                             ///BORRAR DATOS TABLA 
                                 //this.storage = new Storage(SqlStorage, {name:'tfc'});

@@ -25,7 +25,7 @@ import { format } from 'url';
   providers: [SyncPage]
 })
 export class EntradasMPPage implements OnInit {
-  @ViewChild('selProds', { static: false }) selProds:IonSelect;
+  @ViewChild('selProds') selProds:IonSelect;
   private cantidadTraspaso: number;
   public productos: any[]=[];
   public proveedores: any[]=[];

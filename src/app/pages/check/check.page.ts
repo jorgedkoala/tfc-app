@@ -40,7 +40,7 @@ export class Checks {
 })
 
 export class CheckPage implements OnInit {
-  @ViewChild('slides', { static: false }) slides:IonSlides;
+  @ViewChild('slides') slides:IonSlides;
   public checklistcontroles: Checks[] = [];
   public isActualChecklistComplete=false;
   // public templatechecklistcontroles: Checks[] = [];

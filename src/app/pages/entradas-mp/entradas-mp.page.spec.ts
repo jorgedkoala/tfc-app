@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EntradasMPPage } from './entradas-mp.page';
 
@@ -7,7 +7,7 @@ describe('EntradasMPPage', () => {
   let component: EntradasMPPage;
   let fixture: ComponentFixture<EntradasMPPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EntradasMPPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

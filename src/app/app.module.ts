@@ -25,7 +25,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 
-import {HttpModule,Http} from '@angular/http';
+// import {HttpModule,Http} from '@angular/http';
 import { HttpClientModule,HttpClient } from '@angular/common/http';
 import {TranslateModule,TranslateLoader,TranslateService  } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -52,7 +52,7 @@ export function createTranslateLoader(http: HttpClient) {
     SharedModule,
     BrowserModule,
     FormsModule,
-    HttpModule,
+    // HttpModule,
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
@@ -82,7 +82,7 @@ export function createTranslateLoader(http: HttpClient) {
     SplashScreen,
     TranslateService,
     Device,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, useValue: undefined }
   ],
   bootstrap: [AppComponent]
 })

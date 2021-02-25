@@ -50,10 +50,10 @@ export class LoginPage implements OnInit {
     // console.log('LOGIN ROUTER EVENT: ',this.router.url,this.router.routerState)
     // console.log('LOGIN ROUTER MENU: ',this.router.url != '/login/menu');
             if (this.checkLogin() == true && this.router.url != '/login/menu'){
-              // console.log('GO HOME: ',this.checkLogin() == true,this.router.url != '/login/menu',this.router.url);
+               console.log('GO HOME: ',this.checkLogin() == true,this.router.url != '/login/menu',this.router.url);
               this.goTo();
             }else{
-              // console.log('NO GO HOME: ',this.router.url != '/login/menu');
+               console.log('NO GO HOME: ',this.router.url != '/login/menu',this.router.url);
               this.permanentLoginDelete();
             }
 

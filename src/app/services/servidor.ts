@@ -65,10 +65,10 @@ public platform:string;
 
   getObjects(url: string, param: string) {
     let parametros = '?token=' + localStorage.getItem('token') + param; 
-    //console.log(url + parametros)
+    console.log(url + parametros)
     return this.llamada.get(url + parametros)
       //.map((res: Response) => JSON.parse(res.json()));
-      // .pipe(map(res => JSON.parse(res.json())))
+       .pipe(map(res => JSON.parse(res.toString())))
   }
 getSimple(url: string, param: string){
   return this.llamada.get(url + param);
@@ -87,7 +87,7 @@ postSimple(url: string, object: Object, param?: string) {
     paramopcional += "&userId="+localStorage.getItem('login')+"&idempresa="+localStorage.getItem('idempresa') + "&origen=app"+this.platform;
     let parametros = '?token=' + localStorage.getItem('token') +paramopcional;
     return this.llamada.post(url + parametros, payload)
-    // .pipe(map(res => JSON.parse(res.json())))
+    .pipe(map(res => JSON.parse(res.toString())))
       //.map((res: Response) => JSON.parse(res.json()));
   }
 
@@ -96,14 +96,14 @@ postSimple(url: string, object: Object, param?: string) {
     let payload = JSON.stringify(object);        
     let parametros = param + '&token=' + localStorage.getItem('token')+"&userId="+localStorage.getItem('login')+"&idempresa="+localStorage.getItem('idempresa') + "&origen=app"+this.platform;
     return this.llamada.put(url + parametros, payload)
-    // .pipe(map(res => JSON.parse(res.json())))
+    .pipe(map(res => JSON.parse(res.toString())))
       //.map((res: Response) => JSON.parse(res.json()));
   }
   
   deleteObject(url: string, param: string) {
     let parametros = param + '&token=' + localStorage.getItem('token')+"&userId="+localStorage.getItem('login')+"&idempresa="+localStorage.getItem('idempresa') + "&origen=app"+this.platform;
     return this.llamada.delete(url + parametros)
-    // .pipe(map(res => JSON.parse(res.json())))
+    .pipe(map(res => JSON.parse(res.toString())))
       //.map((res: Response) => JSON.parse(res.json()));
   }
 
@@ -112,7 +112,7 @@ postSimple(url: string, object: Object, param?: string) {
     let parametros = '?token=' + localStorage.getItem('token') + '&idempresa=' + idEmpresa+ "&origen=app"+this.platform;
     formData.append('logo', files[0], files[0].name);
     return this.llamada.post(url + parametros, formData)
-    // .pipe(map(res => JSON.parse(res.json())))
+    .pipe(map(res => JSON.parse(res.toString())))
       //.map((res: Response) => JSON.parse(res.json()));
   }
 
@@ -121,7 +121,7 @@ postSimple(url: string, object: Object, param?: string) {
     let parametros = '?token=' + localStorage.getItem('token') + '&idEntidad=' + idEntidad +'&entidad=' + entidad+'&idEmpresa=' + idEmpresa+'&field=' + field+ "&origen=app"+this.platform;
     formData.append('doc', files[0], files[0].name);
     return this.llamada.post(url + parametros, formData)
-    // .pipe(map(res => JSON.parse(res.json())))
+    .pipe(map(res => JSON.parse(res.toString())))
       //.map((res: Response) => JSON.parse(res.json()));
   }
 

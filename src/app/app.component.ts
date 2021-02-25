@@ -127,7 +127,7 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
         this.hayUpdates().then(
         (versionActual)=>{
           if (versionActual == -1){
-            console.log('ha habido un error # app.component:89');
+            console.log('ha habido un error # app.component:130');
           }else{
       console.debug("versionActual Usuarios",versionActual);
       if (versionActual > parseInt(localStorage.getItem("versionusers"))) {
@@ -196,17 +196,21 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
     console.log('hay updates');
     let updates:number = -1;
     let parametros = '&idempresa=' + localStorage.getItem("idempresa")+"&entidad=empresas";
+    console.log('getting version users');
     return new Promise(resolve => {
         this.servidor.getObjects(URLS.VERSION_USERS, parametros).subscribe(
           response => {
+            console.log(response,response["success"],typeof(response))
             if (response["success"] == 'true' && response["data"]) {
               for (let element of response["data"]) {
                 updates = element.updateusers;
               }
+            }else{
+              console.log('not success', response);
             }
         },
         (error)=>{
-          console.log(error)
+          console.log('servidor getObjects Error',error)
           resolve(updates);
       },
         ()=>{
@@ -214,7 +218,7 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
         });
     });
         //return updates;
-    }
+}
 
     existe(){
       let resultado;

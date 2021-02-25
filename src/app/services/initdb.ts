@@ -47,7 +47,7 @@ public momentoCambioEstado:number=0;
         console.log('Initdb Provider platform ready');
         this.db.create({name: "data.db", location: "default"}).then(() => {
             //this.refresh();
-            console.log("base de datos abierta");
+            console.log("init db create db base de datos abierta");
         }, (error) => {
             console.log("ERROR al abrir la bd: ", error);
         });

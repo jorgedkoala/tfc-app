@@ -108,7 +108,7 @@ let checklist= this.servidor.getParam();
       this.db.create({name: "data.db", location: "default"}).then(() => {
         //this.refresh();
         this.getChecklists(this.idchecklist);
-        console.debug("base de datos abierta");
+        console.debug("base de datos abierta 4");
     }, (error) => {
         console.debug("ERROR al abrir la bd: ", error);
     });

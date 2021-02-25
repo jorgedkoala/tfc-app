@@ -267,7 +267,7 @@ isTokenExired (token) {
 
   sync_checklistcontroles(id, idlocal) {
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
-      console.log("base de datos abierta");
+      console.log("base de datos abierta 2");
 
       console.log("send: " + id + " idlocal= " + idlocal);
       db2.executeSql("select idcontrolchecklist,  " + id + " as idresultadochecklist ,resultado,descripcion,fotocontrol from resultadoscontroleschecklist WHERE idresultadochecklist = ?", [idlocal]).then((data) => {
@@ -298,7 +298,7 @@ isTokenExired (token) {
 
   sync_checklimpieza() {
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
-      console.log("base de datos abierta");
+      console.log("base de datos abierta 3");
 
       console.log("send limpiezas: ");
       db2.executeSql("select * from resultadoslimpieza ", []).then((data) => {

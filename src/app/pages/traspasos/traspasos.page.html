@@ -14,10 +14,11 @@
 <!-- ***********CONTENT************** -->
 <ion-content padding>
 
-    <ion-fab  bottom right>
-<button (click)="verTanques(almacenes)" ion-fab color="primary" mini>
-  <ion-icon name='md-beaker'></ion-icon>
-</button>
+  
+      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+<ion-fab-button (click)="verTanques(almacenes)" ion-fab color="primary" mini>
+  <ion-icon name='beaker-outline'></ion-icon>
+</ion-fab-button>
 </ion-fab>
 
 
@@ -113,6 +114,11 @@
 <ion-label color="primary" floating>{{'traspasos.Cantidad traspaso' | translate}}</ion-label>
 <ion-input type="number"  placeholder="{{'traspasos.Cantidad traspaso' | translate}}" [(ngModel)]="cantidadTraspaso">
   </ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="stacked"> {{'traspasos.Fecha Entrada' | translate}}</ion-label>
+  <ion-datetime (ionChange)="setFechaTraspaso($event)" displayFormat="DD-MM-YYYY"  [(ngModel)]="fechaTraspaso"></ion-datetime>
 </ion-item>
 
 </div>

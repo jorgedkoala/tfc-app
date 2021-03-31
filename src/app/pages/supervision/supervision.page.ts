@@ -106,11 +106,11 @@ export class SupervisionPage implements OnInit {
 
   setLimpiezasRealizadas() {
     return new Promise((resolve, reject) => {
-      this.sync.getMisLimpiezasRealizadas(this.initdb.logged).map(res => res.json()).subscribe(
+      this.sync.getMisLimpiezasRealizadas(this.initdb.logged).subscribe(
         data => {
           this.mislimpiezasrealizadas = JSON.parse(data);
           console.log('resultado limpiezasRealizadas: ' + this.mislimpiezasrealizadas.success);
-          //    console.log('success check: ' +this.mischecks.data[0].nombre);
+          //    console.log('success check: ' +this.mischecks.data[0].nombre);.map(res => res.json())
           if (this.mislimpiezasrealizadas.success) {
             console.log("if LIMPIEZAS REALIZADAS.SUCEESS");
             //test

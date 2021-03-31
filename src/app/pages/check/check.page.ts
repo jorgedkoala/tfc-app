@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AlertController,ActionSheetController, Platform, IonSlides } from '@ionic/angular';
+import { AlertController,ActionSheetController, Platform, IonSlides, NavController } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
@@ -44,7 +44,7 @@ export class CheckPage implements OnInit {
   public checklistcontroles: Checks[] = [];
   public isActualChecklistComplete=false;
   // public templatechecklistcontroles: Checks[] = [];
-  public entradasMP: any[] = [];
+  public entradasMP: any[] = null;
   public entradasMPGroupByAlbaran: any[]=[];
   public entradaActual:any=null;
   public source: string = null;
@@ -89,7 +89,8 @@ export class CheckPage implements OnInit {
   private alertCtrl: AlertController,  
   public actionSheetCtrl: ActionSheetController,
   // public events: Events,
-  public eventos: EventosService
+  public eventos: EventosService,
+  public navCtrl: NavController
   ) {
 let checklist= this.servidor.getParam();
     this.idchecklist =  checklist.idchecklist;
@@ -364,10 +365,10 @@ return new Promise((resolve)=>{
     //******UPDATE FECHA LOCAL*/
     db2.executeSql('UPDATE checklist set  fecha = ? WHERE idchecklist = ?',[proxima_fecha, this.idchecklist]).then
     ((Resultado) => {
-         console.log("updated fecha: ", Resultado);
+         console.log("updated fecha LOCAL: ", proxima_fecha, Resultado);
     },
     (error) => {
-      console.debug('ERROR ACTUALIZANDO FECHA', error);
+      console.log('ERROR ACTUALIZANDO FECHA', error);
      });
       });        
       if (this.network.type != 'none' && this.syncOK) {
@@ -512,7 +513,8 @@ async  opciones(control) {
     this.servidor.setIncidencia(params);
     
     //this.navCtrl.push(IncidenciasPage,params);
-    this.goTo('/incidencias')
+    //this.goTo('/incidencias')
+    this.navCtrl.navigateForward('incidencias')
 this.eventos.incidencia.subscribe((param)=>{
   console.log('Id Incidencia Local', param);
   this.hayIncidencia = param["idLocal"];
@@ -573,13 +575,14 @@ checkSlide(slide){
 
 
   loadEntradas(){
-    this.entradasMP=[]
+    
     if (this.network.type != 'none') {
       console.log('ENTRADAS PRODUCTO ONLINE');
       let param = "&entidad=proveedores_entradas_producto&idempresa="+localStorage.getItem('idempresa')+"&WHERE=albaran is not null AND idResultadoChecklist is null";
         this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
           response => {
             if (response["success"]) {
+              this.entradasMP=[]
               console.log('servicio de entrada ok',response["data"]);
               let entradas = response["data"];
               console.log('resultado entradas: ' + entradas);

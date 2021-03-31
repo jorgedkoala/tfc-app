@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import { map,tap } from 'rxjs/operators';
 import 'rxjs/add/operator/catch';
 import 'rxjs/Rx';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import { Device } from '@ionic-native/device/ngx';
 
 //import { Config } from '../config/config';
@@ -28,6 +28,7 @@ private posturl: string;
 public idchecklist;
 public platform;
 proveedoresActivo = new BehaviorSubject(null);
+public deletedLocalRows: Subject<Boolean> = new Subject();
 
  //public baseurl: string = "https://tfc.proacciona.es/api";
 //public baseurl: string = "http://tfc.ntskoala.com/api";
@@ -156,7 +157,7 @@ setResultados(resultados,table):any
 {
    console.log('resultados ' + table + ": " +resultados);
     this.posturl = this.baseurl+'actions/set'+table+'.php?idempresa='+this.idempresa+"&userId="+localStorage.getItem("idusuario")+"&plataforma=app"+this.platform;
-    console.debug(this.posturl);
+    console.log(this.posturl);
         let params = resultados;
         //let headers = new Headers();
         //headers.append('Content-type', 'application/x-www-form-urlencoded');
@@ -165,23 +166,34 @@ setResultados(resultados,table):any
        return this.http.post(this.posturl, params)
             .pipe(
             // map(res => JSON.parse(res.json())),       
-            //.map (res => JSON.parse(res.json()))
-            tap((data => {console.debug(data);
+            //map (res => JSON.parse(res.json()))
+            tap(((data:any) => {
+                data = JSON.parse(data)
+                console.log(data);
+
                         //alert("data" + data);
-                        console.debug("control2" + table);
+                        console.log("control2" + table);
                          if (data["success"]== "true"){
-                             console.debug("insert correcto " + table);
+                             console.log("insert correcto " + table);
                             ///BORRAR DATOS TABLA 
                                 //this.storage = new Storage(SqlStorage, {name:'tfc'});
                  // let db= new SQLite();
                   this.db.create({name: 'data.db',location: 'default'})
                   .then((db2: SQLiteObject) => { db2.executeSql("delete from " + table, []).then(
-                                (data) => { console.debug (JSON.stringify(data.res));}, 
-                                (error) => { console.debug("ERROR -> " + JSON.stringify(error.err));});
+                                (data) => { 
+                                    console.log ("%cDELETE LOCAL ROWS FROM TABLE " + table ,"background:red;");
+                                    console.log (JSON.stringify(data));
+                                    this.deletedLocalRows.next(true);
+                                }, 
+                                (error) => { 
+                                    console.log("ERROR -> " + JSON.stringify(error.err));
+                                    this.deletedLocalRows.next(true);
+                                });
                          });//FIN DB
                              }
                          else {
-                             console.debug ("ERROR EN EL INSERT " + table);
+                             console.log ("ERROR EN EL INSERT " + table);
+                             this.deletedLocalRows.next(true);
                              }
                         })));
             

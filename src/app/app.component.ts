@@ -62,7 +62,7 @@ export class AppComponent {
     sync.proveedoresActivo.subscribe(
       (Estado)=>{
         console.log('###############   ACTIVAR PROVEEDORES',Estado);
-        if (Estado){
+        if (Estado && localStorage.getItem('triggerEntradasMP')){
           let indice = this.appPages.findIndex((page)=>page.url=="/entradas-mp");
           if(indice < 0){
           this.appPages.splice(1,0,{title: 'menu.entradasMP',url: '/entradas-mp',icon: 'cart'});
@@ -199,7 +199,8 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
     console.log('getting version users');
     return new Promise(resolve => {
         this.servidor.getObjects(URLS.VERSION_USERS, parametros).subscribe(
-          response => {
+          (response:any) => {
+            response = JSON.parse(response.toString());
             console.log(response,response["success"],typeof(response))
             if (response["success"] == 'true' && response["data"]) {
               for (let element of response["data"]) {

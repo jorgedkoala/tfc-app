@@ -10,8 +10,7 @@
 
 
 
-<!-- ***********CONTENT************** -->
-<!-- ***********CONTENT************** -->
+
 <ion-content padding>
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
   <ion-refresher-content
@@ -24,8 +23,7 @@
 <ion-row>
 <ion-col>
 <img [src]="logoempresa " *ngIf="empresa" (error)="logoempresa='assets/img/pixel.png'" class="center logo"/>
-<!-- <ion-img  [src]="logoempresa" *ngIf="empresa && logoempresa" (ionError)="logoempresa='assets/img/pixel.png'" class="center logo"> -->
-<!-- </ion-img> -->
+
 </ion-col>
 </ion-row>
 
@@ -48,8 +46,4 @@
 
   <ion-button (click)="login()" twitter style="width: 100%;">Login</ion-button> 
 
-
-
-
-
-</ion-content>
+</ion-content> 

@@ -34,7 +34,8 @@ export class Almacen {
     public capacidad: number,
     public estado: number,
     public idproduccionordenactual: number,
-    public level?: number
+    public level?: number,
+    public fechaIniciado?: Date
   ) {}
 }
 

@@ -39,6 +39,7 @@ export class TraspasosPage implements OnInit {
   public level:number;
   private idAlmacenDestino: number;
   public cantidadTraspaso: number;
+  public fechaTraspaso: Date = moment().add(8,"h").toDate();
   public productos: any[]=[];
   public proveedores: any[]=[];
   public clientes: Cliente[]=[];
@@ -92,8 +93,8 @@ export class TraspasosPage implements OnInit {
             let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
             this.servidor.login(URLS.LOGIN, param).subscribe(
               response => {
+                response = JSON.parse(response.toString())
                 if (response["success"] == 'true') {
-                  // Guarda token en sessionStorage
                   localStorage.setItem('token', response["token"]);
                   this.preLoad();
                   }
@@ -136,6 +137,7 @@ getOrden(idorden:number,fuente:string) {
     let parametros = '&idempresa=' + this.idempresa+"&entidad=produccion_orden&WHERE=id=&valor="+idorden+"";
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             if (response["success"] == 'true' && response["data"]) {
               for (let element of response["data"]) {
                   console.debug(response["data"]);
@@ -159,13 +161,14 @@ getAlmacenes() {
 
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             //this.itemActivo = 0;
             // Vaciar la lista actual
             this.almacenesOrigen = [];
            // this.almacenesOrigen.push(new Almacen(0,0,'Selecciona',0,0,0));
             if (response["success"] == 'true' && response["data"]) {
               for (let element of response["data"]) {
-                this.almacenesOrigen.push(new Almacen(element.id,element.idempresa,element.nombre,element.capacidad,element.estado,element.idproduccionordenactual,element.level));
+                this.almacenesOrigen.push(new Almacen(element.id,element.idempresa,element.nombre,element.capacidad,element.estado,element.idproduccionordenactual,element.level,element.fechaIniciado));
               }
              // this.listaZonas.emit(this.limpiezas);
             }
@@ -181,6 +184,7 @@ getAlmacenes() {
     let tanque;
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             this.clientes = [];
             this.clientes.push(new Cliente(this.translateTanque,0,'','','',0));
             if (response["success"] == 'true' && response["data"]) {
@@ -196,6 +200,7 @@ getAlmacenes() {
 
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             this.familias = [];
             if (response["success"] == 'true' && response["data"]) {
               for (let element of response["data"]) {
@@ -209,6 +214,9 @@ getProveedores(){
          let parametros = '&idempresa=' + this.idempresa+"&entidad=proveedores"; 
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
+            //console.log('response',response, typeof(response));
+            response = JSON.parse(response.toString())
+            //console.log('response',response, typeof(response));
             this.proveedores = [];
             //this.proveedores.push({"id":0,"nombre":"selecciona"});
             this.proveedores.push({"id":0,"nombre":this.translateTanque});
@@ -232,6 +240,7 @@ getProductos(idProveedor:number){
          let parametros = '&idempresa=' + this.idempresa+"&entidad=proveedores_productos&field=idproveedor&idItem="+idProveedor; 
         this.servidor.getObjects(URLS.STD_SUBITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             this.productos = [];
            // this.productos.push({"id":0,"nombre":'selecciona',"familia":0});
             if (response["success"] && response["data"]) {
@@ -255,6 +264,7 @@ getEntradasProducto(idProducto){
          let parametros = '&idempresa=' + this.idempresa+"&entidad=proveedores_entradas_producto&field=idproducto&idItem="+idProducto+filtro_dates; 
         this.servidor.getObjects(URLS.STD_SUBITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             this.entrada_productos = [];
             this.entrada_productos.push(new ProveedorLoteProducto(null,'nueva entrada',new Date(),new Date(),0,'l.',0,'',idProducto,this.idProveedorActual,parseInt(localStorage.getItem("idempresa")),null,null));
             //this.entrada_productos.push(new ProveedorLoteProducto('selecciona',new Date(),new Date(),0,'',0,'',0,0,0,0));
@@ -315,6 +325,16 @@ seleccionarDestino(valor:number){
         this.ordenDestino = null;
     }
 }
+setFechaTraspaso(fecha){
+  console.log(this.fechaTraspaso);
+  if (this.ordenOrigen){
+    // this.ordenOrigen.fecha_inicio = moment(this.fechaTraspaso).add(8,"hour").toDate();
+    // this.ordenOrigen.fecha_fin = moment(this.fechaTraspaso).add(8,"hour").toDate();
+  }
+  if (this.loteSelected){
+  this.loteSelected.fecha_entrada = moment(this.fechaTraspaso).add(2,"hour").toDate();
+  }
+}
 
 traspasar(){
 this.ok=false;
@@ -348,6 +368,7 @@ setNuevaEntradaProveedor(){
     let parametros = '&idempresa=' + this.idempresa+"&entidad=proveedores_entradas_producto"+"&field=idproveedor&idItem="+this.loteSelected.idproveedor+"&WHERE=fecha_entrada=curdate()";
         this.servidor.getObjects(URLS.STD_SUBITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             if (response["success"] == 'true' && response["data"]) {
               for (let element of response["data"]) {
                       contadorP++;
@@ -360,13 +381,16 @@ setNuevaEntradaProveedor(){
         },
         ()=>{
 let param = "&entidad=proveedores_entradas_producto"+"&field=idproveedor&idItem="+this.loteSelected.idproveedor;
-   let fecha = new Date();
+  // let fecha = new Date();
+   let fecha = moment(this.fechaTraspaso).add(2,"hour").toDate();
     this.loteSelected.numlote_proveedor = "P"+fecha.getDate() + "/"+ (+fecha.getMonth() + +1)+"/"+fecha.getFullYear()+"-"+contadorP;
     this.loteSelected.cantidad_inicial =  this.cantidadTraspaso;
     this.loteSelected.cantidad_remanente = this.cantidadTraspaso;
+    this.loteSelected.fecha_entrada = moment(fecha).toDate();
     this.loteSelected.fecha_caducidad = moment().add(7,'days').toDate();
     this.servidor.postObject(URLS.STD_ITEM, this.loteSelected,param).subscribe(
       response => {
+        response = JSON.parse(response.toString())
         if (response["success"]) {
           //this.items.push(this.nuevoItem);
           //this.items[this.items.length-1].id= response["id"];
@@ -385,6 +409,7 @@ let param = "&entidad=proveedores_entradas_producto"+"&field=idproveedor&idItem=
 setNewOrdenProduccion(ordenFuente?: ProduccionOrden){
     this.contador= 0;
     let contadorF=0;
+    let fecha = moment(this.fechaTraspaso).add(2,"hour").toDate();
     if (this.almacenDestinoSelected){
         this.nuevaOrden.cantidad=+this.almacenDestinoSelected.estado + +this.cantidadTraspaso;
         this.nuevaOrden.idalmacen = this.almacenDestinoSelected.id;
@@ -422,7 +447,7 @@ setNewOrdenProduccion(ordenFuente?: ProduccionOrden){
         this.nuevaOrden.idcliente = this.clienteSelected.id;
     }
 this.nuevaOrden.idempresa = parseInt(this.idempresa);
-let fecha= new Date();
+//let fecha= new Date();
 this.nuevaOrden.fecha_inicio = fecha;
 this.nuevaOrden.fecha_fin = fecha;
 this.nuevaOrden.responsable = this.userId;
@@ -434,6 +459,7 @@ this.nuevaOrden.tipo_medida = "l.";
     let parametros = '&idempresa=' + this.idempresa+"&entidad=produccion_orden&WHERE=fecha_inicio=curdate()&valor=";
         this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             if (response["success"] == 'true' && response["data"]) {
               for (let element of response["data"]) {
                   if (element.numlote.substr(0,1)=='F'){
@@ -466,6 +492,7 @@ this.nuevaOrden.nombre = this.nuevaOrden.numlote;
 let param = "&entidad=produccion_orden";
     this.servidor.postObject(URLS.STD_ITEM, this.nuevaOrden,param).subscribe(
       response => {
+        response = JSON.parse(response.toString())
         if (response["success"]) {
           this.nuevaOrden.id = response["id"];
           //this.items.push(this.nuevoItem);
@@ -530,6 +557,7 @@ setNewOrdenProduccionDetalle(idOrden:number, detalleOrden: ProduccionDetalle,fue
     let param = "&entidad=produccion_detalle"+"&field=idorden&idItem="+idOrden;
     this.servidor.postObject(URLS.STD_ITEM, detalleOrden,param).subscribe(
       response => {
+        response = JSON.parse(response.toString())
         if (response["success"]) {
             if (fuente=='origen'){
           this.nuevoDetalleOrden_Origen.id = response["id"]
@@ -553,6 +581,9 @@ prepareAlmacenes(newOrden: number){
     if (!this.clienteSelected){
     this.almacenDestinoSelected.estado = +this.almacenDestinoSelected.estado + +this.cantidadTraspaso;
     this.almacenDestinoSelected.idproduccionordenactual = newOrden;
+    if (this.almacenDestinoSelected.estado == this.cantidadTraspaso){
+      this.almacenDestinoSelected.fechaIniciado = moment(this.fechaTraspaso).add(2,"h").toDate();
+    }
     this.setAlmacen(this.almacenDestinoSelected);
     this.getOrden(newOrden,"destino");
     }else{
@@ -565,6 +596,7 @@ prepareAlmacenes(newOrden: number){
     this.almacenOrigenSelected.estado = +this.almacenOrigenSelected.estado - +this.cantidadTraspaso;
     if (this.almacenOrigenSelected.estado == 0){
         this.almacenOrigenSelected.idproduccionordenactual = 0;
+        this.almacenOrigenSelected.fechaIniciado = null;
     }
     this.setAlmacen(this.almacenOrigenSelected);
     this.ordenOrigen = null;
@@ -581,6 +613,7 @@ setAlmacen(almacen: Almacen){
     let param = '?id=' + almacen.id +   "&entidad=almacenes";
     this.servidor.putObject(URLS.STD_ITEM,param, almacen).subscribe(
       response => {
+        response = JSON.parse(response.toString())
         if (response["success"]) {
           //this.passItem.id = response["id"]
           //this.setRemanente(this.passItem);
@@ -601,6 +634,7 @@ setRemanente(detalleProduccion: ProduccionDetalle){
         let parametros = '&idempresa=' + this.idempresa+"&idOrden="+detalleProduccion.idloteinterno+"&idmateriaprima="+detalleProduccion.idmateriaprima+"&cantidad="+detalleProduccion.cantidad; 
         this.servidor.getObjects(URLS.UPDATE_REMANENTE, parametros).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             this.entrada_productos = [];
             if (response["success"] && response["data"]) {
               console.debug('updated');
@@ -622,6 +656,7 @@ setNewClienteDistribucion(distribucion: Distribucion ){
     let param = "&entidad=clientes_distribucion";
     this.servidor.postObject(URLS.STD_ITEM, distribucion,param).subscribe(
       response => {
+        response = JSON.parse(response.toString())
         if (response["success"]) {
         }
     },
@@ -739,6 +774,7 @@ verTanques(almacenes) {
     this.servidor.setParam(almacenes);
       this.navCtrl.navigateForward("/tanques").then(
       response => {
+        //response = JSON.parse(response.toString())
         console.debug('Response ' + response);
       },
       error => {

@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {  IonRouterOutlet, Platform } from '@ionic/angular';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import {  IonRouterOutlet, Platform,IonNav } from '@ionic/angular';
 
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
@@ -16,7 +16,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
 // import { getInjectionTokens } from '@angular/core/src/render3/discovery_utils';
 import { EventosService } from '../../services/eventos.service';
-
+const nav = document.querySelector('ion-nav');
 //*****CUSTOM TEMPLATE */
 @Component({
   selector: 'app-incidencias',
@@ -25,7 +25,7 @@ import { EventosService } from '../../services/eventos.service';
   providers: [SyncPage]
 })
 export class IncidenciasPage implements OnInit, OnDestroy {
-
+ 
   public base64Image: string;
   public origen;
   public idOrigen;
@@ -157,17 +157,19 @@ public desactivado:boolean=false;
   }
 
   closeIncidenciaPage(){
-    console.log('close Incidencia Page',this.navCtrl.getLastUrl());
-    this.navCtrl.getLastUrl()
+    console.log('close Incidencia Page',this.navCtrl.canGoBack());
+    //console.log('close Incidencia Page',this.navCtrl.getPrevious());
+    console.log(this.navCtrl.getLastUrl())
     if (this.navCtrl.canGoBack()){
       console.log('close Incidencia Page via GoBack');
       // this.navCtrl.pop();
-      console.log('#',this.navCtrl.activateEvents);
-      console.log('#',this.navCtrl.activatedRoute);
-      console.log('#',this.navCtrl.activatedRouteData);
-      console.log('#',this.navCtrl.component);
-      console.log('#',this.navCtrl.stackEvents);
-      this.goTo(this.navCtrl.getLastUrl());
+      //console.log('#',this.navCtrl.activateEvents);
+      //console.log('#',this.navCtrl.activatedRoute);
+      //console.log('#',this.navCtrl.activatedRouteData);
+      //console.log('#',this.navCtrl.component);
+      //console.log('#',this.navCtrl.stackEvents);
+      //this.goTo(this.navCtrl.getLastUrl());
+      this.navCtrl.pop();
     }else{
       //this.navCtrl.setRoot(HomePage);   
       console.log('close Incidencia Page via goto /HOME');  

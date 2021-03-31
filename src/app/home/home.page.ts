@@ -62,14 +62,14 @@ public calibraciones: mantenimiento[]=[];
 public maquinas: maquina[]=[];
 public piezas: pieza[]=[];
 public loader:any;
-public status:boolean[]=[false,false,false,false,false,false,false];
+public status:boolean[]=[false,false,false,true,true,true,false,true];
 public sql: SQLiteObject;
 public Momento = moment();
 public cargando: boolean=false;
 public tipoUser: string=localStorage.getItem("tipoUser");
 public superuser: number=parseInt(localStorage.getItem("superuser"));
 public moduloMantenimiento:boolean=false;
-
+public idRouterEvent:number=null;
   constructor(
     private platform: Platform,
     public router: Router,
@@ -104,6 +104,14 @@ public moduloMantenimiento:boolean=false;
     this.platform.ready().then(() => {
       this.checkProveedores();
     console.log("Checking estados...");
+
+    this.sync.deletedLocalRows.subscribe(
+      (localRowsDeleted)=>{
+        console.log("%c///LOCAL ROWS DELETED SO CAN RELOAD LOCAL ITEMS", "color:white;background: blue;");
+        this.cargaListas('DELETED LOCAL ROWS SUBSCRIPTION');
+      }
+    );
+
     this.network.onDisconnect().subscribe(
       estado=>{
         console.log('desconectado diferencia:',estado.timeStamp - this.data.momentoCambioEstado);
@@ -132,6 +140,7 @@ public moduloMantenimiento:boolean=false;
       );
 
     this.cargando = true;
+
     let login = this.data.logged;
         if ((login === undefined || login == null)) {
           console.log("goto login...");
@@ -143,25 +152,29 @@ public moduloMantenimiento:boolean=false;
             console.log("db2",this.sql);
 //            if (!this.cargando) this.cargaListas();
           if (this.network.type != 'none') {
-            console.log("SIN RED...");
-            if (localStorage.getItem("versioncontrols") === null || this.data.newDB) {
-              this.callSincroniza();
+            console.log("HAY RED...");
+            console.log("%c"+localStorage.getItem("versioncontrols")+" "+this.data.newDB.toString(), "color:white;background: blue;");
+            // if (localStorage.getItem("versioncontrols") === null || this.data.newDB) {
+            if (this.data.newDB) {
+              this.callSincroniza('NEWBD');
             } else {
               console.log("HAY .RED CHECK UPDATES..");
               this.hayUpdates().then(
                 (versionActual) => {
                   console.log("versionActual Controles", versionActual);
                   if (versionActual > parseInt(localStorage.getItem("versioncontrols"))) {
-                    this.callSincroniza(versionActual);
+                    console.log("HAY UPDATES CALL SYNCRONIZA");
+                    this.callSincroniza('HAY UPDATES',versionActual);
                   } else {
-                    this.cargaListas();
+                    console.log("NO HAY UPDATES CALL CARGALISTAS");
+                    this.cargaListas("CHECK UPDATES..sin updates");
                   }
                 });
             }
             this.refreshlogo();
           } else {
             alert('No hay conexión, para sincronizar los datos');
-            this.cargaListas();
+            this.cargaListas("CHECK UPDATES..sin conexión");
           }
           });
         }
@@ -175,7 +188,11 @@ public moduloMantenimiento:boolean=false;
       .filter(event => event instanceof NavigationEnd)
       .subscribe(
         (routerEvent: NavigationEvent)=>{
-            console.log('ROUTER EVENT SI HOMEPAGE',routerEvent["url"])
+          console.log("%c"+routerEvent["id"],"background:red;")
+          console.log(this.idRouterEvent,routerEvent["id"],this.idRouterEvent != routerEvent["id"])
+          if (this.idRouterEvent != routerEvent["id"]){
+          this.idRouterEvent=routerEvent["id"];
+            console.log('%cROUTER EVENT SI HOMEPAGE '+routerEvent["url"],"background:pink;")
             switch(routerEvent["url"]){
               // case "/home/mantenimientos":
               //     this.getMantenimientos();
@@ -214,9 +231,11 @@ public moduloMantenimiento:boolean=false;
                   this.getLimpiezasRealizadas();
                 break;
             }
-            //this.cargaListas();
-          
-
+            this.cargaListas('ON INIT ROUTER EVENT '+routerEvent["url"]);
+           }else{
+            this.idRouterEvent=routerEvent["id"];
+           }
+            //console.log('*******',this.controlesList,this.checklistList)
         })
 
     this.cambio=0;
@@ -224,14 +243,14 @@ public moduloMantenimiento:boolean=false;
     this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
       this.sql = db2;
       console.log("db2 ok...",this.sql);
-    if (!this.cargando) this.cargaListas();
+    if (!this.cargando) this.cargaListas('ON INIT 2');
     });
     this.eventos.procesing.subscribe((param)=>{
       console.log('#####',param["estado"]);
       if (param["estado"] == 'start'){
-        this.presentLoading();
+        this.presentLoading('EVENTS: '+param["estado"]);
       }else{
-        this.closeLoading();
+        this.closeLoading('EVENTS: '+param["estado"]);
       }
     })
   });
@@ -251,14 +270,18 @@ syncData(){
 
 
 
-callSincroniza(versionActual?){
+callSincroniza(source,versionActual?){
   this.data.newDB=false;
 this.Momento = moment();
-console.log("Inicio callSincroniza",this.Momento.format("mm:ss"));
-        this.presentLoading();
+console.log("%c*******CALL SYNCRONIZA FROM "+source+"", "background: red;");
+console.log("*******Inicio callSincroniza",this.Momento.format("mm:ss"));
+        this.presentLoading('callSincroniza');
         if (versionActual) versionActual = versionActual.toString();
         this.sincronizate(versionActual).subscribe(
         (valor)=>{
+          if (this.status[0] && this.status[1] && this.status[2] && this.status[3] && this.status[4] && this.status[5]  && this.status[6] && this.status[7]){
+            console.log("%c*******YA SE tENDRIAN QUE  HABER CARGADO LAS LISTAS ", "background: black;color:white");
+          }else{
           console.log("1", valor);
           switch(valor){
             case "controles":
@@ -292,26 +315,28 @@ console.log("Inicio callSincroniza",this.Momento.format("mm:ss"));
 
             if (!(versionActual>0)) localStorage.setItem("versioncontrols","0");
             setTimeout(()=>{ 
-              this.cargaListas();
-              this.status=[false,false,false,false,false,false,false];
-      this.closeLoading();
+              this.cargaListas('callSincroniza STATUS SYNCRO COMPLETES');
+              this.status=[false,false,false,true,true,true,false,true];
+      this.closeLoading('callSincroniza');
       },500);
           }
+        }
         },
         (error)=>console.log(error)
       );
 }
 
-cargaListas(){
+async cargaListas(origen){
+  console.log("%c********CARGA LISTAS"+origen+"","background: yellow;")
 this.cargando=true;
 console.log("Inicio CargaListas", moment(this.Momento).diff(moment(), 'seconds'));
-      this.getControles();
-      this.getChecklists();
-      this.getLimpiezas();
-      this.getLimpiezasRealizadas();
+  await this.getControles()//.then((valor)=>{console.log('%c*GET CONTROLES', "background: black;color:white")});
+  await  this.getChecklists()//.then((valor)=>{console.log('%c*GET CHECKLIST', "background: black;color:white")});
+  await  this.getLimpiezas()//.then((valor)=>{console.log('%c*GET LIMPIEZAS', "background: black;color:white")});
+  await  this.getLimpiezasRealizadas()//.then((valor)=>{console.log('%c*GET LIMPIEZAS REALIZADAS', "background: black;color:white")});
         // this.getMantenimientos();
         // this.getCalibraciones();
-      
+        console.log('%c********FIN CARGA LISTAS'+origen+"", "background: yellow;")      
 console.log("Fin CargaListas", moment(this.Momento).diff(moment(), 'seconds')); 
 setTimeout(()=>{
 this.cargando = false;
@@ -323,7 +348,9 @@ let updates:number = -1;
 let parametros = '&idempresa=' + localStorage.getItem("idempresa")+"&entidad=empresas";
 return new Promise(resolve => {
   this.servidor.getObjects(URLS.VERSION_USERS, parametros).subscribe(
-    response => {
+    (response:any) => {
+      console.log(response);
+      response = JSON.parse(response);
 
       if (response["success"] == 'true' && response["data"]) {
         for (let element of response["data"]) {
@@ -362,7 +389,7 @@ return new Observable((response)=> {
       this.sync.getMisControles(this.data.logged).subscribe(
       data => {
         //test
-        this.miscontroles = JSON.parse(data.json());
+        this.miscontroles = JSON.parse(data);
         console.log('resultado' + this.miscontroles.success);
         //console.log('success: ' +this.miscontroles.data[0].nombre);
         if (this.miscontroles.success){
@@ -386,19 +413,23 @@ return new Observable((response)=> {
                 this.sql.executeSql("INSERT INTO controles (id,idusuario, nombre, pla, minimo, maximo, objetivo, tolerancia, critico,fecha,periodicidad,frecuencia) VALUES" + valores ,[])
                 .then((data) => {
                   console.log('***********OK INSERT CONTROLES', data)
+                  response.next('controles');
                 },
                 (error)=>{ 
-                  console.log('***********ERROR CONTROLES', error)
+                  console.log('***********ERROR CONTROLES', error);
+                  response.next('controles');
                 });
 
                 }, (error) => {
                 console.log("ERROR -> " + JSON.stringify(error));
+                response.next('controles');
                 //alert("Error 1");
               } );
 
           //});
-         }
+         }else{
           response.next('controles');
+         }
          //this.miscontroles.forEach (control => this.saveControl(control));
         }
       },
@@ -407,8 +438,7 @@ return new Observable((response)=> {
         if (version) localStorage.setItem("versioncontrols",version);
        // this.getControles();
       }
-
-  );  
+  );
 
   //CONTROLES
   //CONTROLES
@@ -416,7 +446,7 @@ return new Observable((response)=> {
 //CHECKLISTS
 // DESCARGA CHECKLISTS ENTONCES BORRA LOS LOCALES, LUEGO INSERTA LOS DESCARGADOS EN LOCAL.
       
-      this.sync.getMisChecklists(this.data.logged).map(res => res.json()).subscribe(
+      this.sync.getMisChecklists(this.data.logged).subscribe(
       data => {
          this.mischecks = JSON.parse(data);
               console.log('resultado check: ' + this.mischecks.success);
@@ -445,20 +475,27 @@ return new Observable((response)=> {
                 this.sql.executeSql("INSERT INTO checklist (idchecklist,idusuario, nombrechecklist, idcontrol, nombrecontrol,fecha,periodicidad,frecuencia) VALUES " + valores ,[])
                 .then((data) => {
                   console.log('***********OK INSERT CHECKLIST', data)
+                  response.next('checklists');
                 },
-                (error)=>{ console.log('***********ERROR CHECKLISTS', error)});
+                (error)=>{ 
+                  console.log('***********ERROR CHECKLISTS', error)
+                  response.next('checklists');
+                });
                    
             //this.sql.executeSql("INSERT INTO checklist (idchecklist,idusuario, nombrechecklist, idcontrol, nombrecontrol) VALUES ("+checklist+")").then((data) => {console.log('*****************FIN')});
 
-                console.log(JSON.stringify(data.res));
+                console.log(JSON.stringify(data));
                 }, (error) => {
                 console.log("ERROR -> " + JSON.stringify(error));
+                response.next('checklists');
                 //alert("Error 2");
               } );
           //});
               }
-          response.next('checklists');
+          
                 //this.mischecks.forEach (checklist => this.saveChecklist(checklist));
+            }else{
+              response.next('checklists');
             }
         },
       err => console.error(err),
@@ -475,7 +512,7 @@ return new Observable((response)=> {
 //LIMPIEZAS
 // DESCARGA LIMPIEZAS ENTONCES BORRA LOS LOCALES, LUEGO INSERTA LOS DESCARGADOS EN LOCAL.
       
-      this.sync.getMisLimpiezas(this.data.logged).map(res => res.json()).subscribe(
+      this.sync.getMisLimpiezas(this.data.logged).subscribe(
       data => {
          this.mischeckslimpiezas = JSON.parse(data);
               console.log('resultado checklimpieza: ' + this.mischeckslimpiezas.success);
@@ -504,18 +541,26 @@ return new Observable((response)=> {
 
                 this.sql.executeSql(query,[])
                 .then((data) => {
-                  console.log('***********OK INSERT LIMPIEZASREALIZADAS', data)
+                  console.log('***********OK INSERT LIMPIEZAS', data);
+                  response.next('limpiezas');
                 },
-                (error)=>{ console.log('***********ERROR CHECKLIMPIEZA', error)});
+                (error)=>{ 
+                  console.log('***********ERROR CHECKLIMPIEZA', error)
+                  response.next('limpiezas');
+                });
                 console.log(JSON.stringify('deleted limpiezas: ',data.res));
+                response.next('limpiezas');
                 }, (error) => {
                 console.log("ERROR home. 211 delete mislimpiezas-> " + JSON.stringify(error));
+                response.next('limpiezas');
                 //alert("Error 2");
               } );
           //});
               }
-            response.next('limpiezas');
+            
                 //this.mischecks.forEach (checklist => this.saveChecklist(checklist));
+            }else{
+              response.next('limpiezas');
             }
         },
       err => console.error(err),
@@ -532,8 +577,9 @@ return new Observable((response)=> {
 //LIMPIEZAS REALIZADAS
 // DESCARGA LIMPIEZAS ENTONCES BORRA LOS LOCALES, LUEGO INSERTA LOS DESCARGADOS EN LOCAL.
 
-      this.sync.getMisLimpiezasRealizadas(this.data.logged).map(res => res.json()).subscribe(
+      this.sync.getMisLimpiezasRealizadas(this.data.logged).subscribe(
       data => {
+        console.log('resultado limpiezasRealizadas: ',data)
          this.mislimpiezasrealizadas = JSON.parse(data);
               console.log('resultado limpiezasRealizadas: ' + this.mislimpiezasrealizadas.success);
           //    console.log('success check: ' +this.mischecks.data[0].nombre);
@@ -545,6 +591,7 @@ return new Observable((response)=> {
               console.log("mislimpiezasrealizadas: " + this.mislimpiezasrealizadas);
              //this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
               this.sql.executeSql("delete from supervisionlimpieza",[]).then((data) => {
+                console.log('deleted limpiezas: ',data);
                 let argumentos=[];
                 let valores='';
                 if (this.mislimpiezasrealizadas){
@@ -561,21 +608,31 @@ return new Observable((response)=> {
                 this.sql.executeSql(query,[])
                 .then((data) => {
                   console.log('***********OK INSERT LIMPIEZASREALIZADAS PARA SUPERVISAR', data)
+                  response.next('limpiezasRealizadas');
                 },
                 (error)=>{ console.log('***********ERROR SUPERVISIONLIMPIEZA', error)});
+                response.next('limpiezasRealizadas');
+              }else{
+                response.next('limpiezasRealizadas');
               }
-                console.log(JSON.stringify('deleted limpiezas: ',data.res));
+                
                 }, (error) => {
                 console.log("ERROR home. 211 delete limpiezas Realizadas-> " + JSON.stringify(error));
+                response.next('limpiezasRealizadas');
                 //alert("Error 2");
               } );
           //});
               //}
-            response.next('limpiezasRealizadas');
+            
                 //this.mischecks.forEach (checklist => this.saveChecklist(checklist));
+            }else{
+              response.next('limpiezasRealizadas');
             }
         },
-      err => console.error(err),
+      err => {
+        console.error(err);
+        response.next('limpiezasRealizadas');
+      },
       () => {
         if (version) localStorage.setItem("versioncontrols",version);
         //this.getChecklists();
@@ -633,6 +690,7 @@ saveLimpiezaRealizada(limpiezaRealizada){
 }
 
 getLimpiezasRealizadas() {
+  return new Promise((resolve)=>{
 console.log("479->Inicio LimpizasRealizadas", moment(this.Momento).diff(moment(), 'seconds'));
 this.supervisionLimpiezas=[];
 //this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
@@ -643,12 +701,14 @@ this.supervisionLimpiezas=[];
                   data.rows.item(i).idlimpiezarealizada,
                   data.rows.item(i).idElemento,
                   data.rows.item(i).nombrelimpieza,
+                  data.rows.item(i).idZona,
+                  data.rows.item(i).nombreZona,
                   data.rows.item(i).fecha,
                   data.rows.item(i).tipo,
                   data.rows.item(i).responsable,
                   data.rows.item(i).idsupervisor,
                   null,
-                  0,
+                  data.rows.item(i).supervision | 0,
                   null
                 ));
               }
@@ -659,9 +719,12 @@ this.supervisionLimpiezas=[];
 //});   
 console.log("LIMPIEZAS REALIZADAS",  this.supervisionLimpiezas)
 console.log("FIN LimpizadasezasReali", moment(this.Momento).diff(moment(), 'seconds'));
+          resolve(true)
+        });
 }
 
 getControles() {
+  return new Promise((resolve)=>{
 console.log("397->Inicio controles", moment(this.Momento).diff(moment(), 'seconds'));
 let fecha = moment(new Date()).format('YYYY-MM-DD');
 this.controlesList=[];
@@ -690,6 +753,8 @@ this.controlesList=[];
           });  
 //});   
 console.log("Fin Controles", moment(this.Momento).diff(moment(), 'seconds'));
+resolve(true);
+        });
 }
 
 takeControl(control)
@@ -712,6 +777,7 @@ takeControl(control)
 
 
 getChecklists(){
+  return new Promise((resolve)=>{
 console.log("439->Inicio Checklist", moment(this.Momento).diff(moment(), 'seconds'));
 let fecha = moment(new Date()).format('YYYY-MM-DD');
 this.checklistList =[];
@@ -726,7 +792,7 @@ this.checklistList =[];
                   let isBD = moment(new Date(data.rows.item(index).fecha)).isBefore(moment(), 'day');
                   this.checklistList.push(data.rows.item(index));
                   this.checklistList[index]["isbeforedate"] = isBD;
-                  console.log(data.rows.item(index));
+                  // console.log(data.rows.item(index));
                 //   this.checklistList.push({
                 //         "id":  data.rows.item(index).id,
                 //         "idchecklist": data.rows.item(index).idchecklist,
@@ -739,18 +805,21 @@ this.checklistList =[];
                 // });
                 //alert (data.res.rows[index].nombrechecklist);
               }
-               console.log("464-> FIN Checklist", moment(this.Momento).diff(moment(), 'seconds'));
+              //  console.log("464-> FIN Checklist", moment(this.Momento).diff(moment(), 'seconds'));
             }
-            console.log ("checklist:", this.checklistList);
+            // console.log ("checklist:", this.checklistList);
         }, (error) => {
             console.log("ERROR Checklist-> " + JSON.stringify(error.err));
             alert("error home Checklist 325 " + JSON.stringify(error.err));
         }); 
         // });
         console.log("472->FIN Checklist", moment(this.Momento).diff(moment(), 'seconds'));
+        resolve (true)
+      });
 }
 
 getLimpiezas(){
+  return new Promise((resolve)=>{
 console.log("476->Inicio limpiezas",moment(this.Momento).diff(moment(), 'seconds'));
 
             let fecha = moment(new Date()).format('YYYY-MM-DD');
@@ -773,6 +842,8 @@ console.log("476->Inicio limpiezas",moment(this.Momento).diff(moment(), 'seconds
         }); 
        //});
        console.log("Fin  Limpizas",new Date());
+       resolve(true)
+      });
 }
 
 
@@ -799,34 +870,37 @@ this.goTo('/supervision');
 
 
 doRefresh(refresher) {
-  if (this.network.type != 'none') {
-console.log('Begin async operation', refresher);
-//this.sincronizate();
-this.callSincroniza();
-setTimeout(() => {
-console.log('Async operation has ended');
-refresher.target.complete();
-}, 2000);
-  }else{
-    console.log('No hay Red');
-    this.cargaListas();
-  }
+  console.log('REFRESHER BLOCKED');
+
+//   if (this.network.type != 'none') {
+// console.log('Begin async operation', refresher);
+// this.sincronizate().subscribe
+ this.callSincroniza('refresher')
+ setTimeout(() => {
+// console.log('Async operation has ended');
+ refresher.target.complete()
+ this.cargaListas('refresher');
+ }, 1000);
+//   }else{
+//     console.log('No hay Red');
+//     this.cargaListas('refresher');
+//   }
 }
 
-async presentLoading() {
-console.log('##SHOW LOADING HOME');
+async presentLoading(source) {
+console.log('%c##SHOW LOADING HOME FROM'+source+"", "background: green;");
  this.loader = await this.loadingCtrl.create({
  message: "Actualizando...",
  spinner: 'crescent',
-// // duration: 3000
+ duration: 30000
  });
  return await this.loader.present();
 //loader.dismiss();
 }
 
 
-closeLoading(){
-console.log('##HIDE LOADING HOME');
+closeLoading(source){
+console.log('%c##HIDE LOADING HOME FROM'+source+"", "background: green;");
 setTimeout(() => {
 console.log('Async operation has ended');
 if (this.loader)
@@ -858,16 +932,21 @@ checkProveedores(){
 
   let paramLogin = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
   this.servidor.login(URLS.LOGIN, paramLogin).subscribe(
-    response => {
+    (response:any) => {
+      console.log('RESPONSE LOGIN',response,typeof(response));
+       response = JSON.parse(response.toString());
       console.log('RESPONSE LOGIN',response);
       if (response["success"] == 'true') {
+        console.log('TOKEN LOGIN', response["token"]);
         localStorage.setItem('token', response["token"]);
         }
   //****************CHECK PROVEEDORES ******************/
   let param = '&idempresa=' + localStorage.getItem("idempresa");
   console.log('MODULO PROVEEDORES START');
   this.servidor.getObjects(URLS.OPCIONES_EMPRESA, param).subscribe(
-    response => {
+    (response:any) => {
+      console.log(response,typeof(response));
+       response = JSON.parse(response.toString());
       console.log(response);
       console.log('MODULO PROVEEDORES REQUEST');
       if (response["success"] == 'true' && response["data"]) {
@@ -898,16 +977,16 @@ error =>{
         },
     error=>{console.log('LOGIN ERROR',error)}
     );
-
-
 }
+
 checkServiciosEntrada(){
   //****************CHECK SERVICIOS DE ENTRADA ******************/
   if (localStorage.getItem("triggerEntradasMP") === null) {
     let parametros = '&idempresa=' + localStorage.getItem("idempresa")+"&entidad=triggers";
     this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
-      response => {
+      (response:any) => {
         console.log(response);
+        response = JSON.parse(response);
         if (response["success"] == 'true' && response["data"]) {
           console.log(response["data"],response["data"].length)
           for (let element of response["data"]) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController,ActionSheetController, Platform } from '@ionic/angular';
+import { ToastController,ActionSheetController, Platform, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 //*****CUSTOM TEMPLATE */
 import { TranslateService } from '@ngx-translate/core';
@@ -57,7 +57,8 @@ export class CheckLimpiezaPage implements OnInit {
   private initdb: Initdb,
   // public events: Events,
   public eventos: EventosService,
-  public platform: Platform
+  public platform: Platform,
+  public navCtrl: NavController
   ) {
 
   }
@@ -202,7 +203,7 @@ export class CheckLimpiezaPage implements OnInit {
   
       // (this.autocompletar)? fecha = moment(this.fecha_prevista).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:MM'): fecha= moment(this.hoy).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:MM');
   
-        db2.executeSql('INSERT INTO resultadoslimpieza (idelemento, idempresa, fecha_prevista,fecha, nombre, descripcion, tipo, idusuario, responsable,  idlimpiezazona, idsupervisor ) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        db2.executeSql('INSERT INTO resultadoslimpieza (idElemento, idempresa, fecha_prevista,fecha, nombre, descripcion, tipo, idusuario, responsable,  idlimpiezazona, idsupervisor ) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
           //[0,0,'2017-05-29','test','rtest','interno',0,'jorge',0]).then(
           [elemento.idElementoLimpieza,this.idempresa,fecha_prevista,fecha,elemento.nombreLimpieza + " " + elemento.nombreElementoLimpieza,elemento.descripcion,elemento.tipo,this.idusuario,elemento.responsable,elemento.idLimpieza,elemento.supervisor]).then(
     (Resultado) => {
@@ -431,8 +432,8 @@ export class CheckLimpiezaPage implements OnInit {
     parseInt(localStorage.getItem("idempresa")),'Limpiezas',null ,'limpieza_realizada',this.idlimpiezazona,null,descripcion,-1)
     //this.navCtrl.push(IncidenciasPage,params);
     this.servidor.setIncidencia(params);
-    this.goTo('/incidencias');
-
+    //this.goTo('/incidencias');
+    this.navCtrl.navigateForward('incidencias')
     this.eventos.incidencia.subscribe((param)=>{
       console.log('Id Incidencia Local', param);
       this.hayIncidencia = param["idLocal"];

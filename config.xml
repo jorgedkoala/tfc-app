@@ -6,6 +6,7 @@
     <author email="jorged@ntskoala.com" href="http://www.movil.works/">Jorge Domínguez</author>
     <content src="index.html" />
     <access origin="*" />
+    <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />

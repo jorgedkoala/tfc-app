@@ -188,9 +188,13 @@ isTokenExired (token) {
         db2.executeSql("Select * FROM " + entidad + " WHERE " + identificador + " = ? AND fecha >= ? AND idusuario= ?", [idElemento, fecha, idusuario]).then((data) => {
           let proxima_fecha;
           console.log('resultados update fecha',data.rows.length);
+          if (data.rows.length){
           for (var index = 0; index < data.rows.length; index++) {
             proxima_fecha = moment(data.rows.item(index).fecha).format('YYYY-MM-DD');
           }
+        }else{
+          proxima_fecha = moment().format('YYYY-MM-DD');
+        }
           let param = "?entidad=" + entidad + "&id=" + idElemento;
           let control;
           if (entidad == 'controles' || entidad == 'checklist'){
@@ -198,9 +202,14 @@ isTokenExired (token) {
           }else{
             control = { fecha: proxima_fecha};
           }
+          console.log(control);
           console.log('UPDATING REMOTE DATE',entidad,idElemento,identificador,control);
           this.servidor.putObject(URLS.STD_FECHA, param, control).subscribe(
-            (resultado) =>{
+            (resultado:any) =>{
+              // resultado=JSON.parse(resultado)
+              console.log('UPDATING REMOTE DATE: RESULTADO: ',resultado);
+              // resultado = JSON.parse(resultado.toString())
+              // console.log('UPDATING REMOTE DATE: RESULTADO: ',resultado);
               if (resultado["success"] == "nuevaFecha"){
               db2.executeSql("UPDATE " + entidad + " SET fecha  = ? WHERE " + identificador + " = ?", [resultado["nuevaFecha"], idElemento]).then((data) => {
                 console.log('UPDATING LOCAL DATE',entidad,resultado["nuevaFecha"]);
@@ -236,6 +245,8 @@ isTokenExired (token) {
             arrayfila.push()
             let idrespuesta = this.sync.setResultados(JSON.stringify(arrayfila), "resultadoschecklist")
               .subscribe(data => {
+                data = JSON.parse(data)
+                console.log(data);
                 this.relationResultadosChecklistEntradas.push({'idResultadoChecklist':data.id,'idResultadoChecklistLocal':idlocal});
                 console.log('SET RELATION ENTRADASMP','idResultadoChecklist:',data.id,'idResultadoChecklistlocal:',idlocal);
                 this.sync_incidencias(idlocal, data.id, 'Checklists');
@@ -286,8 +297,8 @@ isTokenExired (token) {
             () => console.log("fin"));
         }
       }, (error) => {
-        console.log("ERROR -> " + JSON.stringify(error.err));
-        alert("error, no se han podido sincronizar todos los datos [resultadoscontrolchecklist]" + JSON.stringify(error.err));
+        console.log("ERROR -> " + JSON.stringify(error));
+        alert("error, no se han podido sincronizar todos los datos [resultadoscontrolchecklist]" + JSON.stringify(error));
       });
     }, (error) => {
       console.log("ERROR al abrir la bd: ", error);
@@ -315,6 +326,9 @@ isTokenExired (token) {
             let idUser = data.rows.item(fila).idusuario;
             this.servidor.postObject(URLS.STD_ITEM, limpieza, param).subscribe(
               response => {
+                console.log(response);
+                response=JSON.parse(response.toString());
+                console.log(response);
                 if (response["success"]) {
                   this.updateFechaElementoLimpieza(data.rows.item(fila).idelemento,data.rows.item(fila),idUser);
                   //this.sync_incidencias(fila.idLocal, data.id, 'Controles');
@@ -322,6 +336,7 @@ isTokenExired (token) {
                   console.log('limpieza realizada sended', response["id"]);
                   db2.executeSql("DELETE from resultadoslimpieza WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
                     console.log("deleted",data.rows.length);
+
                   });
                 }
               },

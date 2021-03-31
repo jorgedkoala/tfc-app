@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform,NavController } from '@ionic/angular';
 // import {  Events } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
@@ -64,7 +64,8 @@ export class ControlPage implements OnInit {
   public sync: SyncPage,
   // public events: Events,
   public eventos: EventosService,
-  public alertController: AlertController
+  public alertController: AlertController,
+  public navCtrl: NavController
   ) {
 
     this.control = this.servidor.getParam();
@@ -465,7 +466,9 @@ let params= new Incidencia(null,null,incidencia,'',parseInt(sessionStorage.getIt
 parseInt(localStorage.getItem("idempresa")),'Controles',this.control.id ,'Controles',0,this.base64Image,'',-1)
 //this.navCtrl.push(IncidenciasPage,params);
 this.servidor.setIncidencia(params);
-this.goTo('/incidencias')
+
+//this.goTo('/incidencias')
+this.navCtrl.navigateForward('incidencias')
 this.eventos.incidencia.subscribe((param)=>{
   console.log('Id Incidencia Local', param);
   this.hayIncidenciaAd = param["idLocal"];

@@ -35,7 +35,8 @@ export class PeriodosProvider {
       proximaFecha = this.nextWeekDay(periodicidad,fecha_prevista);
       if (!completarFechas){
         while (moment(proximaFecha).isSameOrBefore(moment(),'day')){
-        fecha_prevista = proximaFecha;
+        // fecha_prevista = proximaFecha;
+        fecha_prevista = moment();
         proximaFecha = this.nextWeekDay(periodicidad,fecha_prevista);
         }
         }

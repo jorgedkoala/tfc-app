@@ -192,13 +192,14 @@ db2.executeSql('DROP TABLE IF EXISTS serviciosEntrada',[]);
         });
 localStorage.setItem("inicializado","16")
 if (localStorage.getItem("versionusers") === null) {localStorage.setItem("versionusers","0")}
+if (localStorage.getItem("versioncontrols") === null) {localStorage.setItem("versioncontrols","0")}
 if (localStorage.getItem("synccontrol") === null) {localStorage.setItem("synccontrol","0")}
 if (localStorage.getItem("syncchecklist") === null) {localStorage.setItem("syncchecklist","0")}
 if (localStorage.getItem("syncchecklimpieza") === null) {localStorage.setItem("syncchecklimpieza","0")}
 if (localStorage.getItem("syncsupervision") === null) {localStorage.setItem("syncsupervision","0")}
 if (localStorage.getItem("syncmantenimiento") === null) {localStorage.setItem("syncmantenimiento","0")}
 if (localStorage.getItem("syncincidencia") === null) {localStorage.setItem("syncincidencia","0")}
-this.newDB=true;
+if (localStorage.getItem("db") === null) {this.newDB=true;localStorage.setItem("db","true")}else{this.newDB=false;localStorage.setItem("db","true")};
 this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage.getItem("syncchecklist"))+parseInt(localStorage.getItem("syncsupervision"))+parseInt(localStorage.getItem("syncchecklimpieza"))+parseInt(localStorage.getItem("syncmantenimiento"))+parseInt(localStorage.getItem("syncincidencia"));
  }
 
@@ -214,8 +215,11 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
    return new Promise((resolve,reject)=>{
             this.sync.getMisUsers().subscribe(
             data => {
-               this.users = JSON.parse(data.json());
+                console.log('USERS',data);
+               this.users = JSON.parse(data);
+               console.log(this.users.success);
                 if (this.users.success){
+                    console.log('USERS',this.users.success);
                     this.users = this.users.data;
                     this.db.create({name: "data.db", location: "default"}).then((db2: SQLiteObject) => {
                         
@@ -248,7 +252,7 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
                         }
         },
             err => {
-                console.error(err,origin);
+                console.log(err,origin);
                 reject('error, getting users. initdb#130');
                 },
             () => {console.log('getUsuarios completed',origin);
@@ -265,7 +269,8 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
         //GERENTES
         this.sync.setGerentes().subscribe(
             data => {
-               this.gerentes = JSON.parse(data.json());
+                console.log(data);
+               this.gerentes = JSON.parse(data);
                 if (this.gerentes.success){
                     this.gerentes = this.gerentes.data;
                     let array = [];
@@ -283,7 +288,7 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
 
         this.sync.setEmpresa().subscribe(
             data => {
-               this.empresas = JSON.parse(data.json());
+               this.empresas = JSON.parse(data);
                 if (this.empresas.success){
                     this.empresas = this.empresas.data;
                     let miempresa = '';

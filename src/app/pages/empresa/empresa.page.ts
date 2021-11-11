@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
 
 //*****CUSTOM TEMPLATE */
 import { TranslateService } from '@ngx-translate/core';
 import { Servidor } from '../../services/servidor';
+import { EventosService } from '../../services/eventos.service';
+
 import { URLS } from '../../models/models';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { Network } from '@ionic-native/network/ngx';
@@ -31,12 +33,25 @@ export class EmpresaPage implements OnInit {
   public network:Network, 
   public loadingCtrl: LoadingController,
   //public navCtrl: NavController,
-  public mdlCtrl: ModalController
+  public mdlCtrl: ModalController,
+  public route:ActivatedRoute
   ) {}
 
   //*************  INIT *************/
   ngOnInit() {
     console.log('EMPRESA INIT');
+    
+   
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.empresa = parseInt('24'+this.router.getCurrentNavigation().extras.state.idEmpresa+'53');
+        console.log("%c"+this.empresa,"background:red;");
+        this.setEmpresa();
+      }else{
+        console.log("%c"+this.empresa,"background:red;");
+      }
+    });
+
   }
 
   goTo(link?){
@@ -77,10 +92,19 @@ export class EmpresaPage implements OnInit {
             console.log('ok sincronizado',data);
             this.closeLoading();
             // if (this.routerOutlet.canGoBack()){
-            // this.navCtrl.pop();
-            // }else{
-            //   this.goTo('/login');
-            // }
+localStorage.setItem("versionusers","0")
+localStorage.setItem("versioncontrols","0")
+localStorage.setItem("synccontrol","0")
+localStorage.setItem("syncchecklist","0")
+localStorage.setItem("syncchecklimpieza","0")
+localStorage.setItem("syncsupervision","0")
+localStorage.setItem("syncmantenimiento","0")
+localStorage.setItem("syncincidencia","0")
+localStorage.removeItem("triggerEntradasMP")
+localStorage.removeItem("tipoUser")
+localStorage.removeItem("token")
+this.initdb.badge=0;
+               
             // this.dismiss();
             this.mdlCtrl.dismiss({'result': 'ok','idEmpresa':codigo}).then(
               (valor)=>{console.log('EMPRESA DISSMISED',valor)},

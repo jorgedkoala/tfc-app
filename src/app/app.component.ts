@@ -30,7 +30,7 @@ export class AppComponent {
   public version=this.initdb.version;
   public appPages = [
     {title: 'menu.home',url: '/home',icon: 'home'},
-    {title: 'menu.informes',url: '/informes',icon: 'print'},
+    // {title: 'menu.informes',url: '/informes',icon: 'print'},
     // {title: 'menu.supervision', url: '/supervision',icon: 'done-all'},
     {title: 'menu.incidencia', url: '/incidencias',icon: 'information-circle' },
     { title: 'menu.sync' , url: '/sync',icon: 'sync' },
@@ -59,10 +59,13 @@ export class AppComponent {
     public modalCtrl: ModalController,
     public sync: Sync
   ) {
+    console.log('%c##APP COMPONEN CONSTRUCTOR', "background: pink;");
     sync.proveedoresActivo.subscribe(
       (Estado)=>{
+        console.log('%c##SYNC PROVEEDORES NEW VALUE', "background: pink;");
         console.log('###############   ACTIVAR PROVEEDORES',Estado);
-        if (Estado && localStorage.getItem('triggerEntradasMP')){
+        // if (Estado && localStorage.getItem('triggerEntradasMP')){
+          if (Estado){
           let indice = this.appPages.findIndex((page)=>page.url=="/entradas-mp");
           if(indice < 0){
           this.appPages.splice(1,0,{title: 'menu.entradasMP',url: '/entradas-mp',icon: 'cart'});

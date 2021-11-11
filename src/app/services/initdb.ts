@@ -292,11 +292,20 @@ this.badge = parseInt(localStorage.getItem("synccontrol"))+parseInt(localStorage
                 if (this.empresas.success){
                     this.empresas = this.empresas.data;
                     let miempresa = '';
+                    let miholding = 0;
                     this.empresas.forEach (empresa => {
                             //console.log(gerente.email);
                             miempresa = empresa.nombre;
+                            if(empresa.holding==1){
+                            miholding = empresa.id;
+                            }
+                            if(empresa.holding==2){
+                            miholding = empresa.idHolding;
+                            }
+                            console.log('MI HOLDING',miholding,empresa)
                             });
                         localStorage.setItem("empresa",miempresa);
+                        localStorage.setItem("holding",miholding.toString());
                         }
         },
             err => console.error('setempresa error',err,origin),

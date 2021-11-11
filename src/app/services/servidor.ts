@@ -153,8 +153,11 @@ postSimple(url: string, object: Object, param?: string) {
   }
   setIdEntrada(id){
     if (!this.idEntrada) this.idEntrada=[];
+    console.log('SET ID ENTRADA',this.idEntrada.findIndex((index)=>index==id)==-1)
+    if (this.idEntrada.findIndex((index)=>index==id)==-1){
     this.idEntrada.push(id)
     console.log('***SETIDENTRADA',this.idEntrada);
+    }
   }
   getIdEntrada(){
     let resultado = null;

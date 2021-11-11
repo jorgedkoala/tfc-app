@@ -7,7 +7,7 @@ import { Router, Event as NavigationEvent, NavigationEnd, ChildActivationStart }
 import {TranslateService  } from '@ngx-translate/core';
 
 import { Observable,pipe } from 'rxjs';
-import { MenuController } from '@ionic/angular';
+import { AlertController,MenuController } from '@ionic/angular';
 import { LoadingController } from '@ionic/angular';
 
 // import {LoginPage} from '../pages/login/login.page';
@@ -85,7 +85,8 @@ public idRouterEvent:number=null;
     //public params: NavParams, 
     // public events: Events,
     public eventos: EventosService,
-    public appComponent: AppComponent
+    public appComponent: AppComponent,
+    private alertCtrl: AlertController
   ){
     console.log('**********************CONSTRUCTOR HOME LLAMADO*******************************')
     this.checkEstados()
@@ -107,6 +108,7 @@ public idRouterEvent:number=null;
 
     this.sync.deletedLocalRows.subscribe(
       (localRowsDeleted)=>{
+        console.log("%c///DELETED"+localRowsDeleted, "color:white;background: blue;");
         console.log("%c///LOCAL ROWS DELETED SO CAN RELOAD LOCAL ITEMS", "color:white;background: blue;");
         this.cargaListas('DELETED LOCAL ROWS SUBSCRIPTION');
       }
@@ -203,31 +205,41 @@ public idRouterEvent:number=null;
               //     this.getCalibraciones();
               //   break;
               case "/home/checks":
+                this.checklistList=[];
                     this.getChecklists();
                     break;
               case "/check":
+                this.checklistList=[];
                   this.getChecklists();
                 break;
               case "/home/controles":
+                  this.controlesList=[]
                     this.getControles();
                     break;
               case "/control":
+                this.controlesList=[]
                   this.getControles();
                 break;
               case "/home/check-limpieza":
+                  this.checkLimpiezas=[];
+                  this.supervisionLimpiezas=[];
                     this.getLimpiezas();
                     this.getLimpiezasRealizadas();
                 break;
               case "/check-limpieza":
+                this.checkLimpiezas=[];
+                this.supervisionLimpiezas=[];
                   this.getLimpiezas();
                   this.getLimpiezasRealizadas();
                 break;
               case "/supervision":
                   console.log('supervision');
+                  this.supervisionLimpiezas=[];
                   this.getLimpiezasRealizadas();
                 break;
               case "/home/supervision":
                   console.log('/home/supervision');
+                  this.supervisionLimpiezas=[];
                   this.getLimpiezasRealizadas();
                 break;
             }
@@ -326,14 +338,25 @@ console.log("*******Inicio callSincroniza",this.Momento.format("mm:ss"));
       );
 }
 
+cleanListas(){
+  this.controlesList=[];
+  this.checkLimpiezas=[];
+  this.supervisionLimpiezas=[];
+  this.checklistList=[];
+}
 async cargaListas(origen){
   console.log("%c********CARGA LISTAS"+origen+"","background: yellow;")
 this.cargando=true;
+this.cleanListas();
 console.log("Inicio CargaListas", moment(this.Momento).diff(moment(), 'seconds'));
   await this.getControles()//.then((valor)=>{console.log('%c*GET CONTROLES', "background: black;color:white")});
+  console.log('%c*GET CONTROLES', "background: black;color:white")
   await  this.getChecklists()//.then((valor)=>{console.log('%c*GET CHECKLIST', "background: black;color:white")});
+  console.log('%c*GET Checklist', "background: black;color:white")
   await  this.getLimpiezas()//.then((valor)=>{console.log('%c*GET LIMPIEZAS', "background: black;color:white")});
+  console.log('%c*GET Limpiezas', "background: black;color:white")
   await  this.getLimpiezasRealizadas()//.then((valor)=>{console.log('%c*GET LIMPIEZAS REALIZADAS', "background: black;color:white")});
+  console.log('%c*GET Limpiezas realizadas', "background: black;color:white")
         // this.getMantenimientos();
         // this.getCalibraciones();
         console.log('%c********FIN CARGA LISTAS'+origen+"", "background: yellow;")      
@@ -869,23 +892,57 @@ this.goTo('/supervision');
 }
 
 
-doRefresh(refresher) {
-  console.log('REFRESHER BLOCKED');
+async doRefresh(refresher) {
+  console.log('REFRESHER BLOCK');
 
-//   if (this.network.type != 'none') {
-// console.log('Begin async operation', refresher);
-// this.sincronizate().subscribe
- this.callSincroniza('refresher')
- setTimeout(() => {
-// console.log('Async operation has ended');
- refresher.target.complete()
- this.cargaListas('refresher');
- }, 1000);
-//   }else{
-//     console.log('No hay Red');
-//     this.cargaListas('refresher');
-//   }
+  let aviso='';
+  await this.translate.get('alertas.doRefreseher').subscribe(async (valor)=>{
+    aviso=valor;
+  });
+  const prompt = await this.alertCtrl.create({
+    header:'Info',
+    message: aviso,
+    //inputs: [{name: 'valor'}],
+    buttons: [
+      {text: 'No',handler: data => {
+        console.log(data)
+        refresher.target.complete();
+      }},
+      {text: 'Si',handler: data => {
+        console.log(data);
+        this.callSincroniza('refresher')
+        setTimeout(() => {
+        refresher.target.complete()
+        this.cargaListas('refresher');
+        }, 1000);
+      }
+      }]
+  })
+prompt.present().then(
+(respuesta)=>{
+  console.log('prompt mostrado',respuesta)
+});
+
+
 }
+// async confirmaRefreshing(){
+//   let aviso='';
+//   await this.translate.get('Actualizar lista').subscribe(async (valor)=>{
+//     aviso=valor;
+//   });
+//   const prompt = await this.alertCtrl.create({
+//     message: aviso,
+//     inputs: [{name: 'valor'}],
+//     buttons: [
+//       {text: 'No',handler: data => {return false}},
+//       {text: 'Si',handler: data => {return true}
+//       }]
+//   })
+// prompt.present().then(
+// (respuesta)=>{
+//   console.log('prompt mostrado',respuesta)
+// });
+// }
 
 async presentLoading(source) {
 console.log('%c##SHOW LOADING HOME FROM'+source+"", "background: green;");
@@ -929,7 +986,7 @@ return 'por uso';
 
 
 checkProveedores(){
-
+  console.log('%cCHECK PROVEEDORES START LOGIN','background:pink');
   let paramLogin = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
   this.servidor.login(URLS.LOGIN, paramLogin).subscribe(
     (response:any) => {
@@ -941,13 +998,15 @@ checkProveedores(){
         localStorage.setItem('token', response["token"]);
         }
   //****************CHECK PROVEEDORES ******************/
+  console.log('%cMODULO PROVEEDORES STARTING','background:pink');
   let param = '&idempresa=' + localStorage.getItem("idempresa");
   console.log('MODULO PROVEEDORES START');
   this.servidor.getObjects(URLS.OPCIONES_EMPRESA, param).subscribe(
     (response:any) => {
       console.log(response,typeof(response));
        response = JSON.parse(response.toString());
-      console.log(response);
+      console.log('%cSUCCESS'+response["success"],'background:pink');
+      console.log("Proveedores",response["data"],response["data"].length)
       console.log('MODULO PROVEEDORES REQUEST');
       if (response["success"] == 'true' && response["data"]) {
         console.log(response["data"],response["data"].length)
@@ -980,6 +1039,8 @@ error =>{
 }
 
 checkServiciosEntrada(){
+  console.log('%c##CHECK SERVICIOS ENTRADA MP', "background: pink;");
+  console.log('%c##triggerEntradasMP MP'+localStorage.getItem("triggerEntradasMP"), "background: pink;");
   //****************CHECK SERVICIOS DE ENTRADA ******************/
   if (localStorage.getItem("triggerEntradasMP") === null) {
     let parametros = '&idempresa=' + localStorage.getItem("idempresa")+"&entidad=triggers";
@@ -987,6 +1048,7 @@ checkServiciosEntrada(){
       (response:any) => {
         console.log(response);
         response = JSON.parse(response);
+        console.log('%c##ENTRADA MP'+response, "background: pink;");
         if (response["success"] == 'true' && response["data"]) {
           console.log(response["data"],response["data"].length)
           for (let element of response["data"]) {

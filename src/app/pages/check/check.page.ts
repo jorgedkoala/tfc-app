@@ -44,7 +44,7 @@ export class CheckPage implements OnInit {
   public checklistcontroles: Checks[] = [];
   public isActualChecklistComplete=false;
   // public templatechecklistcontroles: Checks[] = [];
-  public entradasMP: any[] = null;
+  public entradasMP: any[] = [];
   public entradasMPGroupByAlbaran: any[]=[];
   public entradaActual:any=null;
   public source: string = null;
@@ -278,6 +278,9 @@ enviar(){
 terminar(){
 return new Promise((resolve)=>{
     console.log('ENTRADA ACTUAL',this.entradaActual);
+    if(this.entradaActual){
+    this.servidor.setIdEntrada({'id':this.entradaActual.id,'source':this.source,'albaran':this.entradaActual.albaran});
+    }
     let fecha;
     (this.autocompletar)? fecha = moment(this.fecha_prevista).add('h',this.hoy.getUTCHours()).add('m',this.hoy.getUTCMinutes()).format('YYYY-MM-DD HH:mm'): fecha= moment().format('YYYY-MM-DD HH:mm:ss');
     if (this.entradaActual){
@@ -581,12 +584,14 @@ checkSlide(slide){
       let param = "&entidad=proveedores_entradas_producto&idempresa="+localStorage.getItem('idempresa')+"&WHERE=albaran is not null AND idResultadoChecklist is null";
         this.servidor.getObjects(URLS.STD_ITEM,param).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             if (response["success"]) {
               this.entradasMP=[]
               console.log('servicio de entrada ok',response["data"]);
               let entradas = response["data"];
               console.log('resultado entradas: ' + entradas);
               this.source='server';
+              if (entradas){
                 entradas.forEach (entrada => {
                 //  this.saveLimpiezaRealizada(limpiezarealizada)
                 this.entradasMP.push({
@@ -608,6 +613,7 @@ checkSlide(slide){
                   "imagen":null
             });
                 });
+              }
                 // if (this.entradasMP.length > 0)
                 // this.setLote(0);
                 this.loadEntradasMPG();

@@ -48,7 +48,7 @@ export class EntradasMPPage implements OnInit {
   public synProductos:any;
 public today: string=moment().add(1,'days').format('YYYY-MM-DD');
 public limitDate:string=moment().add(3,'years').format('YYYY-MM-DD');
-public myform: FormGroup;
+public myform: FormGroup = new FormGroup({});
   //*************  CONSTRUCTOR *************/
   constructor(
   public router: Router,
@@ -67,7 +67,7 @@ public myform: FormGroup;
   ngOnInit() {
     this.platform.ready().then(() => {
       this.medidas = dropDownMedidas;
-      this.formControl();
+      //this.formControl();
       this.sync.login();
       if (this.isTokenExired(localStorage.getItem('token')) && this.network.type != 'none'){
         let param = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
@@ -110,15 +110,15 @@ public myform: FormGroup;
   formControl(){
 
     
-    this.myform = this.formBuilder.group({
-      albaran: ['',Validators.required],
-      proveedor:['',Validators.required],
-      producto:['',Validators.required],
-      lote:['',Validators.required],
-      fecha:['',Validators.required],
-      cantidad:['',Validators.required],
-      tipo_medida: ['',Validators.required]
-   });
+  //   this.myform = this.formBuilder.group({
+  //     albaran: ['',Validators.required],
+  //     proveedor:['',Validators.required],
+  //     producto:['',Validators.required],
+  //     lote:['',Validators.required],
+  //     fecha:['',Validators.required],
+  //     cantidad:['',Validators.required],
+  //     tipo_medida: ['',Validators.required]
+  //  });
   }
 
   preLoad(){
@@ -146,7 +146,7 @@ hayUpdates() {
   return new Promise(resolve => {
     this.servidor.getObjects(URLS.VERSION_USERS, parametros).subscribe(
       response => {
-  
+        response = JSON.parse(response.toString())
         if (response["success"] == 'true' && response["data"]) {
           for (let element of response["data"]) {
             updates = element.updatecontrols;
@@ -170,6 +170,7 @@ getFamilias() {
 
       this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
         response => {
+          response = JSON.parse(response.toString())
           this.familias = [];
           if (response["success"] == 'true' && response["data"]) {
             for (let element of response["data"]) {
@@ -198,11 +199,14 @@ getProveedores(){
               "nombre": data.rows.item(index).nombre
         });
       }
+      console.log(this.proveedores)
 }, (error) => {
-    console.debug("ERROR -> " + JSON.stringify(error.err));
+    console.log("ERROR getProveedores-> " + JSON.stringify(error.err));
     alert("error " + JSON.stringify(error.err));
 }); 
-    });
+    }
+    
+    );
 }
 getProductos(idProveedor:number){
   console.log(idProveedor,this.selProds);
@@ -316,7 +320,8 @@ hayTriggerServiciosEntrada(){
     let parametros = '&idempresa=' + this.idempresa+"&entidad=triggers";
       this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
         response => {
-          console.log(response);
+          response = JSON.parse(response.toString())
+          console.log('TRIGGER SERVICIOS ENTRADA',response);
           if (response["success"] == 'true' && response["data"]) {
             console.log(response["data"],response["data"].length)
 
@@ -370,11 +375,14 @@ errorEn(motivo:string){
   syncProveedores(){
     let parametros = '&idempresa=' + this.idempresa+"&entidad=proveedores"; 
     this.servidor.getObjects(URLS.STD_ITEM, parametros).subscribe(
-      response => {
+      (response:any) => {
+        response = JSON.parse(response);
         let valores = '';
         this.idsProveedores=[];
+        console.log("items proveedores",response)
         //this.proveedores.push({"id":0,"nombre":"selecciona"});
         if (response["success"] && response["data"]) {
+          console.log("items proveedores is true")
           this.db.create({name: 'data.db',location: 'default'})
           .then((db2: SQLiteObject) => {
           db2.executeSql("DELETE from proveedores", []).then((data) => {
@@ -414,6 +422,7 @@ errorEn(motivo:string){
     let param = "&entidad=proveedores_productos"+"&field=idproveedor&idItem="+proveedores;
     this.servidor.getObjects(URLS.STD_SUBITEM, param).subscribe(
       response => {
+        response = JSON.parse(response.toString())
         let valores = '';
         //this.proveedores.push({"id":0,"nombre":"selecciona"});
         if (response["success"] && response["data"]) {

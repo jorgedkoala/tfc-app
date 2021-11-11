@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, Event as NavigationEvent, NavigationEnd, } from '@angular/router';
+import { Router, NavigationExtras, Event as NavigationEvent, NavigationEnd, } from '@angular/router';
+import { AlertController,ActionSheetController, Platform, IonSlides, NavController } from '@ionic/angular';
+
 //*****CUSTOM TEMPLATE */
 import { TranslateService } from '@ngx-translate/core';
 import { Servidor } from '../../services/servidor';
+import { EventosService } from '../../services/eventos.service';
 import { Initdb } from '../../services/initdb';
 import { LoadingController } from '@ionic/angular';
 import { URLS } from '../../models/models';
@@ -29,7 +32,9 @@ export class LoginPage implements OnInit {
   public introvista;
   public logoempresa;
   public empresa = 0;
+  public holding = 0;
   public nombreEmpresa:string='';
+  public empresasHolding:any[]=[];
   public loader:any;
   //*************  CONSTRUCTOR *************/
   constructor(
@@ -40,7 +45,9 @@ export class LoginPage implements OnInit {
   public db :SQLite,
   public network:Network, 
   public periodos: PeriodosProvider,
-  public loadingCtrl: LoadingController
+  public loadingCtrl: LoadingController,
+  public eventos:EventosService,
+  private alertCtrl: AlertController
   ) {}
 
   //*************  INIT *************/
@@ -60,12 +67,28 @@ export class LoginPage implements OnInit {
 
     
     this.empresa = parseInt(localStorage.getItem("idempresa"));
-    this.nombreEmpresa = localStorage.getItem("empresa")
+    this.nombreEmpresa = localStorage.getItem("empresa");
+    this.holding = parseInt(localStorage.getItem("holding"));
     this.logoempresa = URLS.SERVER +"logos/"+localStorage.getItem("idempresa")+"/logo.jpg";
     if (this.empresa > 0 && this.data.newDB){
       //this.doRefresh()
     }
+    console.log(this.holding)
+    if (this.holding > 0) {
+      this.getHoldingCompanies();
+    }
   }
+
+
+
+  resetEmpresa() {
+    this.empresa = parseInt(localStorage.getItem("idempresa"));
+    this.nombreEmpresa = localStorage.getItem("empresa");
+    this.holding = parseInt(localStorage.getItem("holding"));
+    this.logoempresa = URLS.SERVER +"logos/"+localStorage.getItem("idempresa")+"/logo.jpg";
+    console.log(this.holding)
+  }
+
 
   goTo(link?){
     //this.appComponent.checkProveedores();
@@ -111,6 +134,8 @@ export class LoginPage implements OnInit {
       );
     }
   }
+  
+
   
   permanentLogin(user){
     let fecha =new Date().toString();
@@ -207,5 +232,67 @@ export class LoginPage implements OnInit {
       }, 1000);
     }
 
+
+    test(){
+      console.log('testing1....');
+      let param = '?user=pepa&password=pepa';
+      this.servidor.login(URLS.LOGIN, param).subscribe(
+        response => {
+          if (response["success"] == 'true') {
+            // Guarda token en sessionStorage
+            localStorage.setItem('token', response["token"]);
+            }
+            });
+ 
+    }
   
+
+    getHoldingCompanies(){
+      let param = '&idHolding='+this.holding;
+      this.empresasHolding=[];
+      this.servidor.getObjects(URLS.HOLDING,param).subscribe(
+        (response)=>{
+          response = JSON.parse(response.toString())
+          if (response["success"] && response["data"]) {
+            //  console.log(response["data"])
+              for (let element of response["data"]) {  
+                this.empresasHolding.push({'id':element.id,'nombre':element.nombre});
+             }
+             console.log('holding',this.empresasHolding);
+             this.resetEmpresa();
+            }else{
+              console.log('error holding',response);
+            }
+        }
+      )
+    }
+    selectEmpresa(event){
+      console.log(event.detail.value);
+      let navigationExtras: NavigationExtras = {
+        state: {
+          idEmpresa: event.detail.value
+        },
+        replaceUrl:true
+      };
+      this.router.navigateByUrl('/empresa', navigationExtras).then(
+        (valor)=>{console.log('went To:',valor)},
+        (error)=>{console.log('error going: ',error)}
+      )
+    }
+
+    async confirmaChangeEmpresa(){
+      let botones=[];
+      
+        botones.push(
+          {'text':'ok',
+          handler:'ok'}
+        )
+      const prompt = await this.alertCtrl.create({
+        message: 'texto',
+        inputs: [{name: 'valor'}],
+        buttons: botones
+        });
+      await prompt.present();  
+    }
+
 }

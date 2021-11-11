@@ -15,6 +15,7 @@ const routes: Routes = [
   },
   { path: 'config', loadChildren: () => import('./pages/config/config.module').then(m => m.ConfigPageModule) },
   { path: 'empresa', component: EmpresaPage },
+  { path: 'empresa/:idEmpresa', component: EmpresaPage },
   { path: 'check', loadChildren: () => import('./pages/check/check.module').then(m => m.CheckPageModule) },
   { path: 'sync', loadChildren: () => import('./pages/sync/sync.module').then(m => m.SyncPageModule) },
   { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule) },

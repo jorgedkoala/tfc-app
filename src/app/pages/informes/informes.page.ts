@@ -50,7 +50,8 @@ export class InformesPage implements OnInit {
     this.progress(10);
      //let url ='https://script.google.com/a/proacciona.es/macros/s/AKfycbzIpotMyRcSxISIMvMLWN0-boPG8drRZ9wD8IQO5eQ/dev?idEmpresa='+this.empresasService.seleccionada;
       //FULLREPORTTFC
-     let url ='https://script.google.com/macros/s/AKfycbxsIGXBMBgGXgfCZbZ-Nc7A-3zN3FTaoZEG2ZR3cGyq4XcQKV61/exec';
+    //  let url ='https://script.google.com/macros/s/AKfycbxsIGXBMBgGXgfCZbZ-Nc7A-3zN3FTaoZEG2ZR3cGyq4XcQKV61/exec';
+    let url ='https://script.google.com/macros/s/AKfycbyFMnDfccwQfLfufEWj7Y9F8H77cktw2z9mBEvqb_56NA9v5XIKW3wuKiFFYQgTGBxvrQ/exec';
      let param = '?idempresa='+localStorage.getItem("idempresa")+'&download=pdf';
     this.innerHtml += 'Solicitado<br>...';
     this.servidor.getSimple(url,param).subscribe(

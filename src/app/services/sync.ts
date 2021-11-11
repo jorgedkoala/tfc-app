@@ -183,7 +183,10 @@ setResultados(resultados,table):any
                                 (data) => { 
                                     console.log ("%cDELETE LOCAL ROWS FROM TABLE " + table ,"background:red;");
                                     console.log (JSON.stringify(data));
+                                    console.log (data["rowsAffected"]+">0",data["rowsAffected"]>0);
+                                    if (data["rowsAffected"]>0){
                                     this.deletedLocalRows.next(true);
+                                    }
                                 }, 
                                 (error) => { 
                                     console.log("ERROR -> " + JSON.stringify(error.err));

@@ -89,6 +89,7 @@ isTokenExired (token) {
 }
 
   sync_data() {
+    console.log('%cSYNC DATA FROM','{background:yellow}');
     console.log(this.network.type);
     console.log(this.initdb.badge,typeof(this.initdb.badge));
     if (this.network.type != 'none') {
@@ -226,7 +227,7 @@ isTokenExired (token) {
   }
 
   sync_data_checklist(from?) {
-    console.log('SYNC CHECKLIST FROM',from);
+    console.log('%cSYNC CHECKLIST FROM '+from,'{background:yellow}');
     this.relationResultadosChecklistEntradas=[];
     //this.db = new SQLite();
     this.db.create({ name: "data.db", location: "default" }).then((db2: SQLiteObject) => {
@@ -416,6 +417,7 @@ isTokenExired (token) {
             let param = "?entidad=limpieza_realizada&id="+data.rows.item(fila).idlimpiezarealizada;
             this.servidor.putObject(URLS.STD_ITEM, param, supervision).subscribe(
               response => {
+                response = JSON.parse(response.toString())
                 if (response["success"]) {
                   console.log('#Supervision sended', response["id"], supervision);
                   db2.executeSql("DELETE from supervisionlimpieza WHERE id = ?", [ data.rows.item(fila).id]).then((data) => {
@@ -511,6 +513,7 @@ isTokenExired (token) {
           
             this.servidor.postObject(URLS.STD_ITEM, incidencia, param).subscribe(
               response => {
+                response = JSON.parse(response.toString())
                 if (response["success"]) {
                   console.log('incidencia guardada:',response["id"]);
                   incidencia.id= response["id"];
@@ -562,6 +565,7 @@ isTokenExired (token) {
     let parametros2 = '&idempresa=' + localStorage.getItem("idempresa") + "&body="+body;
         this.servidor.getObjects(URLS.ALERTES, parametros2).subscribe(
           response => {
+            response = JSON.parse(response.toString())
             if (response["success"] && response["data"]) {
               console.log('email alerta enviado');
             }
@@ -588,11 +592,14 @@ isTokenExired (token) {
     let param = "&entidad=proveedores_entradas_producto";
       this.servidor.postObject(URLS.STD_ITEM, nuevaEntrada,param).subscribe(
         response => {
+          console.log('******************nuevaEntrada id:',response);
+          response = JSON.parse(response.toString())
+          console.log('******************nuevaEntrada id:',response);
           if (response["success"]) {        
             nuevaEntrada.id = response["id"];
             this.idEntradas.push({'id':nuevaEntrada.id,'idLocal':data.rows.item(fila).id,'idResultadoChecklistLocal':nuevaEntrada.idResultadoChecklistLocal,'albaran':nuevaEntrada.albaran});
 
-            console.log('nuevaEntrada id:',nuevaEntrada.id);
+            console.log('******************nuevaEntrada id:',nuevaEntrada.id);
             // if (parseInt(localStorage.getItem('triggerEntradasMP')) > 0){
             //   this.setServiciosDeEntrada(nuevaEntrada.id,data.rows.item(fila).albaran,data.rows.item(fila).idempresa,data.rows.item(fila).id,null,null);
             // }
@@ -603,6 +610,8 @@ isTokenExired (token) {
             },
           (error)=>{console.log('Deleting entradasMP ERROR',error)});
             // }
+          }else{
+            console.log('******************nuevaEntrada id: No SUCCESS');
           }
       },
       error =>{
@@ -663,8 +672,11 @@ isTokenExired (token) {
           let entrada={'idResultadoChecklist':id};
           this.servidor.putObject(URLS.STD_ITEM,param,entrada).subscribe(
             response => {
+              response = JSON.parse(response.toString())
               if (response["success"]) {
                 console.log('**servicio de entrada updated ok',response);
+                }else{
+                  console.log('**servicio de entrada NOT updated -> ERROR: ',response);
                 }
           },
           error => {console.log("Error en nueva entrada producto",error);});
@@ -692,6 +704,7 @@ isTokenExired (token) {
         this.servidor.getObjects(URLS.STD_ITEM, parametros2).subscribe(
           response => {
             responsables = [];
+            response = JSON.parse(response.toString())
             if (response["success"] && response["data"]) {
             //  console.log(response["data"])
               for (let element of response["data"]) {  

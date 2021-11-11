@@ -29,7 +29,8 @@
         "valormaximo": "Alerta, superat el valor màxim",
         "tolerancia": "Alerta, superat el valor tolerancia",
         "critico": "Alerta, superat el valor critic",
-        "conexion": "No hi ha conexió"
+        "conexion": "No hi ha conexió",
+        "doRefreseher":"Vols actualitzar el llistat de controls y checklists asociats?"
     },
     "email":{
         "subject":"INCIDÈNCIA: LÍMIT CRÍTIC O TOLERÀNCIA SUPERATS",

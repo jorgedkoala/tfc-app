@@ -1,6 +1,6 @@
 {
     "home" : "Home",
-    "tutorial" : "Tutorial",
+    "sutorial" : "Tutorial",
      "menu": {    
         "home": "Home",
         "supervision":"Supervisión",
@@ -29,7 +29,8 @@
         "valormaximo": "Alerta, superado el valor máximo",
         "tolerancia": "Alerta, superado el valor tolerancia",
         "critico": "Alerta, superado el valor crítico",
-        "conexion": "No hay conexión"
+        "conexion": "No hay conexión",
+        "doRefreseher":"Quires actualizar el listado de controles y checklists asociados?"
     },
     "email":{
         "subject":"INCIDENCIA: LÍMITE CRÍTICO O TOLERANCIA SUPERADOS",

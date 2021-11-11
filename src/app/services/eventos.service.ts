@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 export class EventosService {
 incidencia=new Subject();
 procesing=new Subject();
+private empresa:string=null;
   constructor() { }
 
   setIncidencia(incidencia,origen?) {
@@ -19,6 +20,11 @@ procesing=new Subject();
     this.procesing.next(mode);
   }
 
-  
+  setidEmpresa(empresa){
+
+  }
+  getidEmpresa(){
+    return this.empresa
+  }
 }
 

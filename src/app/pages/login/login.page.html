@@ -4,7 +4,7 @@
         <ion-back-button defaultHref="home" [text]="'menu.atras' | translate"></ion-back-button>
       </ion-buttons>
   <div class="menuTitle">{{"menu.login" | translate }}</div>
-  <div style="float:right"> <img src="assets/img/logo.png" height="25px" /> </div>
+  <div style="float:right" (click)="test()"> <img src="assets/img/logo.png" height="25px" /> </div>
 </ion-toolbar>
 </ion-header>
 
@@ -45,5 +45,16 @@
 
 
   <ion-button (click)="login()" twitter style="width: 100%;">Login</ion-button> 
+
+
+
+  <ion-item *ngIf="holding>0">
+    <ion-label>Empresas</ion-label>
+    <ion-select  [selectedText]="nombreEmpresa" (ionChange)="selectEmpresa($event)">
+      <ion-select-option  [value]="item.id" *ngFor="let item of empresasHolding">{{item.nombre}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+
 
 </ion-content> 

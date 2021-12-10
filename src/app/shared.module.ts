@@ -23,16 +23,12 @@ import { EmpresaPage } from './pages/empresa/empresa.page';
         //
         //RouterModule.forRoot(routes)
     ],
-    declarations: 
-    [
-      EmpresaPage
+    declarations: [
+        EmpresaPage
     ],
-    entryComponents: [
-      EmpresaPage
-    ],
-    exports:[
-     EmpresaPage
+    exports: [
+        EmpresaPage
     ]
-  })
+})
   export class SharedModule {}
   

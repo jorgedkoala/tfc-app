@@ -40,50 +40,45 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 @NgModule({
-  declarations: 
-  [AppComponent,
-    // EmpresaPage
-  ],
-
-  entryComponents: [
-    // EmpresaPage
-  ],
-  imports: [
-    SharedModule,
-    BrowserModule,
-    FormsModule,
-    // HttpModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
-        deps: [HttpClient]
-      }
-    }),
-    IonicModule.forRoot(),
-    AppRoutingModule
-  ],
-  exports:[
-  //  EmpresaPage
-  ],
-  providers: [
-    Initdb,
-    PeriodosProvider,
-    SQLite,
-    Network,
-    Camera,
-    BarcodeScanner,
-    SocialSharing,
-    FileTransfer,
-    File,
-    FileOpener,
-    StatusBar,
-    SplashScreen,
-    TranslateService,
-    Device,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, useValue: undefined }
-  ],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent,
+        // EmpresaPage
+    ],
+    imports: [
+        SharedModule,
+        BrowserModule,
+        FormsModule,
+        // HttpModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (createTranslateLoader),
+                deps: [HttpClient]
+            }
+        }),
+        IonicModule.forRoot(),
+        AppRoutingModule
+    ],
+    exports: [
+    //  EmpresaPage
+    ],
+    providers: [
+        Initdb,
+        PeriodosProvider,
+        SQLite,
+        Network,
+        Camera,
+        BarcodeScanner,
+        SocialSharing,
+        FileTransfer,
+        File,
+        FileOpener,
+        StatusBar,
+        SplashScreen,
+        TranslateService,
+        Device,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, useValue: undefined }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}

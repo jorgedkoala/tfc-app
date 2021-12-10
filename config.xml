@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget build="42" id="com.ntskoala.tfc" version="5.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget build="50" id="com.ntskoala.tfc" version="5.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <preference name="MyCustomParam" value="5.0.0" />
     <name>TFC</name>
-    <description>By Jorge Domínguez.</description>
-    <author email="jorged@ntskoala.com" href="http://www.movil.works/">Jorge Domínguez</author>
+    <description>TFC Proacciona. Desarrollador Jorge Domínguez.</description>
+    <author email="jorged@ntskoala.com" href="http://tfc.proacciona.es/">Jorge Domínguez</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="*" />
@@ -14,6 +14,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="false" />
+    <preference name="android-targetSdkVersion" value="30" />
     <preference name="android-minSdkVersion" value="22" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
@@ -89,6 +90,5 @@
     <plugin name="cordova-plugin-statusbar" spec="~2.4.2" />
     <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <plugin name="cordova-sqlite-storage" spec="~3.2.0" />
     <plugin name="cordova-plugin-file-opener2" spec="~2.2.0" />
 </widget>

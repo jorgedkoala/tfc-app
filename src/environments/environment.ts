@@ -8,9 +8,9 @@ export const environment = {
 
 export const vaqueria="26";
 // export const server = 'https://tfc1-181808.appspot.com/';
-export const server = 'https://api-dot-tfc-proacciona-es.ew.r.appspot.com/'; //dev
+//export const server = 'https://api-dot-tfc-proacciona-es.ew.r.appspot.com/'; //dev
 // export var usuario: Object = {"user":"demo","password":"demo","idioma":null};
-// export const server = 'https://tfc.proacciona.es/';
+ export const server = 'https://tfc.proacciona.es/';
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

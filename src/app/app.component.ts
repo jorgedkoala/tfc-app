@@ -15,7 +15,7 @@ import { Servidor } from './services/servidor';
 import { URLS } from './models/models';
 import { environment,vaqueria } from '../environments/environment';
 import * as moment from 'moment';
-import  * as cordova  from 'cordova';
+//import  * as cordova  from 'cordova';
 import { Cordova } from '@ionic-native/core';
 
 const traspasos = vaqueria;

@@ -35,10 +35,7 @@ export class EmpresaPage implements OnInit {
   //public navCtrl: NavController,
   public mdlCtrl: ModalController,
   public route:ActivatedRoute
-  ) {}
-
-  //*************  INIT *************/
-  ngOnInit() {
+  ) {
     console.log('EMPRESA INIT');
     
    
@@ -51,6 +48,12 @@ export class EmpresaPage implements OnInit {
         console.log("%c"+this.empresa,"background:red;");
       }
     });
+
+  }
+
+  //*************  INIT *************/
+  ngOnInit() {
+
 
   }
 

@@ -22,8 +22,8 @@
 </ion-refresher>
 <ion-row>
 <ion-col>
-<img [src]="logoempresa " *ngIf="empresa" (error)="logoempresa='assets/img/pixel.png'" class="center logo"/>
-
+<img [src]="logoempresa " height="100px" *ngIf="empresa" (error)="logoempresa='assets/img/pixel.png'" class="center logo"/>
+<span *ngIf="logoempresa=='assets/img/pixel.png'" class="empresa">{{nombreEmpresa}}</span>
 </ion-col>
 </ion-row>
 

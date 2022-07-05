@@ -132,7 +132,7 @@ export class CheckLimpiezaPage implements OnInit {
                     //this.checklistList = data.rows;
                     db2.executeSql("Select * FROM checklimpieza WHERE idlimpiezazona = ? AND idusuario = ? AND fecha <= ?", [this.idlimpiezazona, sessionStorage.getItem("idusuario"),fecha]).then((data) => {
                     
-                    console.debug(data.rows.length);
+                    console.log('getLimpiezas,rows:', data.rows.length);
                         for (var index=0;index < data.rows.length;index++){
                           let isbeforedate = moment(data.rows.item(index).fecha).isBefore(this.hoy,'day');
                           let repeticion = this.checkPeriodo(data.rows.item(index).periodicidad);
@@ -161,7 +161,7 @@ export class CheckLimpiezaPage implements OnInit {
                       console.log ("hayIncidencias:", this.hayIncidencia);
                     console.log ("checkLimpiezas:", this.checkLimpiezas);
                 }, (error) => {
-                    console.debug("ERROR home. 342-> " + JSON.stringify(error.err));
+                    console.log("ERROR home. 342-> " + JSON.stringify(error.err));
                     alert("error home. 342" + JSON.stringify(error.err));
                 }); 
                     });

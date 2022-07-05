@@ -59,10 +59,13 @@ export class AppComponent {
     public modalCtrl: ModalController,
     public sync: Sync
   ) {
-    console.log('%c##APP COMPONEN CONSTRUCTOR', "background: pink;");
+    console.log('version users', localStorage.getItem("versionusers"));
+    console.log('empresa', localStorage.getItem("empresa"));
+    console.log('idempresa', localStorage.getItem("idempresa"));
+    console.log('%c##APP COMPONEN CONSTRUCTOR', "background: pink;color:black");
     sync.proveedoresActivo.subscribe(
       (Estado)=>{
-        console.log('%c##SYNC PROVEEDORES NEW VALUE', "background: pink;");
+        console.log('%c##SYNC PROVEEDORES NEW VALUE', "background: pink;color:black");
         console.log('###############   ACTIVAR PROVEEDORES',Estado);
         // if (Estado && localStorage.getItem('triggerEntradasMP')){
           if (Estado){
@@ -132,7 +135,7 @@ if (isNaN(parseInt(localStorage.getItem("inicializado")))) localStorage.setItem(
           if (versionActual == -1){
             console.log('ha habido un error # app.component:130');
           }else{
-      console.debug("versionActual Usuarios",versionActual);
+      console.log("versionActual Usuarios",versionActual);
       if (versionActual > parseInt(localStorage.getItem("versionusers"))) {
         this.presentLoading();
         this.initdb.sincronizate('APP COMPONENT',versionActual.toString()).then(

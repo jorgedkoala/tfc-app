@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget build="50" id="com.ntskoala.tfc" version="5.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <preference name="MyCustomParam" value="5.0.0" />
+<widget build="61" id="com.ntskoala.tfc" version="6.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <preference name="MyCustomParam" value="6.0.1" />
     <name>TFC</name>
     <description>TFC Proacciona. Desarrollador Jorge Domínguez.</description>
     <author email="jorged@ntskoala.com" href="http://tfc.proacciona.es/">Jorge Domínguez</author>

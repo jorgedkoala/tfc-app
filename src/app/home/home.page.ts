@@ -53,6 +53,7 @@ public cambio: number;
 accesomenu: any;
 public logoempresa;
 public empresa =0;
+public modulos:string[]=[];
 public controlesList: controlesList[] =[];
 public checklistList: checklistList[] = [];
 public checkLimpiezas: checkLimpieza[] = [];
@@ -194,7 +195,7 @@ public idRouterEvent:number=null;
           console.log(this.idRouterEvent,routerEvent["id"],this.idRouterEvent != routerEvent["id"])
           if (this.idRouterEvent != routerEvent["id"]){
           this.idRouterEvent=routerEvent["id"];
-            console.log('%cROUTER EVENT SI HOMEPAGE '+routerEvent["url"],"background:pink;")
+            console.log('%cROUTER EVENT SI HOMEPAGE '+routerEvent["url"],"background:pink;color:black")
             switch(routerEvent["url"]){
               // case "/home/mantenimientos":
               //     this.getMantenimientos();
@@ -534,7 +535,9 @@ return new Observable((response)=> {
 //LIMPIEZAS
 //LIMPIEZAS
 // DESCARGA LIMPIEZAS ENTONCES BORRA LOS LOCALES, LUEGO INSERTA LOS DESCARGADOS EN LOCAL.
-      
+console.log('%cSTART SYNCRO LIMPIEZAS: ','background:red;color:yellow');
+console.log('START SYNCRO LIMPIEZAS:',this.modulos.indexOf('limpiezas'))
+if(this.modulos.indexOf('limpiezas')>=0){
       this.sync.getMisLimpiezas(this.data.logged).subscribe(
       data => {
          this.mischeckslimpiezas = JSON.parse(data);
@@ -592,6 +595,9 @@ return new Observable((response)=> {
        // this.getChecklists();
       }
   );  
+    }else{
+      response.next('limpiezas');
+    }
   //LIMPIEZAS
   //LIMPIEZAS
 
@@ -599,7 +605,9 @@ return new Observable((response)=> {
 //LIMPIEZAS REALIZADAS
 //LIMPIEZAS REALIZADAS
 // DESCARGA LIMPIEZAS ENTONCES BORRA LOS LOCALES, LUEGO INSERTA LOS DESCARGADOS EN LOCAL.
-
+console.log('%cSTART SYNCRO LIMPIEZAS: ','background:red;color:yellow');
+console.log('START SYNCRO LIMPIEZAS:',this.modulos.indexOf('limpiezas'))
+if(this.modulos.indexOf('limpiezas')>=0){
       this.sync.getMisLimpiezasRealizadas(this.data.logged).subscribe(
       data => {
         console.log('resultado limpiezasRealizadas: ',data)
@@ -661,6 +669,9 @@ return new Observable((response)=> {
         //this.getChecklists();
       }
   );  
+    }else{
+      response.next('limpiezasRealizadas')
+    }
   //LIMPIEZAS REALIZADAS
   //LIMPIEZAS REALIZADAS
 });
@@ -962,7 +973,7 @@ setTimeout(() => {
 console.log('Async operation has ended');
 if (this.loader)
 this.loader.dismiss();
-}, 2500);
+}, 1000);
 }
 
 
@@ -986,7 +997,7 @@ return 'por uso';
 
 
 checkProveedores(){
-  console.log('%cCHECK PROVEEDORES START LOGIN','background:pink');
+  console.log('%cCHECK PROVEEDORES START LOGIN','background:pink;color:black');
   let paramLogin = '?user=' + sessionStorage.getItem("nombre") + '&password=' +sessionStorage.getItem("password");
   this.servidor.login(URLS.LOGIN, paramLogin).subscribe(
     (response:any) => {
@@ -998,19 +1009,21 @@ checkProveedores(){
         localStorage.setItem('token', response["token"]);
         }
   //****************CHECK PROVEEDORES ******************/
-  console.log('%cMODULO PROVEEDORES STARTING','background:pink');
+  console.log('%cMODULO PROVEEDORES STARTING','background:pink;color:black');
   let param = '&idempresa=' + localStorage.getItem("idempresa");
   console.log('MODULO PROVEEDORES START');
   this.servidor.getObjects(URLS.OPCIONES_EMPRESA, param).subscribe(
     (response:any) => {
       console.log(response,typeof(response));
        response = JSON.parse(response.toString());
-      console.log('%cSUCCESS'+response["success"],'background:pink');
+      console.log('%cSUCCESS'+response["success"],'background:pink;color:black');
       console.log("Proveedores",response["data"],response["data"].length)
       console.log('MODULO PROVEEDORES REQUEST');
       if (response["success"] == 'true' && response["data"]) {
         console.log(response["data"],response["data"].length)
+        this.modulos=[];
         for (let element of response["data"]) {
+          this.modulos.push(element.opcion);
           if (element.opcion == 'Modulo Proveedores'){
             console.log('MODULO PROVEEDORES ACTIVO');
             //this.appComponent.appPages.splice(1,0,{title: 'menu.entradasMP',url: '/entradas-mp',icon: 'cart'});
@@ -1024,6 +1037,7 @@ checkProveedores(){
             this.moduloMantenimiento=true;;
           }         
           }
+          localStorage.setItem('modulos',this.modulos.toString())
       }
   },
 error =>{

@@ -1,5 +1,16 @@
 
-Entradas materias primas, revicar (quiatarlo cuando no haya proveedores) al quitarlo de tfc, avisar para quitarlos de checklists.
+https://medium.com/swlh/generating-an-android-app-bundle-from-your-ionic-app-without-android-studio-5bc3acaf4528
+
+
+So if you didn’t find it in the folder run the command :
+ionic cordova build android
+This command will generate an APK in debug mode. But the most important here is the Gradle download.
+When this command finishes, the gradlew will be found.
+It’s time!
+Now that we know where gradlew file is it’s time to generate the.aab file. Honestly I was impressed with the ease of doing this.
+In the platforms/android you will run gradlew file with bundle task. The command looks like:
+gradlew bundle
+./gradlew bundle
 
 
 

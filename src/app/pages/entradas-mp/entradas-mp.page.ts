@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormControl, UntypedFormGroup, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Platform, AlertController, IonSelect } from '@ionic/angular';
 
 import { Router } from '@angular/router';
@@ -14,8 +14,8 @@ import { Network } from '@ionic-native/network/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { PeriodosProvider } from '../../services/periodos/periodos';
-import { ConnectableObservable } from 'rxjs';
-import { format } from 'url';
+// import { ConnectableObservable } from 'rxjs';
+// import { format } from 'url';
 
 //*****CUSTOM TEMPLATE */
 @Component({
@@ -48,7 +48,7 @@ export class EntradasMPPage implements OnInit {
   public synProductos:any;
 public today: string=moment().add(1,'days').format('YYYY-MM-DD');
 public limitDate:string=moment().add(3,'years').format('YYYY-MM-DD');
-public myform: FormGroup = new FormGroup({});
+public myform: UntypedFormGroup = new UntypedFormGroup({});
   //*************  CONSTRUCTOR *************/
   constructor(
   public router: Router,
@@ -60,7 +60,7 @@ public myform: FormGroup = new FormGroup({});
   public platform: Platform,
   public sync: SyncPage,
   public alertController: AlertController,
-  public formBuilder: FormBuilder
+  public formBuilder: UntypedFormBuilder
   ) {}
 
   //*************  INIT *************/

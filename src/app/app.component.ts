@@ -33,7 +33,7 @@ export class AppComponent {
     // {title: 'menu.informes',url: '/informes',icon: 'print'},
     // {title: 'menu.supervision', url: '/supervision',icon: 'done-all'},
     {title: 'menu.incidencia', url: '/incidencias',icon: 'information-circle' },
-    { title: 'menu.sync' , url: '/sync',icon: 'sync' },
+    // { title: 'menu.sync' , url: '/sync',icon: 'sync' },
     {title: 'menu.config',url: '/config',icon: 'cog'},
     { title: 'menu.login' , url: '/login/menu',icon: 'key' },
     //  { title: 'menu.lector' , url: '/lector',icon: 'qr-scanner' }

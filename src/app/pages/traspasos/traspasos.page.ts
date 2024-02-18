@@ -387,7 +387,7 @@ let param = "&entidad=proveedores_entradas_producto"+"&field=idproveedor&idItem=
     this.loteSelected.cantidad_inicial =  this.cantidadTraspaso;
     this.loteSelected.cantidad_remanente = this.cantidadTraspaso;
     this.loteSelected.fecha_entrada = moment(fecha).toDate();
-    this.loteSelected.fecha_caducidad = moment().add(7,'days').toDate();
+    this.loteSelected.fecha_caducidad = moment(fecha).add(7,'days').toDate();
     this.servidor.postObject(URLS.STD_ITEM, this.loteSelected,param).subscribe(
       response => {
         response = JSON.parse(response.toString())
@@ -425,7 +425,7 @@ setNewOrdenProduccion(ordenFuente?: ProduccionOrden){
                  caducidad = (moment(this.ordenOrigen.fecha_caducidad)<moment(this.ordenDestino.fecha_caducidad))?this.ordenOrigen.fecha_caducidad:this.ordenDestino.fecha_caducidad;
                 }else{
                     //  caducidad = this.ordenOrigen.fecha_caducidad;
-                     caducidad = moment().add(7,'days').toDate();
+                     caducidad = moment(fecha).add(7,'days').toDate();
                 }        
                     console.debug(caducidad);
                     this.nuevaOrden.fecha_caducidad = caducidad;
@@ -437,7 +437,7 @@ setNewOrdenProduccion(ordenFuente?: ProduccionOrden){
                     console.debug(caducidad);
                     this.nuevaOrden.fecha_caducidad = caducidad;
                 }else{
-                    this.nuevaOrden.fecha_caducidad = moment().add(7,'days').toDate();
+                    this.nuevaOrden.fecha_caducidad = moment(fecha).add(7,'days').toDate();
                 }
             }
         }
